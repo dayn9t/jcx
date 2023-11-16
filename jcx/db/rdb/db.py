@@ -1,9 +1,9 @@
 import re
 from dataclasses import dataclass
-from typing import TypeVar, Type
+from typing import TypeVar, Type, Any
 from urllib.parse import urlparse
 
-import redis  # type: ignore
+import redis
 from jcx.text.txt_json import to_json, from_json
 
 T = TypeVar("T")
@@ -19,7 +19,7 @@ class RedisDb:
     """数据库变量"""
 
     @staticmethod
-    def open(server_url: str):
+    def open(server_url: str) -> 'RedisDb':
         """打开数据变量"""
         return RedisDb(server_url)
 
@@ -40,7 +40,7 @@ class RedisDb:
         """"获取数据库名"""
         return self._name
 
-    def set(self, name: str, value):
+    def set(self, name: str, value: Any) -> None:
         """保存变量"""
         self._db.set(name, to_json(value))
 
@@ -60,7 +60,7 @@ class RedisDb:
         self._db.delete(name)
 
 
-def a_test():
+def a_test() -> None:
     cfg = DbCfg('redis://127.0.0.1/10')
 
     db = RedisDb(cfg.hot_db)
