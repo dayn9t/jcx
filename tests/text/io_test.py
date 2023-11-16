@@ -1,7 +1,7 @@
 from jcx.text.io import *
 
 
-def test_replace_in_file():
+def test_replace_in_file() -> None:
     txt1 = '1aa\na1a\naa1\n'
     txt2 = 'aaa\naaa\naaa\n'
 

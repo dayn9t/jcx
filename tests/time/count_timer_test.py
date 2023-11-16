@@ -1,7 +1,7 @@
 from jcx.time.count_timer import *
 
 
-def test_timer():
+def test_timer() -> None:
     timer = CountTimer(10)
 
     for i in range(30):

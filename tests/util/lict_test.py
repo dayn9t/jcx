@@ -2,7 +2,7 @@ from jcx.text.txt_json import to_json, from_json
 from jcx.util.lict import *
 
 
-def test_lict_map():
+def test_lict_map() -> None:
     m = Lict[int, str]([])
     assert m.get(1) is None
     assert 1 not in m
@@ -26,11 +26,11 @@ def test_lict_map():
     assert m.to_dict() == d
 
 
-def test_lict_io():
+def test_lict_io() -> None:
     m = Lict[str, int]([])
     m['a'] = 1
     m['b'] = 2
     s = to_json(m.inner())
     # print(s)
-    l = from_json(s, LictItems[str, int])
-    assert l == [LictItem(key='a', value=1), LictItem(key='b', value=2)]
+    l1 = from_json(s, LictItems[str, int])
+    assert l1 == [LictItem(key='a', value=1), LictItem(key='b', value=2)]

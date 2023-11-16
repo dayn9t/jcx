@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jcx"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["dayn9t <dayn9t@gmail.com>"]
 readme = "README.md"
@@ -16,13 +16,17 @@ paho-mqtt = "*"
 parse = "*"
 redis = "*"
 requests = "*"
-rustshed = "*"
 sh = "*"
 interval = "*"
 
+numpy = "*"
+
+rustshed = "*"
 pytest = "*"
 mypy = "*"
 pre-commit = "*"
+types-paho-mqtt = "*"
+
 
 
 

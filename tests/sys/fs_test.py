@@ -1,6 +1,6 @@
-from jcx.sys.fs import *
-
 import tempfile
+
+from jcx.sys.fs import *
 
 
 def find_pattern_del() -> None:
@@ -24,10 +24,10 @@ def find_first_test() -> None:
     print(f)
     f = find_first(folder, '31.json')
     print(f)
-    f = file_exist_in(folder, '*.json')
-    print(f)
-    f = file_exist_in(folder, '*.json', True)
-    print(f)
+    b = file_exist_in(folder, '*.json')
+    print(b)
+    b = file_exist_in(folder, '*.json', True)
+    print(b)
 
 
 def test_find_parts() -> None:

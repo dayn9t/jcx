@@ -1,7 +1,7 @@
 from jcx.m.rand import *
 
 
-def test_random_choices():
+def test_random_choices() -> None:
     arr = list(range(10))
     n = 5
     ob = 0

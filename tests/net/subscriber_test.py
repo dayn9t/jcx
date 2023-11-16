@@ -1,18 +1,20 @@
+from paho.mqtt.client import MQTTMessage
+
 from jcx.net.mqtt.subscriber import *
 
 
-class Outputer:
-    def on_mqtt_message(self, mqtt_msg: MQTTMessage):
+class Output:
+    def on_mqtt_message(self, mqtt_msg: MQTTMessage) -> None:
         assert self
-        print('Outputer:', msg.payload)
+        print('Output:', mqtt_msg.payload)
 
 
-def demo_sub():
+def demo_sub() -> None:
     """FIXME: 不能用单元测试, 会卡死在消息分发"""
-    outputer = Outputer()
+    output = Output()
 
     cfg = MqttCfg('tcp://localhost:1883', 'howell')
-    subcriber = Subscriber(cfg)
+    subscriber = Subscriber(cfg)
 
-    # subcriber.loop(lambda msg: print(msg))
-    subcriber.dispatch_msg('1/#', outputer)
+    # subscriber.loop(lambda msg: print(msg))
+    subscriber.dispatch_msg('1/#', output)

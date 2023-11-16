@@ -10,7 +10,7 @@ class Student:
     height: float = 0
 
 
-def test_complete():
+def test_complete() -> None:
     s1 = Student(1, 'Jack', 1.1)
     s2 = Student(2)
     s3 = Student(2, 'Jack', 1.1)

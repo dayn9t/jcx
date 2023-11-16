@@ -14,6 +14,6 @@ class Linear:
         b = y1 - k * x1
         return Linear(k, b)
 
-    def __call__(self, x):
+    def __call__(self, x: float) -> float:
         y = self.k * x + self.b
         return y

@@ -3,7 +3,7 @@ from jcx.time.calendar_type import *
 from jcx.time.clock_time import to_clock_time
 
 
-def test_period():
+def test_period() -> None:
     c1 = ClockTime.parse('01:00:00').unwrap()
     c2 = ClockTime.parse('02:00:00').unwrap()
 
@@ -17,7 +17,7 @@ def test_period():
     assert not calendar.check(c2)
 
 
-def test_calendar():
+def test_calendar() -> None:
     c1 = to_clock_time('07:00:00').unwrap()
     c2 = to_clock_time('23:00:00').unwrap()
 

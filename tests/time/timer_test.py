@@ -1,7 +1,7 @@
 from jcx.time.timer import *
 
 
-def test_timer():
+def test_timer() -> None:
     day1 = Arrow(2000, 1, 1)
     day2 = Arrow(2000, 1, 2)
     day3 = Arrow(2000, 1, 3)

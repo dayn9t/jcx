@@ -4,7 +4,7 @@ from jcx.db.jdb.counter import JdbCounter
 from jcx.db.precord import R1
 
 
-def test_counter():
+def test_counter() -> None:
     db = Path('/tmp/jdb_test')
 
     c1 = JdbCounter(db, 'test_c1')
@@ -16,7 +16,7 @@ def test_counter():
         assert i == n
 
 
-def test_demo_record():
+def test_demo_record() -> None:
     r = R1.clone()
     assert r == R1
     r.name = ''

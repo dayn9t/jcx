@@ -2,7 +2,7 @@ from jcx.db.jdb.table import *
 from jcx.db.precord import DemoRecord
 
 
-def test_tab1():
+def test_tab1() -> None:
     tab = Table(DemoRecord)
     tab.load('/tmp/groups')
     tab.clear()

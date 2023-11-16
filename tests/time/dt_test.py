@@ -3,7 +3,7 @@ from datetime import time
 from jcx.time.dt import *
 
 
-def atest_time():
+def atest_time() -> None:
     s = arrow.now()
     print(s)
     t = s.time()
@@ -13,7 +13,7 @@ def atest_time():
     print(t)
 
 
-def atest_arrow():
+def atest_arrow() -> None:
     now = arrow.now()
     print(now, type(now))
 
@@ -30,13 +30,13 @@ def atest_arrow():
     print(s)
     print(t)
 
-    t = arrow.now().time()
-    print('time:', t, type(t))
+    t1 = arrow.now().time()
+    print('time:', t1, type(t1))
     a = arrow.get(s)
     print('a:', a)
 
 
-def atest_funs():
+def atest_funs() -> None:
     print(now_iso_str())
     _s = str(arrow.now())
     print('now_local_str:', now_local_str())
