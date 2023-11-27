@@ -1,5 +1,5 @@
 from jcx.db.jdb.variant import *
-from jcx.db.precord import DemoRecord, R1
+from tests.data_types import *
 
 
 def test_all() -> None:

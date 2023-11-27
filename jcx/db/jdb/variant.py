@@ -39,10 +39,10 @@ class JdbVariant(IVariant):
         """获取变量"""
         return load_json(self._path, self._type)
 
-    def set(self, value):
+    def set(self, value: T) -> None:
         """设置变量"""
         save_json(value, self._path)
 
-    def remove(self):
+    def remove(self) -> None:
         """删除变量"""
         Path.unlink(self._path)

@@ -1,5 +1,5 @@
 from jcx.db.jdb.table import *
-from jcx.db.precord import DemoRecord
+from tests.data_types import DemoRecord
 
 
 def test_tab1() -> None:

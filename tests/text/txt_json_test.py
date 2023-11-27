@@ -1,5 +1,5 @@
-from jcx.db.precord import *
 from jcx.text.txt_json import *
+from tests.data_types import *
 
 
 def test_io() -> None:

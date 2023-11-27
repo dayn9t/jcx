@@ -1,5 +1,5 @@
 from jcx.db.jdb.util import *
-from jcx.db.precord import *
+from tests.data_types import *
 
 
 def test_load() -> None:
