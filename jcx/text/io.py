@@ -1,7 +1,7 @@
 from typing import Optional
 
 from jcx.sys.fs import or_ext, StrPath
-from rustshed import Result, Ok, Option, Some
+from rustshed import Result, Ok, Option, Some, Err
 
 
 def load_txt(file: StrPath) -> Result[str, str]:
@@ -12,15 +12,19 @@ def load_txt(file: StrPath) -> Result[str, str]:
     # return Err('load_txt fail.')
 
 
-def save_txt(txt: str, file: StrPath, ext: Option[str] = Some('.txt')) -> None:
+def save_txt(txt: str, file: StrPath, ext: str = '.txt') -> Result[bool, Exception]:
     """保存文本到文件"""
     file = or_ext(file, ext)
-    file.parent.mkdir(parents=True, exist_ok=True)
-    with open(file, 'w') as f:
-        f.write(txt)
+    try:
+        file.parent.mkdir(parents=True, exist_ok=True)
+        with open(file, 'w') as f:
+            f.write(txt)
+    except Exception as e:
+        return Err(e)
+    return Ok(True)
 
 
-def save_lines(lines: list[str], file: StrPath, ext: Optional[str] = None, postfix='') -> None:
+def save_lines(lines: list[str], file: StrPath, ext: str = '', postfix: str = '') -> None:
     """多行文本保存到文件，文件自动加扩展名，自动建立目录，行尾自动加回车"""
     file = or_ext(file, ext)
     file.parent.mkdir(parents=True, exist_ok=True)

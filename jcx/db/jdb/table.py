@@ -2,13 +2,13 @@ from pathlib import Path
 from typing import TypeVar, Type
 
 from jcx.db.jdb.util import load_dict
-from jcx.db.precord import PRecord, RecordFilter
+from jcx.db.record import Record, RecordFilter
 from jcx.rs.rs import rs_option_cloned
 from jcx.sys.fs import rm_files_in, StrPath
 from jcx.text.txt_json import save_json
 from rustshed import Option, Null, Some
 
-R = TypeVar("R", bound=PRecord)
+R = TypeVar("R", bound=Record)
 """记录类型"""
 
 
@@ -16,7 +16,7 @@ class Table:
     """数据库表"""
 
     @staticmethod
-    def open(record_type: Type[R], folder: StrPath):
+    def open(record_type: Type[R], folder: StrPath) -> 'Table':
         """打开数据库表"""
         tab = Table(record_type)
         tab.load(folder)
@@ -84,7 +84,7 @@ class Table:
         self.__save(record)
         return Some(record.clone())
 
-    def remove(self, rid: int):
+    def remove(self, rid: int) -> None:
         """更新记录"""
         if rid not in self._records:
             return
@@ -92,7 +92,7 @@ class Table:
         f.unlink()
         self._records.pop(rid)
 
-    def clear(self):
+    def clear(self) -> None:
         """删除所有记录"""
         self._records.clear()
         rm_files_in(self._folder.unwrap(), '.json')
@@ -105,7 +105,7 @@ class Table:
         """获取记录对应路径"""
         return self._folder.unwrap() / f'{rid}.json'
 
-    def __save(self, record: R):
+    def __save(self, record: R) -> None:
         """保存路径"""
         f = self.__record_path(record.id)
         save_json(record, f)

@@ -1,66 +1,54 @@
-import json
-from typing import TypeVar, Type, Any
+from typing import Any
+from typing import TypeVar, Type
 
-from cattr import unstructure, structure
+from pydantic import BaseModel, TypeAdapter
+from rustshed import Result, Ok, Err, result_shortcut
+
 from jcx.sys.fs import or_ext, StrPath
 from jcx.text.io import save_txt
-from rustshed import Option, Some, Null
 
-"""
-序列化可选替代技术:
-- https://pypi.org/project/dataclass-wizard/
-
-"""
-
-T = TypeVar("T")
+BMT = TypeVar('BMT', bound=BaseModel)
+"""BaseModel派生类型"""
 
 
-def load_txt(file: StrPath, ext: str = '.txt') -> Option[str]:
+def load_txt(file: StrPath, ext: str = '.txt') -> Result[str, Exception]:
     """从文件加载文本"""
     file = or_ext(file, ext)
-    if not file.is_file():
-        return Null
-    with open(file, 'r', encoding='utf-8') as f:
-        txt = f.read()
-    return Some(txt)
+    try:
+        with open(file, 'r', encoding='utf-8') as f:
+            txt = f.read()
+    except Exception as e:
+        return Err(e)
+    return Ok(txt)
 
 
-def to_json(obj: Any, pretty: bool = True) -> str:
+def to_json(ob: BMT, pretty: bool = True) -> str:
     """对象序列化为JSON"""
-    m = unstructure(obj)
     indent = 4 if pretty else None
-    return json.dumps(m, ensure_ascii=False, indent=indent)
+    return ob.model_dump_json(indent=indent)
 
 
-def try_from_json(s: str | bytes, obj_type: Type[T]) -> Option[T]:
+def from_json(json: str | bytes, ob_type: Type[BMT]) -> Result[BMT, Exception]:
     """从JSON文本构建对象"""
-    assert isinstance(s, str | bytes), 'Invalid input type @ try_from_json'
-    m = json.loads(s)
-    return Some(structure(m, obj_type))
+    assert isinstance(json, str | bytes), 'Invalid input type @ try_from_json'
+    try:
+        ob = TypeAdapter(ob_type).validate_json(json)
+    except Exception as e:
+        return Err(e)
+    return Ok(ob)
 
 
-def from_json(s: str | bytes, obj_type: Type[T]) -> T:
-    """从JSON文本构建对象"""
-    return try_from_json(s, obj_type).unwrap()
-
-
-def save_json(obj: Any, file: StrPath, pretty: bool = True) -> None:
+def save_json(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exception]:
     """对象序保存为JSON文件"""
     file = or_ext(file, '.json')
     s = to_json(obj, pretty)
-    save_txt(s, file)
+    return save_txt(s, file)
 
 
-def try_load_json(file: StrPath, obj_type: Type[T]) -> Option[T]:
+@result_shortcut
+def load_json(file: StrPath, obj_type: Type[BMT]) -> Result[BMT, Exception]:
     """从Json文件加载对象"""
     file = or_ext(file, '.json')
-    s = load_txt(file)
-    if s.is_null():
-        return Null
+    s = load_txt(file).Q
     # print('load_json:', file)
-    return try_from_json(s.unwrap(), obj_type)
-
-
-def load_json(file: StrPath, obj_type: Type[T]) -> T:
-    """从Json文件加载对象"""
-    return try_load_json(file, obj_type).unwrap()
+    return from_json(s, obj_type)

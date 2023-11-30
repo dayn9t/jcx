@@ -4,7 +4,7 @@ from typing import TypeVar, Type, Optional
 from cattr import unstructure, structure
 from flask_restx import Resource  # type: ignore
 from jcx.db.jdb.table import Table
-from jcx.db.precord import PRecord
+from jcx.db.record import PRecord
 from jcx.sys.fs import StrPath
 
 R = TypeVar("R", bound=PRecord)

@@ -37,7 +37,7 @@ class JdbVariant(IVariant):
 
     def get(self) -> T:
         """获取变量"""
-        return load_json(self._path, self._type)
+        return load_json(self._path, self._type).unwrap()
 
     def set(self, value: T) -> None:
         """设置变量"""

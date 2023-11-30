@@ -3,6 +3,7 @@ from typing import TypeVar, Type, Protocol
 from rustshed import Option
 
 T = TypeVar("T")
+"""变量类型定义"""
 
 
 class IVariant(Protocol):
@@ -24,10 +25,10 @@ class IVariant(Protocol):
         """获取变量"""
         pass
 
-    def set(self, value):
+    def set(self, value: T) -> None:
         """设置变量"""
         pass
 
-    def remove(self):
+    def remove(self) -> None:
         """删除变量"""
         pass

@@ -1,18 +1,31 @@
-from typing import Final
+from typing import Final, List
 
-from attr import dataclass
-
-from jcx.db.precord import PRecord
+from jcx.db.record import Record
 
 
-@dataclass
-class DemoRecord(PRecord):
+class Student(Record):
     """用于演示/测试的记录"""
-    id: int
     name: str
+    age: int
 
 
-R1: Final[DemoRecord] = DemoRecord(1, 'group1')
-R2: Final[DemoRecord] = DemoRecord(2, 'group2')
+class Team(Record):
+    """小组"""
+    name: str
+    students: List[Student]
 
-GROUP_DIR: Final[str] = '/opt/ias/project/shtm/node/n1/db/group'
+
+STUDENT1: Final[Student] = Student(id=1, name='Jack', age=11)
+STUDENT2: Final[Student] = Student(id=2, name='Jones', age=12)
+JSON1 = '''{
+    "id": 1,
+    "name": "Jack",
+    "age": 11
+}'''
+JSON2 = '''{
+    "id": 2,
+    "name": "Jones",
+    "age": 12
+}'''
+
+TEAM1: Final[Team] = Team(id=1, name='group1', students=[STUDENT1, STUDENT2])

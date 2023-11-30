@@ -1,17 +1,20 @@
+import tempfile
+
 from jcx.db.jdb.table import *
-from tests.data_types import DemoRecord
+from tests.data_types import *
 
 
 def test_tab1() -> None:
-    tab = Table(DemoRecord)
-    tab.load('/tmp/groups')
+    dir1 = Path(tempfile.mkdtemp())
+    tab = Table(Student)
+    tab.load(dir1)
     tab.clear()
     assert len(tab) == 0
 
-    r0 = DemoRecord(0, 'one')
-    r1 = DemoRecord(1, 'one')
-    r2 = DemoRecord(2, 'one')
-    r9 = DemoRecord(9, 'one')
+    r0 = Student(id=0, name='one', age=10)
+    r1 = Student(id=1, name='one', age=10)
+    r2 = Student(id=2, name='one', age=10)
+    r9 = Student(id=9, name='one', age=10)
 
     r = tab.add(r0).unwrap()
     assert r.id == 1
