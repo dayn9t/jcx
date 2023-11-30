@@ -4,7 +4,6 @@ from typing import TypeVar, Type, TypeAlias
 from jcx.db.ivariant import IVariant
 from jcx.sys.fs import StrPath
 from jcx.text.txt_json import load_json, save_json
-from rustshed import Option
 
 T = TypeVar("T")
 

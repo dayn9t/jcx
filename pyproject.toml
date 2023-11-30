@@ -9,9 +9,6 @@ readme = "README.md"
 python = "^3.10"
 pydantic = "*"
 
-flask_restx = "1.1.0"
-dataclasses-json = "*"
-cattrs = "22.1.0" # 升级报错, 准备替换该库
 arrow = "*"
 loguru = "*"
 paho-mqtt = "*"
