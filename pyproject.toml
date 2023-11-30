@@ -8,9 +8,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 pydantic = "*"
+rustshed = "*"
 
 arrow = "*"
 loguru = "*"
+
 paho-mqtt = "*"
 parse = "*"
 redis = "*"
@@ -20,13 +22,10 @@ interval = "*"
 
 numpy = "*"
 
-rustshed = "*"
 pytest = "*"
 mypy = "*"
 pre-commit = "*"
 types-paho-mqtt = "*"
-
-
 
 
 [build-system]
