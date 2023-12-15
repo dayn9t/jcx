@@ -1,9 +1,8 @@
-from typing import TypeVar, Type, Protocol
+from typing import Type, Protocol
 
 from rustshed import Option
 
-T = TypeVar("T")
-"""变量类型定义"""
+from jcx.text.txt_json import BMT
 
 
 class IVariant(Protocol):
@@ -13,7 +12,7 @@ class IVariant(Protocol):
         """"获取变量名"""
         pass
 
-    def value_type(self) -> Type[T]:
+    def value_type(self) -> Type[BMT]:
         """"获取变量类型"""
         pass
 
@@ -21,11 +20,11 @@ class IVariant(Protocol):
         """"判断是否存在"""
         pass
 
-    def get(self) -> Option[T]:
+    def get(self) -> Option[BMT]:
         """获取变量"""
         pass
 
-    def set(self, value: T) -> None:
+    def set(self, value: BMT) -> None:
         """设置变量"""
         pass
 

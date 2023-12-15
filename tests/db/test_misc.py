@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from jcx.db.jdb.counter import JdbCounter
-from tests.data_types import R1
+from tests.data_types import STUDENT1
 
 
 def test_counter() -> None:
@@ -17,7 +17,7 @@ def test_counter() -> None:
 
 
 def test_demo_record() -> None:
-    r = R1.clone()
-    assert r == R1
+    r = STUDENT1.clone()
+    assert r == STUDENT1
     r.name = ''
-    assert r != R1
+    assert r != STUDENT1

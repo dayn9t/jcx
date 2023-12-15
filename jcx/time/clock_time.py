@@ -2,13 +2,15 @@ from typing import TypeAlias
 
 from arrow import Arrow
 from parse import parse  # type: ignore
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
 from rustshed import Option, Some, Null
 
 Self: TypeAlias = 'ClockTime'
 
 
-class ClockTime(BaseModel, frozen=True, order=True):
+# @total_ordering
+@dataclass(frozen=True, order=True)
+class ClockTime:
     """时钟时间（时分秒）"""
 
     hour: int = 0
@@ -17,6 +19,14 @@ class ClockTime(BaseModel, frozen=True, order=True):
     """分钟"""
     second: int = 0
     """秒"""
+
+    class Config:
+        allow_mutation = False
+
+    @classmethod
+    def new(cls, hour: int, minute: int, second: int) -> Self:
+        """构造"""
+        return ClockTime(hour=hour, minute=minute, second=second)
 
     @staticmethod
     def from_time(t: Arrow) -> Self:
