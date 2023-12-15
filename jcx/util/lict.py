@@ -1,12 +1,12 @@
-from dataclasses import dataclass
-from typing import TypeVar, Generic, Mapping, Iterator, Optional, TypeAlias
+from typing import TypeVar, Generic, Mapping, Iterator, Optional, TypeAlias, Any
+
+from pydantic import BaseModel
 
 KT = TypeVar('KT')
 VT = TypeVar('VT')
 
 
-@dataclass
-class LictItem(Generic[KT, VT]):
+class LictItem(BaseModel, Generic[KT, VT]):
     """Lict条目"""
     key: KT  # 键
     value: VT  # 值
@@ -54,14 +54,14 @@ class Lict(Mapping[KT, VT]):
             return self._items[i].value
         raise KeyError(f'Key {key} not found.')
 
-    def __setitem__(self, key: KT, value: VT):
+    def __setitem__(self, key: KT, value: VT) -> None:
         """获取 key 对应的值"""
         i = self.index(key)
         if i > -1:
             self._items[i].value = value
-        self._items.append(LictItem[KT, VT](key, value))
+        self._items.append(LictItem[KT, VT](key=key, value=value))
 
-    def pop(self, key, default_value=None) -> Optional[VT]:
+    def pop(self, key: KT, default_value: Optional[VT] = None) -> Optional[VT]:
         """删除 key 对应的值, 并返回"""
         i = self.index(key)
         if i > -1:

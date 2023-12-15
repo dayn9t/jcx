@@ -10,8 +10,6 @@
 
 ## TODO
 
-- 测试: ```@dataclass_json``` 是否支持递归, https://pypi.org/project/dataclasses-json/
-
 ## 参考
 
 - https://python-poetry.org/docs/

@@ -1,15 +1,14 @@
-from dataclasses import dataclass
 from typing import TypeAlias
 
 from arrow import Arrow
 from parse import parse  # type: ignore
+from pydantic import BaseModel
 from rustshed import Option, Some, Null
 
 Self: TypeAlias = 'ClockTime'
 
 
-@dataclass(frozen=True, order=True)
-class ClockTime:
+class ClockTime(BaseModel, frozen=True, order=True):
     """时钟时间（时分秒）"""
 
     hour: int = 0

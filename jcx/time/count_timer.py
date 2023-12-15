@@ -1,13 +1,12 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class Counter:
+class Counter(BaseModel):
     """计数器"""
     count: int = 0
     """计数值"""
 
-    def __str__(self):
+    def __str__(self) -> str:
         return 'Counter(%d)' % self.count
 
     def get(self) -> int:
@@ -21,18 +20,17 @@ class Counter:
         return t
 
 
-@dataclass
-class CountTimer:
+class CountTimer(BaseModel):
     """计数闹钟"""
     interval: int
     """间隔"""
     count: int = 0
     """计数值"""
 
-    def __str__(self):
+    def __str__(self) -> str:
         return 'CountTimer(%d,%d)' % (self.interval, self.count)
 
-    def inc(self):
+    def inc(self) -> None:
         """更新计数器"""
         self.count += 1
 
@@ -52,6 +50,6 @@ class CountTimer:
             self.reset()
         return ok
 
-    def reset(self):
+    def reset(self) -> None:
         """计数器复位"""
         self.count = 0

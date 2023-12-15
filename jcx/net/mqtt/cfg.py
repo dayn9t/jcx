@@ -1,8 +1,7 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class MqttCfg:
+class MqttCfg(BaseModel):
     """MQTT配置"""
 
     server_url: str

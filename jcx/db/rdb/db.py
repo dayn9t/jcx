@@ -1,16 +1,14 @@
 import re
-from dataclasses import dataclass
 from typing import TypeVar, Type, Any
 from urllib.parse import urlparse
 
 import redis
-from jcx.text.txt_json import to_json, from_json
+from pydantic import BaseModel
 
-T = TypeVar("T")
+from jcx.text.txt_json import to_json, from_json, BMT
 
 
-@dataclass
-class DbCfg:
+class DbCfg(BaseModel):
     hot_db: str
     pretty: bool = True
 
@@ -44,12 +42,12 @@ class RedisDb:
         """保存变量"""
         self._db.set(name, to_json(value))
 
-    def get(self, name: str, var_type: Type[T], default_value: T) -> T:
+    def get(self, name: str, var_type: Type[BMT], default_value: BMT) -> BMT:
         """获取变量"""
         s = self._db.get(name)
         if not s:
             return default_value
-        return from_json(s, var_type)
+        return from_json(s, var_type).unwrap()
 
     def exists(self, name: str) -> bool:
         """"判断是否存在"""
@@ -61,7 +59,7 @@ class RedisDb:
 
 
 def a_test() -> None:
-    cfg = DbCfg('redis://127.0.0.1/10')
+    cfg = DbCfg(hotdb='redis://127.0.0.1/10')
 
     db = RedisDb(cfg.hot_db)
 

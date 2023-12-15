@@ -1,15 +1,15 @@
-from dataclasses import dataclass
 from pathlib import Path
 from subprocess import getstatusoutput
 
 from flask_restx import Api, fields  # type: ignore
+from pydantic import BaseModel
+
 from jcx.api.dao_item import ItemDao, add_item_resource
 from jcx.time.dt import now_iso_str
 from rustshed import Option, Null
 
 
-@dataclass
-class CommandInfo:
+class CommandInfo(BaseModel):
     """命令信息"""
     time: str = ''
     """时间"""
@@ -39,8 +39,7 @@ def command_model(api: Api, description):
     })
 
 
-@dataclass
-class CommandParam:
+class CommandParam(BaseModel):
     """命令参数"""
 
     time: str = ''

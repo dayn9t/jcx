@@ -2,13 +2,13 @@
 
 import argparse
 import hashlib
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict
 
+from pydantic import BaseModel
 
-@dataclass
-class FileInfo:
+
+class FileInfo(BaseModel):
     path: Path
     md5: str
 
@@ -17,7 +17,7 @@ def file_map(folder: Path) -> Dict[int, FileInfo]:
     m: Dict[int, FileInfo] = {}
     for f in folder.rglob('*.*'):
         if f.is_file():
-            info = FileInfo(f, calc_md5(f))
+            info = FileInfo(path=f, md5=calc_md5(f))
             size = f.stat().st_size
             if size not in m:
                 m[size] = []

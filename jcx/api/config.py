@@ -1,17 +1,15 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class Endpoint:
+class Endpoint(BaseModel):
     host: str
     port: int
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '%s:%d' % (self.host, self.port)
 
 
-@dataclass
-class ApiCfg:
+class ApiCfg(BaseModel):
     name: str
     root: str
     endpoint: Endpoint
@@ -21,11 +19,6 @@ class ApiCfg:
         return '%s://%s/%s' % (scheme, self.endpoint, self.root)
 
 
-def a_test():
-    cfg = ApiCfg('配置', '/howell/ias', Endpoint('localhost', 5000))
-    print(cfg)
-    print(cfg.url('http'))
-
-
-if __name__ == '__main__':
-    a_test()
+def test_cfg() -> None:
+    _cfg = ApiCfg(name='配置', root='/howell/ias', endpoint=Endpoint(host='localhost', port=5000))
+    assert _cfg.name == '配置'

@@ -1,8 +1,8 @@
-from dataclasses import fields
+from pydantic import BaseModel
 
 
-def complete(a: object, b: object):
+def complete(a: BaseModel, b: BaseModel) -> BaseModel:
     """用a的值补全b缺失的值"""
-    for f in fields(type(a)):
-        b.__dict__[f.name] = b.__dict__[f.name] or a.__dict__[f.name]
+    for k in b.__dict__.keys():
+        b.__dict__[k] = b.__dict__[k] or a.__dict__[k]
     return b

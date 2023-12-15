@@ -1,8 +1,7 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class Linear:
+class Linear(BaseModel):
     """线性函数"""
     k: float
     b: float
@@ -12,7 +11,7 @@ class Linear:
         """构造, 用: x1, y1, x2, y2"""
         k = (y2 - y1) / (x2 - x1)
         b = y1 - k * x1
-        return Linear(k, b)
+        return Linear(k=k, b=b)
 
     def __call__(self, x: float) -> float:
         y = self.k * x + self.b
