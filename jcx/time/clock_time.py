@@ -28,6 +28,13 @@ class ClockTime:
         """构造"""
         return ClockTime(hour=hour, minute=minute, second=second)
 
+    @classmethod
+    def from_secs(cls, secs: int) -> Self:
+        """构造"""
+        minute, second = divmod(secs, 60)
+        hour, minute = divmod(minute, 60)
+        return ClockTime(hour=hour, minute=minute, second=second)
+
     @staticmethod
     def from_time(t: Arrow) -> Self:
         """datetime转ClockTime"""

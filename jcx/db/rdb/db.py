@@ -53,13 +53,13 @@ class RedisDb:
         """"判断是否存在"""
         return self._db.exists(name) > 0
 
-    def remove(self, name: str):
+    def remove(self, name: str) -> None:
         """"删除"""
         self._db.delete(name)
 
 
 def a_test() -> None:
-    cfg = DbCfg(hotdb='redis://127.0.0.1/10')
+    cfg = DbCfg(hot_db='redis://127.0.0.1/10')
 
     db = RedisDb(cfg.hot_db)
 
