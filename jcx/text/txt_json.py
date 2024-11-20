@@ -1,7 +1,7 @@
 from typing import Any
 from typing import TypeVar, Type
 
-from pydantic import BaseModel, TypeAdapter
+from pydantic import BaseModel
 from rustshed import Result, Ok, Err, result_shortcut
 
 from jcx.sys.fs import or_ext, StrPath
@@ -32,7 +32,7 @@ def from_json(json: str | bytes, ob_type: Type[BMT]) -> Result[BMT, Exception]:
     """从JSON文本构建对象"""
     assert isinstance(json, str | bytes), 'Invalid input type @ try_from_json'
     try:
-        ob = TypeAdapter(ob_type).validate_json(json)
+        ob = ob_type.model_validate_json(json)
     except Exception as e:
         return Err(e)
     return Ok(ob)
