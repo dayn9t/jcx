@@ -16,3 +16,9 @@ def test_parse() -> None:
     s1 = Student(id=1, name='ja"c"k')
     s2 = from_json(t1, Student).unwrap()
     assert s1 == s2
+
+
+def test_save() -> None:
+    s1 = Student(id=1, name='捷克')
+    save_json(s1, '/tmp/student.json').unwrap()
+
