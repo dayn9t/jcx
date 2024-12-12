@@ -1,17 +1,17 @@
 import hashlib
 from fractions import Fraction
-from typing import TypeAlias, Any
+from typing import Any
 
 from jcx.text.txt_json import to_json
 
 # 实数类型
-Real: TypeAlias = int | float
+type Real = int | float
 
 # 2维实数类型
-Real2D: TypeAlias = tuple[Real, Real]
+type Real2D = tuple[Real, Real]
 
 # 2维实数类型
-Real1_2D: TypeAlias = Real | Real2D
+type Real1_2D = Real | Real2D
 
 
 def is_real(n: Any) -> bool:

@@ -1,5 +1,4 @@
-from typing import TypeVar, Generic, Mapping, Iterator, Optional, TypeAlias, Any
-
+from typing import TypeVar, Generic, Mapping, Iterator, Optional
 from pydantic import BaseModel
 
 KT = TypeVar('KT')
@@ -12,7 +11,7 @@ class LictItem(BaseModel, Generic[KT, VT]):
     value: VT  # 值
 
 
-LictItems: TypeAlias = list[LictItem[KT, VT]]
+type LictItems = list[LictItem[KT, VT]]
 """Lict条目数组"""
 
 

@@ -1,8 +1,6 @@
-from typing import TypeVar, TypeAlias, Callable, Type
+from typing import Callable, Self
 
-from pydantic import BaseModel, TypeAdapter
-
-Self = TypeVar('Self', bound='Record')
+from pydantic import BaseModel
 
 
 class Record(BaseModel):
@@ -15,5 +13,5 @@ class Record(BaseModel):
         return self.model_copy(deep=True)
 
 
-RecordFilter: TypeAlias = Callable[[Record], bool]
+type RecordFilter = Callable[[Record], bool]
 """记录过滤器"""

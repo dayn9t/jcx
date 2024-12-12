@@ -1,11 +1,10 @@
-from typing import TypeAlias
+from typing import Self
 
 from arrow import Arrow
 from parse import parse  # type: ignore
 from pydantic.dataclasses import dataclass
 from rustshed import Option, Some, Null
 
-Self: TypeAlias = 'ClockTime'
 
 
 # @total_ordering
@@ -36,7 +35,7 @@ class ClockTime:
         return ClockTime(hour=hour, minute=minute, second=second)
 
     @staticmethod
-    def from_time(t: Arrow) -> Self:
+    def from_time(t: Arrow) -> 'ClockTime':
         """datetime转ClockTime"""
         return ClockTime(
             hour=t.hour,
@@ -45,7 +44,7 @@ class ClockTime:
         )
 
     @staticmethod
-    def parse(s: str) -> Option[Self]:
+    def parse(s: str) -> Option['ClockTime']:
         """从字符串解析时间"""
         arr = parse("{:d}:{:d}:{:d}", s)
         if arr:
@@ -62,7 +61,7 @@ class ClockTime:
         return t.replace(hour=self.hour, minute=self.minute, second=self.second, microsecond=0)
 
 
-ClockTimes: TypeAlias = list[ClockTime]  # 时钟时间列表
+type ClockTimes = list[ClockTime]  # 时钟时间列表
 
 
 def to_clock_time(time: ClockTime | str | Arrow) -> Option[ClockTime]:

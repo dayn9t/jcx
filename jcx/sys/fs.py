@@ -4,7 +4,7 @@ import shutil
 import sys
 from enum import Enum
 from pathlib import Path
-from typing import TypeAlias, Generator, Any, Callable, Optional
+from typing import Generator, Any, Callable, Optional
 
 import arrow
 import sh  # type: ignore
@@ -13,13 +13,13 @@ from loguru import logger
 from parse import parse  # type: ignore
 from rustshed import Err, Result, Ok, Option, Some, Null
 
-Paths: TypeAlias = list[Path]
+type Paths = list[Path]
 """路径数组"""
 
-StrPath: TypeAlias = str | Path
+type StrPath = str | Path
 """路径表示：str或者Path"""
 
-StrPaths: TypeAlias = list[StrPath]
+type StrPaths = list[StrPath]
 """可表示路径类型的数组"""
 
 

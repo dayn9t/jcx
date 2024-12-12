@@ -1,12 +1,12 @@
-from typing import TypeAlias
 
 from pydantic import BaseModel, Field
+from pydantic.dataclasses import dataclass
 
 from jcx.time.clock_time import ClockTime
 from rustshed import Result, Ok, Err
 
-
-class ClockPeriod(BaseModel, frozen=True):
+@dataclass
+class ClockPeriod(frozen=True):
     """时钟时间段"""
     begin: ClockTime = ClockTime()
     """起始时间"""
@@ -20,14 +20,14 @@ class ClockPeriod(BaseModel, frozen=True):
         return self.begin <= clock_time < self.end
 
 
-ClockPeriods: TypeAlias = list[ClockPeriod]
+type ClockPeriods = list[ClockPeriod]
 """时钟时间段集合"""
 
-
-class CalendarTrigger(BaseModel, frozen=True):
+@dataclass
+class CalendarTrigger(frozen=True):
     """日程表触发器"""
 
-    periods: ClockPeriods = Field(default_factory=list)
+    periods: ClockPeriods
     """触发时段集合"""
 
     def start_time(self) -> ClockTime:
@@ -55,4 +55,4 @@ class CalendarTrigger(BaseModel, frozen=True):
         return Err('日程表触发器时段不存在')
 
 
-CalendarTriggers: TypeAlias = list[CalendarTrigger]  # 时钟时间段集合
+type CalendarTriggers = list[CalendarTrigger]  # 时钟时间段集合
