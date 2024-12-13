@@ -1,6 +1,7 @@
-from typing import Any
+from typing import Any, AnyStr
 from typing import TypeVar, Type
 
+import pydantic_core
 from pydantic import BaseModel
 from rustshed import Result, Ok, Err, result_shortcut
 
@@ -22,14 +23,15 @@ def load_txt(file: StrPath, ext: str = '.txt') -> Result[str, Exception]:
     return Ok(txt)
 
 
-def to_json(ob: BMT, pretty: bool = True) -> str:
+def to_json(ob: Any, pretty: bool = True) -> str:
     """对象序列化为JSON"""
     indent = 4 if pretty else None
-    print('to_json:', ob, type(ob))
-    return ob.model_dump_json(indent=indent)
+    byte_str= pydantic_core.to_json(ob, indent=indent)
+    decoded_str = byte_str.decode('utf-8')
+    return decoded_str
 
 
-def from_json(json: str | bytes, ob_type: Type[BMT]) -> Result[BMT, Exception]:
+def from_json(json: AnyStr, ob_type: Type[BMT]) -> Result[BMT, Exception]:
     """从JSON文本构建对象"""
     assert isinstance(json, str | bytes), 'Invalid input type @ try_from_json'
     try:

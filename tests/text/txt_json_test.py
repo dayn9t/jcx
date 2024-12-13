@@ -1,8 +1,29 @@
 import tempfile
+from datetime import datetime
 from pathlib import Path
+
+from arrow import arrow
 
 from jcx.text.txt_json import *
 from tests.data_types import *
+
+
+def test_to_json():
+    assert to_json(1) == '1'
+    assert to_json(1.1) == '1.1'
+    assert to_json('OK') == '"OK"'
+    assert to_json(True) == 'true'
+    assert to_json(None) == 'null'
+    assert to_json([1, 2, 3], pretty=False) == '[1,2,3]'
+    assert to_json({'a': 1, 'b': 2}, pretty=False) == '{"a":1,"b":2}'
+
+    dt = datetime(2023, 1, 1, 0, 0, 0)
+    assert to_json(dt) == '"2023-01-01T00:00:00"'
+
+    # FIXME: 放弃对arrow的支持
+
+    #time = arrow.get('2023-01-01T00:00:00.000Z')
+    #assert to_json(time) == '"2023-01-01T00:00:00+00:00"'
 
 
 def test_json_from_to() -> None:
