@@ -27,7 +27,7 @@ def on_message(mqttc, obj, msg):
     print(strcurtime + ": " + msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     mqttc = mqtt.Client("test")
     mqttc.on_message = on_message
     # mqttc.on_connect = on_connect
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     port = 1883
 
     # 订阅主题名
-    topic = 'howell/ias/#'
+    topic = "howell/ias/#"
 
     mqttc.connect(strBroker, port, 60)
     mqttc.subscribe(topic, 0)

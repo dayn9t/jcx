@@ -3,11 +3,12 @@ from pydantic import BaseModel
 
 class Counter(BaseModel):
     """计数器"""
+
     count: int = 0
     """计数值"""
 
     def __str__(self) -> str:
-        return 'Counter(%d)' % self.count
+        return "Counter(%d)" % self.count
 
     def get(self) -> int:
         """获取计数值"""
@@ -22,13 +23,14 @@ class Counter(BaseModel):
 
 class CountTimer(BaseModel):
     """计数闹钟"""
+
     interval: int
     """间隔"""
     count: int = 0
     """计数值"""
 
     def __str__(self) -> str:
-        return 'CountTimer(%d,%d)' % (self.interval, self.count)
+        return "CountTimer(%d,%d)" % (self.interval, self.count)
 
     def inc(self) -> None:
         """更新计数器"""

@@ -11,10 +11,10 @@ def test_tab1() -> None:
     tab.clear()
     assert len(tab) == 0
 
-    r0 = Student(id=0, name='one', age=10)
-    r1 = Student(id=1, name='one', age=10)
-    r2 = Student(id=2, name='one', age=10)
-    r9 = Student(id=9, name='one', age=10)
+    r0 = Student(id=0, name="one", age=10)
+    r1 = Student(id=1, name="one", age=10)
+    r2 = Student(id=2, name="one", age=10)
+    r9 = Student(id=9, name="one", age=10)
 
     r = tab.add(r0).unwrap()
     assert r.id == 1
@@ -43,7 +43,7 @@ def test_tab1() -> None:
     assert tab.get(9).unwrap() == r9
 
     # 更新
-    r9.name = 'nine'
+    r9.name = "nine"
     assert tab.get(9).unwrap() != r9
     tab.update(r9)
     assert len(tab) == 3

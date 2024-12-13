@@ -11,9 +11,10 @@ from rustshed import Option, Null
 
 class CommandInfo(BaseModel):
     """命令信息"""
-    time: str = ''
+
+    time: str = ""
     """时间"""
-    output: str = ''
+    output: str = ""
     """命令输出"""
 
 
@@ -28,27 +29,32 @@ class CommandDao(ItemDao):
         """更新之前"""
         r.time = now_iso_str()
         status, output = getstatusoutput(self._command)
-        r.output = '%s, %s' % (status, output)
+        r.output = "%s, %s" % (status, output)
         return r
 
 
 def command_model(api: Api, description):
-    return api.model('Command', {
-        'time': fields.String(description='命令执行结束时间，PUT时忽略'),
-        'output': fields.String(description=description),
-    })
+    return api.model(
+        "Command",
+        {
+            "time": fields.String(description="命令执行结束时间，PUT时忽略"),
+            "output": fields.String(description=description),
+        },
+    )
 
 
 class CommandParam(BaseModel):
     """命令参数"""
 
-    time: str = ''
+    time: str = ""
     """时间"""
-    output: str = ''
+    output: str = ""
     """输出?"""
 
 
-def add_command_resource(api, ns, url, db_root: Path, cmd: str, desc: str, name: Option[str] = Null) -> None:
+def add_command_resource(
+    api, ns, url, db_root: Path, cmd: str, desc: str, name: Option[str] = Null
+) -> None:
     """添加命令资源"""
     name1 = name.unwrap_or(Path(url).name)
     dao = CommandDao(db_root, name1, cmd)

@@ -11,11 +11,18 @@ from jcx.sys.fs import StrPath, dirs_in, insert_dir
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='文件系统工具箱')
-    parser.add_argument('path', metavar='PATH', type=str, help='目录')
-    parser.add_argument('-s', '--same-name-count', type=int, help='重名指定次数的文件，同目录，不计扩展名')
-    parser.add_argument('-d', '--include-dir', action='store_true', default=False, help='是否包含目录')
-    parser.add_argument('-v', '--verbose', action='store_true', help='显示详细信息')
+    parser = argparse.ArgumentParser(description="文件系统工具箱")
+    parser.add_argument("path", metavar="PATH", type=str, help="目录")
+    parser.add_argument(
+        "-s",
+        "--same-name-count",
+        type=int,
+        help="重名指定次数的文件，同目录，不计扩展名",
+    )
+    parser.add_argument(
+        "-d", "--include-dir", action="store_true", default=False, help="是否包含目录"
+    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="显示详细信息")
     opt = parser.parse_args()
 
     if os.path.isdir(opt.path):
@@ -44,10 +51,10 @@ def insert_channel(folder: StrPath) -> None:
 
     dirs = dirs_in(folder)
     for i, d in enumerate(dirs):
-        print(f'#{i:04}  {d}')
-        insert_dir(d, '0')
+        print(f"#{i:04}  {d}")
+        insert_dir(d, "0")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
     # insert_channel('/var/ias/snapshot/shtm/n1')

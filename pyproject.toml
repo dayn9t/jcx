@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jcx"
-version = "0.2.6"
+version = "0.2.9"
 description = ""
 authors = ["dayn9t <dayn9t@gmail.com>"]
 readme = "README.md"
@@ -28,6 +28,9 @@ types-paho-mqtt = "*"
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
 
 [build-system]
 requires = ["poetry-core"]

@@ -16,7 +16,7 @@ class Counter(Iterator[int]):
         self.__var = var
 
     def name(self) -> str:
-        """"获取计数器名"""
+        """ "获取计数器名"""
         return self.__var.name()
 
     def get(self) -> int:

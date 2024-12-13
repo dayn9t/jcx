@@ -40,7 +40,7 @@ def random_split(x: int | list, radio: list) -> list:
         return random_split_n(x, radio)
     if isinstance(x, list):
         return random_split_array(x, radio)
-    raise 'Unknown type'
+    raise "Unknown type"
 
 
 def random_split_test() -> None:
@@ -48,7 +48,7 @@ def random_split_test() -> None:
     for s in slices:
         print(s)
 
-    arr = [chr(ord('a') + i) for i in range(10)]
+    arr = [chr(ord("a") + i) for i in range(10)]
     print(arr)
 
     slices = random_split(arr, [8, 1, 1])
@@ -60,7 +60,7 @@ def group(arr: list, group_member: int) -> list[list]:
     """分组"""
 
     total = len(arr)
-    return [arr[i: i + group_member] for i in range(0, total, group_member)]
+    return [arr[i : i + group_member] for i in range(0, total, group_member)]
 
 
 def group_test() -> None:
@@ -69,7 +69,7 @@ def group_test() -> None:
     print(group(a, 5))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # list_index_test()
     # random_split_test()
     group_test()

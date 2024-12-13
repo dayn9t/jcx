@@ -6,7 +6,7 @@ class Array(list[int]):
         self.extend(arr)
 
     def hi(self):
-        print('hi array')
+        print("hi array")
 
 
 def test_array():

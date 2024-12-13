@@ -6,6 +6,7 @@ from jcx.time.clock_time import ClockTime
 
 class ClockPeriod(BaseModel):
     """时钟时间段"""
+
     begin: ClockTime = ClockTime()
     """起始时间"""
     end: ClockTime = ClockTime()
@@ -15,7 +16,7 @@ class ClockPeriod(BaseModel):
         frozen = True
 
     def __str__(self) -> str:
-        return '[%s,%s)' % (self.begin, self.end)
+        return "[%s,%s)" % (self.begin, self.end)
 
     def __contains__(self, clock_time: ClockTime) -> bool:
         return self.begin <= clock_time < self.end
@@ -56,7 +57,7 @@ class CalendarTrigger(BaseModel):
         """判断是否有效"""
         if len(self.periods) > 0:
             return Ok(True)
-        return Err('日程表触发器时段不存在')
+        return Err("日程表触发器时段不存在")
 
 
 type CalendarTriggers = list[CalendarTrigger]  # 时钟时间段集合

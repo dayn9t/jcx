@@ -40,7 +40,12 @@ def first_file_in(folders: StrPaths, file_name: str) -> Option[Path]:
 def files_in(folder: StrPath, ext: str, reverse: bool = False) -> list[Path]:
     """获取文件夹内指定扩展名的文件，有序"""
     p = Path(folder)
-    return sorted(p.glob('*' + ext), reverse=reverse)
+    return sorted(p.glob("*" + ext), reverse=reverse)
+
+
+def get_project_dir(bin_file: StrPath) -> Path:
+    """获取项目目录 - 通过可执行文件路径"""
+    return Path(bin_file).parent.parent.parent.resolve()
 
 
 def file_names_in(folder: StrPath, ext: str, reverse: bool = False) -> list[str]:
@@ -52,7 +57,7 @@ def find(src: StrPath, ext: str, order: Order = Order.ASC) -> list[Path]:
     """查找文件或文件夹内指定扩展名文件"""
     src = Path(src)
     if src.is_dir():
-        files = sorted(src.rglob('*' + ext), reverse=(order == Order.DESC))
+        files = sorted(src.rglob("*" + ext), reverse=(order == Order.DESC))
     elif src.is_file():
         files = [src]
     else:
@@ -60,17 +65,19 @@ def find(src: StrPath, ext: str, order: Order = Order.ASC) -> list[Path]:
     return files
 
 
-def find_first(folder: StrPath, pattern: str, recursive: bool = True) -> Result[Path, str]:
+def find_first(
+    folder: StrPath, pattern: str, recursive: bool = True
+) -> Result[Path, str]:
     """在文件夹内查找满足条件的第一个文件"""
     folder = Path(folder)
     if not folder.is_dir():
-        return Err('指定路径不是目录: ' + str(folder))
+        return Err("指定路径不是目录: " + str(folder))
 
     it = folder.rglob(pattern) if recursive else folder.glob(pattern)
     try:
         f = next(it)
     except StopIteration:
-        return Err('指定文件找不到: ' + pattern)
+        return Err("指定文件找不到: " + pattern)
     return Ok(f)
 
 
@@ -124,7 +131,7 @@ def find_descendants(folder: StrPath, pattern: str, generation: int) -> list[Pat
 
 def rm_files_in(folder: StrPath, ext: str) -> None:
     """删除文件夹内指定扩展名文件"""
-    for f in Path(folder).glob('*' + ext):
+    for f in Path(folder).glob("*" + ext):
         Path(f).unlink()
 
 
@@ -166,20 +173,22 @@ def with_parent(file: StrPath, parent: str) -> Path:
 
 def find_pattern(folder: StrPath, ext: str, pattern: str) -> Generator[Path, Any, None]:
     """查找匹配指定模式的文件"""
-    for f in Path(folder).rglob('*' + ext):
+    for f in Path(folder).rglob("*" + ext):
         if re.search(pattern, str(f)):
             yield f
 
 
 def time_to_file(time: Arrow, ext: str, date_dir: bool = True) -> str:
     """时间转为文件名"""
-    s = '/' if date_dir else '_'
-    fmt = '%Y-%m-%d' + s + '%H-%M-%S.%f'
+    s = "/" if date_dir else "_"
+    fmt = "%Y-%m-%d" + s + "%H-%M-%S.%f"
     name = time.strftime(fmt)[:-3] + ext
     return name
 
 
-def device_time_file(folder: Path, dev_id: int | str, time: Arrow, ext: str, date_dir: bool = True) -> Path:
+def device_time_file(
+    folder: Path, dev_id: int | str, time: Arrow, ext: str, date_dir: bool = True
+) -> Path:
     """根据设备ID,所在目录创建时间为名称的文件"""
     file = time_to_file(time, ext, date_dir)
     p = Path(folder, str(dev_id), file)
@@ -190,28 +199,32 @@ def device_time_file(folder: Path, dev_id: int | str, time: Arrow, ext: str, dat
 def not_file_to_time(path: StrPath) -> Arrow:
     """文件名转时间 2023-04-10_10-09-39.830"""
     p = Path(path)
-    s = '%sT%s+%s' % (p.parent.name, p.stem.replace('-', ':'), '08:00')
+    s = "%sT%s+%s" % (p.parent.name, p.stem.replace("-", ":"), "08:00")
     return arrow.get(s)
 
 
-def link_files(src_files: list[Path], dst_dir: Path, check_fun: Optional[Callable[[Path], bool]] = None) -> None:
+def link_files(
+    src_files: list[Path],
+    dst_dir: Path,
+    check_fun: Optional[Callable[[Path], bool]] = None,
+) -> None:
     """链接文件列表到目标目录"""
     for f in src_files:
         dst = dst_dir / f.name
         dst.parent.mkdir(exist_ok=True, parents=True)
         dst.symlink_to(f.absolute())
         if check_fun and not check_fun(dst):
-            logger.error(f'check fail: {dst}')
+            logger.error(f"check fail: {dst}")
 
 
 def real_path(path: StrPath) -> Path:
-    """"获取真实文件"""
+    """ "获取真实文件"""
     p = Path(path)
     return Path(os.readlink(p)) if p.is_symlink() else p
 
 
 def real_exe_path() -> Path:
-    """"获取真实可执行文件路径"""
+    """ "获取真实可执行文件路径"""
     return real_path(sys.argv[0])
 
 
@@ -239,7 +252,7 @@ def insert_dir(folder: StrPath, dir_name: str) -> None:
     """在目录中插入一级目录, 原目录内的文件移动如新目录"""
     folder = Path(folder)
     assert folder.is_dir()
-    tmp = folder.parent / (folder.name + '_tmp')
+    tmp = folder.parent / (folder.name + "_tmp")
     dst = folder / dir_name
     shutil.move(folder, tmp)
 
@@ -297,13 +310,13 @@ def name_with_parents(path: StrPath, num_parents: int) -> Option[str]:
     start = len(parts) - 1 - num_parents
     if start < 0:
         return Null
-    name = '_'.join(parts[start:])
+    name = "_".join(parts[start:])
     return Some(name)
 
 
 def replace_home(p: StrPath) -> Path:
     """替换~为HOME目录"""
-    p = str(p).replace('~', str(Path.home()))
+    p = str(p).replace("~", str(Path.home()))
     return Path(p)
 
 
@@ -311,12 +324,12 @@ def remove_parent_prefix(p: StrPath) -> Result[Path, str]:
     """从文件名中去掉所在目录名前缀"""
     p = Path(p)
     if p.name.startswith(p.parent.name):
-        p1 = p.parent / p.name[len(p.parent.name) + 1:]
+        p1 = p.parent / p.name[len(p.parent.name) + 1 :]
         return Ok(p1)
-    return Err('No prefix')
+    return Err("No prefix")
 
 
 def du(path: StrPath) -> int:
-    s = sh.du('-s', path)
-    size, _ = parse('{}\t{}', s)
+    s = sh.du("-s", path)
+    size, _ = parse("{}\t{}", s)
     return int(size)

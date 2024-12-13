@@ -4,7 +4,7 @@ from typing import Callable, TypeVar, Optional, Any
 from loguru import logger
 from rustshed import Err
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def mand(value: Optional[T]) -> T:
@@ -16,13 +16,13 @@ def mand(value: Optional[T]) -> T:
 def show_err(e: Any) -> None:
     """显示错误/异常"""
     if isinstance(e, Err):
-        msg = f'{e}'
+        msg = f"{e}"
     # elif isinstance(e, UnwrapError):
     #    msg = 'UnwrapError(%s):' % str(e.result.value)
     elif isinstance(e, AssertionError):
-        msg = f'AssertionError({e.args})'
+        msg = f"AssertionError({e.args})"
     else:
-        msg = f'UnknownError({repr(e)})'
+        msg = f"UnknownError({repr(e)})"
     logger.error(msg)
 
 
@@ -41,10 +41,10 @@ def catch_show_err(fun: Callable, verbose: bool = False) -> None:
 
 
 def show_err_demo() -> None:
-    e = Err('a error')
+    e = Err("a error")
     print(type(e))
     show_err(e)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     show_err_demo()

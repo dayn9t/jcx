@@ -25,8 +25,8 @@ def num_test():
         t.start()
     for t in pool:
         t.join()
-    print('num:', num)
-    print('结论: 一般情况下不需要锁')
+    print("num:", num)
+    print("结论: 一般情况下不需要锁")
 
 
 queue = []
@@ -48,9 +48,9 @@ def queue_pop():
             sleep(0.00001)
         v = queue.pop(0)
         if i % 1000 == 0:
-            print('n:', len(queue))
+            print("n:", len(queue))
         assert v == i
-    print('last n:', n)
+    print("last n:", n)
 
 
 def queue_test():
@@ -62,9 +62,9 @@ def queue_test():
     for t in threads:
         t.join()
 
-    print('结论: 一般情况下不需要锁')
+    print("结论: 一般情况下不需要锁")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # num_test()
     queue_test()

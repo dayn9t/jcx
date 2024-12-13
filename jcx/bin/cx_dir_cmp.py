@@ -15,7 +15,7 @@ class FileInfo(BaseModel):
 
 def file_map(folder: Path) -> Dict[int, FileInfo]:
     m: Dict[int, FileInfo] = {}
-    for f in folder.rglob('*.*'):
+    for f in folder.rglob("*.*"):
         if f.is_file():
             info = FileInfo(path=f, md5=calc_md5(f))
             size = f.stat().st_size
@@ -27,8 +27,8 @@ def file_map(folder: Path) -> Dict[int, FileInfo]:
 
 def calc_md5(file: Path) -> str:
     m = hashlib.md5()  # 创建md5对象
-    print(f'{file}')
-    with open(file, 'rb') as f:
+    print(f"{file}")
+    with open(file, "rb") as f:
         data = f.read(1 << 20)
         m.update(data)  # 更新md5对象
 
@@ -36,10 +36,10 @@ def calc_md5(file: Path) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser('对照源目录, 删除目标目录的重复文件')
-    parser.add_argument('src_dir', type=Path, help='文件来源目录')
-    parser.add_argument('dst_dir', type=Path, help='文件目标目录')
-    parser.add_argument('-v', '--verbose', action='store_true', help='显示详细信息')
+    parser = argparse.ArgumentParser("对照源目录, 删除目标目录的重复文件")
+    parser.add_argument("src_dir", type=Path, help="文件来源目录")
+    parser.add_argument("dst_dir", type=Path, help="文件目标目录")
+    parser.add_argument("-v", "--verbose", action="store_true", help="显示详细信息")
     opt = parser.parse_args()
 
     src_map = file_map(opt.src_dir)
@@ -57,5 +57,5 @@ def main() -> None:
                     print(f"ERROR: {dst_info.path} {e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

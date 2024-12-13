@@ -10,5 +10,5 @@ def test_linear() -> None:
 
 
 def test_md5_int() -> None:
-    a = md5_int('abc', 100)
+    a = md5_int("abc", 100)
     assert a == 0

@@ -1,12 +1,13 @@
 from typing import TypeVar, Generic, Mapping, Iterator, Optional
 from pydantic import BaseModel
 
-KT = TypeVar('KT')
-VT = TypeVar('VT')
+KT = TypeVar("KT")
+VT = TypeVar("VT")
 
 
 class LictItem(BaseModel, Generic[KT, VT]):
     """Lict条目"""
+
     key: KT  # 键
     value: VT  # 值
 
@@ -51,7 +52,7 @@ class Lict(Mapping[KT, VT]):
         i = self.index(key)
         if i > -1:
             return self._items[i].value
-        raise KeyError(f'Key {key} not found.')
+        raise KeyError(f"Key {key} not found.")
 
     def __setitem__(self, key: KT, value: VT) -> None:
         """获取 key 对应的值"""

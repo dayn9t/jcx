@@ -11,11 +11,11 @@ class RedisCounter(Counter):
 
 
 def test_counter() -> None:
-    db_cfg = DbCfg('redis://127.0.0.1/10')
+    db_cfg = DbCfg("redis://127.0.0.1/10")
 
     db = RedisDb(db_cfg.hot_db)
 
-    c1 = RedisCounter(db, 'test_c1')
+    c1 = RedisCounter(db, "test_c1")
     c1.reset()
     assert c1.get() == 0
 
@@ -24,5 +24,5 @@ def test_counter() -> None:
         assert i == n
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_counter()

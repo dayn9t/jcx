@@ -8,7 +8,7 @@ from typing import Optional
 
 
 def re_cap_fmt(src_str: str, pattern: str, dst_fmt: str) -> Optional[str]:
-    """"RE捕获 & 替换"""
+    """ "RE捕获 & 替换"""
     m = re.search(pattern, src_str)
     if m is None:
         return None
@@ -20,13 +20,15 @@ def re_cap_fmt(src_str: str, pattern: str, dst_fmt: str) -> Optional[str]:
 
 def main():
     if len(sys.argv) != 4:
-        print(r"""
+        print(
+            r"""
     Usage:
         rename-re.py dir src_re dst_fmt
     samples:
         rename-re.py . '(\d+)_(\d+).jpg' '(2)_(1).jpg'
         rename-re.py . '(\w+).jpg' '(0)_(1).jpg'
-    """)
+    """
+        )
         sys.exit(1)
 
     root_dir = sys.argv[1]  # 指明被遍历的文件夹
@@ -37,10 +39,12 @@ def main():
         for file_name in file_names:  # 输出文件信息
             new_name = re_cap_fmt(file_name, pattern, repl)
             if new_name is not None:
-                os.rename(os.path.join(parent, file_name), os.path.join(parent, new_name))
+                os.rename(
+                    os.path.join(parent, file_name), os.path.join(parent, new_name)
+                )
                 # shutil.move(os.path.join(parent, file_name), os.path.join(parent, new_name))
                 print("rename '%s' to '%s'" % (file_name, new_name))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

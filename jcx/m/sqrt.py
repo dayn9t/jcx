@@ -19,7 +19,7 @@ def a_num(n) -> None:
     r = math.sqrt(n)
     r1 = sqrt1(n)
     r2 = sqrt2(n)
-    print('%d:\t%0.6f\t%0.10f\t%0.10f' % (n, r, r1 - r, r2 - r))
+    print("%d:\t%0.6f\t%0.10f\t%0.10f" % (n, r, r1 - r, r2 - r))
 
 
 def a_test() -> None:
@@ -33,5 +33,5 @@ def a_test() -> None:
     a_num(909090909090909999)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     a_test()

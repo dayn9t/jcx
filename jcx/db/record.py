@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 class Record(BaseModel):
     """数据库记录"""
+
     id: int
     """记录ID"""
 

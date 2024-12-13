@@ -4,7 +4,7 @@ from jcx.m.number import *
 def test_is_real() -> None:
     assert is_real(1)
     assert is_real(1.0)
-    assert not is_real('1')
+    assert not is_real("1")
     assert not is_real([])
 
 

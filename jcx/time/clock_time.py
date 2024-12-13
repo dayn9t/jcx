@@ -6,7 +6,6 @@ from pydantic.dataclasses import dataclass
 from rustshed import Option, Some, Null
 
 
-
 # @total_ordering
 @dataclass(frozen=True, order=True)
 class ClockTime:
@@ -35,16 +34,12 @@ class ClockTime:
         return ClockTime(hour=hour, minute=minute, second=second)
 
     @staticmethod
-    def from_time(t: Arrow) -> 'ClockTime':
+    def from_time(t: Arrow) -> "ClockTime":
         """datetime转ClockTime"""
-        return ClockTime(
-            hour=t.hour,
-            minute=t.minute,
-            second=t.second
-        )
+        return ClockTime(hour=t.hour, minute=t.minute, second=t.second)
 
     @staticmethod
-    def parse(s: str) -> Option['ClockTime']:
+    def parse(s: str) -> Option["ClockTime"]:
         """从字符串解析时间"""
         arr = parse("{:d}:{:d}:{:d}", s)
         if arr:
@@ -52,13 +47,15 @@ class ClockTime:
         return Null
 
     def __str__(self) -> str:
-        return '%02d:%02d:%02d' % (self.hour, self.minute, self.second)
+        return "%02d:%02d:%02d" % (self.hour, self.minute, self.second)
 
     def to_time(self) -> Arrow:
         """ClockTime转datetime"""
         t = Arrow.now()
         # now.date()
-        return t.replace(hour=self.hour, minute=self.minute, second=self.second, microsecond=0)
+        return t.replace(
+            hour=self.hour, minute=self.minute, second=self.second, microsecond=0
+        )
 
 
 type ClockTimes = list[ClockTime]  # 时钟时间列表

@@ -11,9 +11,9 @@ def test_convert() -> None:
 
 def test_all() -> None:
     tab = {
-        '01:01:01': Some(ClockTime(1, 1, 1)),
-        '00:00:00': Some(ClockTime(0, 0, 0)),
-        'aa:00:00': Null
+        "01:01:01": Some(ClockTime(1, 1, 1)),
+        "00:00:00": Some(ClockTime(0, 0, 0)),
+        "aa:00:00": Null,
     }
 
     for k, v in tab.items():

@@ -32,12 +32,12 @@ def real_2d(n: Real1_2D) -> Real2D:
 
 
 def align_down(a: int, b: int) -> int:
-    """"整数向下对齐到第二个整数倍数"""
+    """ "整数向下对齐到第二个整数倍数"""
     return int(a / b) * b
 
 
 def align_up(a: int, b: int) -> int:
-    """"整数向上对齐到第二个整数倍数"""
+    """ "整数向上对齐到第二个整数倍数"""
     return align_down(a + b - 1, b)
 
 
@@ -61,7 +61,7 @@ def a_fraction() -> None:
 def md5_int(src: str, mod: int) -> int:
     """md5哈希算法返回整数"""
     md5 = hashlib.md5()
-    md5.update(src.encode('utf-8'))
+    md5.update(src.encode("utf-8"))
     n = 1
     s = 0
     for d in md5.digest():

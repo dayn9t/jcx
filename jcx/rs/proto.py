@@ -1,7 +1,7 @@
 from copy import deepcopy
 from typing import Protocol, TypeVar
 
-C = TypeVar('C', bound='Cloned')
+C = TypeVar("C", bound="Cloned")
 
 
 class Cloned(Protocol):

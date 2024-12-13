@@ -5,9 +5,9 @@ from tests.data_types import STUDENT1
 
 
 def test_counter() -> None:
-    db = Path('/tmp/jdb_test')
+    db = Path("/tmp/jdb_test")
 
-    c1 = JdbCounter(db, 'test_c1')
+    c1 = JdbCounter(db, "test_c1")
     c1.reset()
     assert c1.get() == 0
 
@@ -19,5 +19,5 @@ def test_counter() -> None:
 def test_demo_record() -> None:
     r = STUDENT1.clone()
     assert r == STUDENT1
-    r.name = ''
+    r.name = ""
     assert r != STUDENT1

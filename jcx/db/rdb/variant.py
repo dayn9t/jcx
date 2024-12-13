@@ -20,15 +20,15 @@ class RedisVariant:
         self._default = default
 
     def name(self):
-        """"获取变量名"""
+        """ "获取变量名"""
         return self._name
 
     def value_type(self):
-        """"获取变量类型"""
+        """ "获取变量类型"""
         return self._type
 
     def exists(self):
-        """"判断是否存在"""
+        """ "判断是否存在"""
         return self._db.exists(self._name)
 
     def get(self):
@@ -45,21 +45,21 @@ class RedisVariant:
 
 
 def a_test():
-    db_cfg = DbCfg('redis://127.0.0.1/10')
+    db_cfg = DbCfg("redis://127.0.0.1/10")
 
     db = RedisDb(db_cfg.hot_db)
 
-    name = RedisVariant(str, db, 'name')
-    name.set('jack')
+    name = RedisVariant(str, db, "name")
+    name.set("jack")
     v = name.get()
     print(v, type(v))
 
-    age = RedisVariant(int, db, 'age')
+    age = RedisVariant(int, db, "age")
     age.set(18)
     v = age.get()
     print(v, type(v))
 
-    cfg = RedisVariant(DbCfg, db, 'cfg')
+    cfg = RedisVariant(DbCfg, db, "cfg")
     cfg.set(db_cfg)
     v = cfg.get()
     print(v, type(v))
@@ -68,10 +68,10 @@ def a_test():
     cfg.remove()
     print(cfg.exists())
 
-    cfg = RedisVariant(DbCfg, db, 'cfg1', 0)
+    cfg = RedisVariant(DbCfg, db, "cfg1", 0)
     v = cfg.get()
     print(v, type(v))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     a_test()

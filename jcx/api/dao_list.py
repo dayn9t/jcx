@@ -88,8 +88,8 @@ class ItemListDao(ABC):
 
 def make_record(api, data: dict, record_type: Type[R], id: int = 0) -> tuple[bool, R]:
     """从数据构建记录"""
-    if 'id' not in data:
-        data['id'] = id
+    if "id" not in data:
+        data["id"] = id
     try:
         r = structure(data, record_type)
     except TypeError as e:
@@ -106,14 +106,14 @@ def add_list_resource(ns, url, dao: ItemListDao, model):
     class ItemList(Resource):
         """展示所有条目列表，允许创建新条目"""
 
-        @ns.doc('list_items')
+        @ns.doc("list_items")
         @ns.marshal_list_with(model)
         def get(self):
             """列出所有条目"""
             rs = dao.records()
             return list(map(unstructure, rs))
 
-        @ns.doc('create_item')
+        @ns.doc("create_item")
         @ns.expect(model)
         @ns.marshal_with(model, code=201)
         def post(self):
@@ -126,25 +126,25 @@ def add_list_resource(ns, url, dao: ItemListDao, model):
                 return self.api.abort(400, "创建条目失败")
             return r, 201
 
-    @ns.route(url + '/<int:id>')
-    @ns.response(404, '指定条目未找到')
-    @ns.param('id', '条目ID')
+    @ns.route(url + "/<int:id>")
+    @ns.response(404, "指定条目未找到")
+    @ns.param("id", "条目ID")
     class Item(Resource):
         """展示一个单独的条目，并允许修改和删除"""
 
-        @ns.doc('get_item')
+        @ns.doc("get_item")
         @ns.marshal_with(model)
         def get(self, id):
             """获取指定条目"""
             r = unstructure(dao.get(id))
             return r or self.api.abort(404, "条目 %d 不存在" % id)
 
-        @ns.doc('delete_item')
-        @ns.response(204, '条目已经删除')
+        @ns.doc("delete_item")
+        @ns.response(204, "条目已经删除")
         def delete(self, id):
             """删除指定ID的条目"""
             dao.remove(id)
-            return '', 204
+            return "", 204
 
         @ns.expect(model)
         @ns.marshal_with(model)

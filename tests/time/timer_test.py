@@ -9,7 +9,7 @@ def test_timer() -> None:
     d2 = timedelta(days=2)
 
     timer = Timer(day1)
-    print('t:', timer)
+    print("t:", timer)
 
     assert timer.next(d2) == day3
     assert not timer.check(day2, d2)

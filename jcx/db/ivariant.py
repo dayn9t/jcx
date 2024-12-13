@@ -2,7 +2,8 @@ from typing import Type, Protocol, TypeVar, Generic
 
 from rustshed import Option
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 class IVariant(Protocol[T]):
     """数据库变量接口"""

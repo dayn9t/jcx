@@ -66,7 +66,7 @@ def add_item_resource(ns, url, dao: ItemDao, model):
     class Item(Resource):
         """展示所有条目列表，允许创建新条目"""
 
-        @ns.doc('get_item')
+        @ns.doc("get_item")
         @ns.marshal_with(model)
         def get(self):
             """获取条目"""
