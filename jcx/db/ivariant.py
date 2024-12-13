@@ -1,30 +1,29 @@
-from typing import Type, Protocol
+from typing import Type, Protocol, TypeVar, Generic
 
 from rustshed import Option
 
-from jcx.text.txt_json import BMT
+T = TypeVar('T')
 
-
-class IVariant(Protocol):
+class IVariant(Protocol[T]):
     """数据库变量接口"""
 
     def name(self) -> str:
-        """"获取变量名"""
+        """获取变量名"""
         pass
 
-    def value_type(self) -> Type[BMT]:
-        """"获取变量类型"""
+    def value_type(self) -> Type[T]:
+        """获取变量类型"""
         pass
 
     def exists(self) -> bool:
-        """"判断是否存在"""
+        """判断是否存在"""
         pass
 
-    def get(self) -> Option[BMT]:
+    def get(self) -> Option[T]:
         """获取变量"""
         pass
 
-    def set(self, value: BMT) -> None:
+    def set(self, value: T) -> None:
         """设置变量"""
         pass
 

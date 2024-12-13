@@ -12,7 +12,7 @@ class Counter(Iterator[int]):
         self.__var.set(v)
         return v
 
-    def __init__(self, var: IVariant):
+    def __init__(self, var: IVariant[int]):
         self.__var = var
 
     def name(self) -> str:

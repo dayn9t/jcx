@@ -25,6 +25,7 @@ def load_txt(file: StrPath, ext: str = '.txt') -> Result[str, Exception]:
 def to_json(ob: BMT, pretty: bool = True) -> str:
     """对象序列化为JSON"""
     indent = 4 if pretty else None
+    print('to_json:', ob, type(ob))
     return ob.model_dump_json(indent=indent)
 
 

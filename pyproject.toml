@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "jcx"
-version = "0.2.4"
+version = "0.2.5"
 description = ""
 authors = ["dayn9t <dayn9t@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "~3.12"
 pydantic = "*"
 rustshed = "*"
 
@@ -22,11 +22,12 @@ interval = "*"
 
 numpy = "*"
 
-pytest = "*"
 mypy = "*"
 pre-commit = "*"
 types-paho-mqtt = "*"
 
+[tool.poetry.group.test.dependencies]
+pytest = "*"
 
 [build-system]
 requires = ["poetry-core"]
