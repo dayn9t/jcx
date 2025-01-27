@@ -45,7 +45,7 @@ def files_in(folder: StrPath, ext: str, reverse: bool = False) -> list[Path]:
 
 def get_project_dir(bin_file: StrPath) -> Path:
     """获取项目目录 - 通过可执行文件路径"""
-    return Path(bin_file).parent.parent.parent.resolve()
+    return Path(bin_file).parent.parent.resolve()
 
 
 def file_names_in(folder: StrPath, ext: str, reverse: bool = False) -> list[str]:
