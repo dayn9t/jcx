@@ -108,7 +108,7 @@ def test_last() -> None:
 
 
 def test_du() -> None:
-    s = du(Path.home() / "bin")
+    s = du(Path.home() / ".local/bin")
     assert s > 1000000
 
 
