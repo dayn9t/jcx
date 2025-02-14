@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jcx"
-version = "0.3.2"
+version = "0.3.5"
 description = ""
 authors = ["dayn9t <dayn9t@gmail.com>"]
 readme = "README.md"
@@ -25,6 +25,7 @@ numpy = "*"
 mypy = "*"
 pre-commit = "*"
 types-paho-mqtt = "*"
+typer = "*"
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"

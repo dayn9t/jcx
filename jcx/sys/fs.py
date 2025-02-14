@@ -135,12 +135,25 @@ def rm_files_in(folder: StrPath, ext: str) -> None:
         Path(f).unlink()
 
 
-def remake_dir(parent: StrPath, name: str) -> Path:
+def remake_dir(path: StrPath) -> Path:
     """删除并重建目录"""
-    path = Path(parent, name)
     if path.exists():
         shutil.rmtree(path)
-    path.mkdir(parents=True)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def remake_subdir(parent: StrPath, name: str) -> Path:
+    """删除并重建子目录"""
+    return make_subdir(parent, name, True)
+
+
+def make_subdir(parent: StrPath, name: str, remake: bool = False) -> Path:
+    """建立子目录"""
+    path = Path(parent, name)
+    if path.exists() and remake:
+        shutil.rmtree(path)
+    path.mkdir(parents=True, exist_ok=True)
     return path
 
 
