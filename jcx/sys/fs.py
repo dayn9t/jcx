@@ -48,6 +48,7 @@ def get_project_dir(bin_file: StrPath) -> Path:
     # /project/src/bin/exe_file.py
     return Path(bin_file).parent.parent.parent.resolve()
 
+
 def get_asset_dir(bin_file: StrPath) -> Path:
     """获取项目资产目录 - 通过可执行文件路径"""
     return get_project_dir(bin_file) / "asset"
