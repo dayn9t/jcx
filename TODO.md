@@ -19,3 +19,4 @@
   - pycln — 用于删除未使用的导入
   - trailing-whitespace — 用于删除额外的空格
   - unitest — 用于运行单元测试和检测破坏性更改
+  - tox — 用于测试不同版本的Python

@@ -1,40 +1,39 @@
-[project]
+[tool.poetry]
 name = "jcx"
-version = "0.3.9"
-description = "Add your description here"
+version = "0.3.8"
+description = ""
+authors = ["dayn9t <dayn9t@gmail.com>"]
 readme = "README.md"
-authors = [
-    { name = "dayn9t", email = "dayn9t@gmail.com" }
-]
-requires-python = ">=3.13"
-dependencies = [
-    "pydantic",
-    "rustshed",
 
-    "arrow",
-    "loguru",
+[tool.poetry.dependencies]
+python = "~3.12"
+pydantic = "*"
+rustshed = "*"
 
-    "paho-mqtt",
-    "parse",
-    "redis",
-    "requests",
-    "sh",
-    "interval",
+arrow = "*"
+loguru = "*"
 
-    "numpy",
+paho-mqtt = "*"
+parse = "*"
+redis = "*"
+requests = "*"
+sh = "*"
+interval = "*"
 
-    "mypy",
-    "pre-commit",
-    "types-paho-mqtt",
-    "typer",
-]
+numpy = "*"
 
-[dependency-groups]
-dev = [
-    "pytest",
-]
+mypy = "*"
+pre-commit = "*"
+types-paho-mqtt = "*"
+typer = "*"
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+pyinstaller = "*"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

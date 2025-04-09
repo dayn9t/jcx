@@ -143,11 +143,10 @@ def rm_files_in(folder: StrPath, ext: str) -> None:
 
 def remake_dir(path: StrPath) -> Path:
     """删除并重建目录"""
-    p = Path(path)
-    if p.exists():
-        shutil.rmtree(p)
-    p.mkdir(parents=True, exist_ok=True)
-    return p
+    if path.exists():
+        shutil.rmtree(path)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def remake_subdir(parent: StrPath, name: str) -> Path:
