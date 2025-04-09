@@ -1,5 +1,13 @@
+# Python-generated files
 __pycache__/
-.idea/
+*.py[oc]
 build/
 dist/
-poetry.lock
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# IDE confguration
+.idea/
