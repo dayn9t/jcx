@@ -1,38 +1,43 @@
-[tool.poetry]
+[project]
 name = "jcx"
-version = "0.3.8"
+version = "0.4.0"
 description = ""
-authors = ["dayn9t <dayn9t@gmail.com>"]
 readme = "README.md"
+authors = [
+    { name = "dayn9t", email = "dayn9t@gmail.com" }
+]
+requires-python = "~=3.12"
 
-[tool.poetry.dependencies]
-python = "~3.12"
-pydantic = "*"
-rustshed = "*"
+dependencies = [
+    "rustshed",
+    "pydantic",
+    "typer",
+    "loguru",
+    "arrow",
+    "paho-mqtt",
+    "parse",
+    "redis",
+    "requests",
+    "sh",
+    "interval",
+    "numpy",
+    "pre-commit",
+    "types-paho-mqtt",
+]
 
-arrow = "*"
-loguru = "*"
-
-paho-mqtt = "*"
-parse = "*"
-redis = "*"
-requests = "*"
-sh = "*"
-interval = "*"
-
-numpy = "*"
-
-mypy = "*"
-pre-commit = "*"
-types-paho-mqtt = "*"
-typer = "*"
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
 
+
 [tool.poetry.group.dev.dependencies]
+mypy = "*"
 black = "*"
 pyinstaller = "*"
+
+
+[tool.ruff]
+ignore = ["F403", "F405"]
 
 [build-system]
 requires = ["poetry-core"]

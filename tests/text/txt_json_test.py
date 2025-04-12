@@ -2,13 +2,12 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-from arrow import arrow
 
 from jcx.text.txt_json import *
 from tests.data_types import *
 
 
-def test_to_json():
+def test_to_json() -> None:
     assert to_json(1) == "1"
     assert to_json(1.1) == "1.1"
     assert to_json("OK") == '"OK"'
