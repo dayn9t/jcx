@@ -31,13 +31,15 @@ pytest = "*"
 
 
 [tool.poetry.group.dev.dependencies]
-mypy = "*"
 black = "*"
 pyinstaller = "*"
+mypy = "*"
+pre-commit = "*"
 
 
 [tool.ruff]
 ignore = ["F403", "F405"]
+
 
 [build-system]
 requires = ["poetry-core"]
