@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from rustshed import Result, Ok, Err
+from rustshed import Err, Ok, Result
 
 
 def detail_nda(arr: np.ndarray, type_name: str = "ndarray") -> str:
@@ -21,21 +21,19 @@ def detail(arr: np.ndarray | torch.Tensor) -> Result[str, str]:
     """显示类型细节"""
     if isinstance(arr, np.ndarray):
         return Ok(detail_nda(arr))
-    elif isinstance(arr, torch.Tensor):
+    if isinstance(arr, torch.Tensor):
         return Ok(detail_tensor(arr))
-    else:
-        return Err(f"Unknown type: {type(arr)}")
+    return Err(f"Unknown type: {type(arr)}")
 
 
 def trace_arr(title: str, arr: np.ndarray | torch.Tensor) -> None:
     """显示类型细节"""
-
     s = detail(arr).unwrap()
     print(f"[{title}]: {s}")
 
 
 def test_trace() -> None:
-    print("")
+    print()
     arr1 = np.zeros((4, 4))
     trace_arr("arr1", arr1)
 

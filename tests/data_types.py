@@ -1,4 +1,4 @@
-from typing import Final, List
+from typing import Final
 
 from jcx.db.record import Record
 
@@ -14,7 +14,7 @@ class Team(Record):
     """小组"""
 
     name: str
-    students: List[Student]
+    students: list[Student]
 
 
 STUDENT1: Final[Student] = Student(id=1, name="Jack", age=11)

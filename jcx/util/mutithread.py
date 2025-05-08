@@ -1,4 +1,4 @@
-from threading import Thread, Lock
+from threading import Lock, Thread
 from time import sleep
 
 # 参考: https://docs.python.org/zh-cn/3/library/threading.html?highlight=threading

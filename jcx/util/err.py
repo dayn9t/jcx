@@ -1,5 +1,6 @@
 import traceback
-from typing import Callable, TypeVar, Optional, Any
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 from loguru import logger
 from rustshed import Err
@@ -7,7 +8,7 @@ from rustshed import Err
 T = TypeVar("T")
 
 
-def mand(value: Optional[T]) -> T:
+def mand(value: T | None) -> T:
     """强制可选类型非空"""
     assert value is not None
     return value
@@ -22,13 +23,12 @@ def show_err(e: Any) -> None:
     elif isinstance(e, AssertionError):
         msg = f"AssertionError({e.args})"
     else:
-        msg = f"UnknownError({repr(e)})"
+        msg = f"UnknownError({e!r})"
     logger.error(msg)
 
 
 def catch_show_err(fun: Callable, verbose: bool = False) -> None:
     """捕获并显示异常"""
-
     # 捕获SystemExit/KeyboardInterrupt/GeneratorExit外异常
     # 想捕获这三个异常, 需BaseException
     try:

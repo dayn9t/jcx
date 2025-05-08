@@ -1,6 +1,6 @@
-from typing import TypeVar, Type
+from typing import TypeVar
 
-from jcx.db.rdb.db import RedisDb, DbCfg
+from jcx.db.rdb.db import DbCfg, RedisDb
 
 T = TypeVar("T")
 
@@ -13,7 +13,7 @@ class RedisVariant:
         """打开数据变量"""
         return RedisVariant(value_type, db, name, default)
 
-    def __init__(self, value_type: Type[T], db: RedisDb, name: str, default=None):
+    def __init__(self, value_type: type[T], db: RedisDb, name: str, default=None):
         self._type = value_type
         self._db = db
         self._name = str(name)

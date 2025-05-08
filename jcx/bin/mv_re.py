@@ -4,10 +4,9 @@ import re
 import shutil
 import sys
 from pathlib import Path
-from typing import Optional
 
 
-def re_cap_fmt(src_str: str, pattern: str, dst_fmt: str) -> Optional[str]:
+def re_cap_fmt(src_str: str, pattern: str, dst_fmt: str) -> str | None:
     """ "RE捕获 & 替换"""
     m = re.search(pattern, src_str)
     if m is None:
@@ -28,7 +27,7 @@ def main():
         mv-re.py ./2016-05-06/57 './([^/]+)/(\d+)' '../(2)/(1)'
         find -type d -exec mv-re.py {} "\./([^/]+)/(\d+)" "../(2)/(1)" \;
         find -name '*.mp4' -exec mv-re.py {} "[^_]+_(.+)" "(1)" \;
-    """
+    """,
         )
 
         sys.exit(1)

@@ -3,8 +3,9 @@ from typing import Any
 from urllib.parse import urlparse
 
 import paho.mqtt.client as mqtt  # type: ignore
-from jcx.net.mqtt.cfg import MqttCfg
 from loguru import logger
+
+from jcx.net.mqtt.cfg import MqttCfg
 
 
 class Subscriber:

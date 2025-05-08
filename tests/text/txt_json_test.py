@@ -2,7 +2,6 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-
 from jcx.text.txt_json import *
 from tests.data_types import *
 

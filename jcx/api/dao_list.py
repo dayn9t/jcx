@@ -1,8 +1,9 @@
 from abc import ABC
-from typing import TypeVar, Type, Optional
+from typing import TypeVar
 
-from cattr import unstructure, structure
+from cattr import structure, unstructure
 from flask_restx import Resource  # type: ignore
+
 from jcx.db.jdb.table import Table
 from jcx.db.record import PRecord
 from jcx.sys.fs import StrPath
@@ -13,10 +14,10 @@ R = TypeVar("R", bound=PRecord)
 class ItemListDao(ABC):
     """条目集合数据访问对象"""
 
-    def __init__(self, record_type: Type[R], folder: StrPath):
+    def __init__(self, record_type: type[R], folder: StrPath):
         self._tab = Table.open(record_type, folder)
 
-    def record_type(self) -> Type[R]:
+    def record_type(self) -> type[R]:
         """获取记录类型"""
         return self._tab.record_type()
 
@@ -28,12 +29,12 @@ class ItemListDao(ABC):
         """获取所有记录"""
         return self._tab.records()
 
-    def get(self, rid: int) -> Optional[R]:
+    def get(self, rid: int) -> R | None:
         """获取指定记录"""
         r = self._tab.get(rid)
         return r
 
-    def add(self, record: R) -> Optional[R]:
+    def add(self, record: R) -> R | None:
         """添加新记录"""
         r = self.before_add(record)
         if r is None:
@@ -43,7 +44,7 @@ class ItemListDao(ABC):
         self.after_add(record)
         return record
 
-    def update(self, record: R) -> Optional[R]:
+    def update(self, record: R) -> R | None:
         """更新记录"""
         r = self.before_update(record)
         if not r:
@@ -60,33 +61,30 @@ class ItemListDao(ABC):
         self._tab.remove(rid)
         self.after_remove(rid)
 
-    def before_add(self, record: R) -> Optional[R]:
+    def before_add(self, record: R) -> R | None:
         """添加新记录之前的检查"""
         return record
 
-    def before_update(self, record: R) -> Optional[R]:
+    def before_update(self, record: R) -> R | None:
         """更新记录之前的检查"""
         return record
 
-    def before_remove(self, rid: int) -> Optional[int]:
+    def before_remove(self, rid: int) -> int | None:
         """删除记录之前的检查"""
         assert self
         return rid
 
     def after_add(self, record: R):
         """添加新记录之后的检查"""
-        pass
 
     def after_update(self, record: R):
         """更新记录之后的检查"""
-        pass
 
     def after_remove(self, rid: int):
         """删除记录之后的检查"""
-        pass
 
 
-def make_record(api, data: dict, record_type: Type[R], id: int = 0) -> tuple[bool, R]:
+def make_record(api, data: dict, record_type: type[R], id: int = 0) -> tuple[bool, R]:
     """从数据构建记录"""
     if "id" not in data:
         data["id"] = id
@@ -99,7 +97,6 @@ def make_record(api, data: dict, record_type: Type[R], id: int = 0) -> tuple[boo
 
 def add_list_resource(ns, url, dao: ItemListDao, model):
     """添加集合资源"""
-
     # TODO: model 通过 record_type 动态生成
 
     @ns.route(url)

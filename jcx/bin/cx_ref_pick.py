@@ -11,10 +11,10 @@ def main() -> None:
     parser.add_argument("candi_dir", type=Path, help="候选文件目录")
     parser.add_argument("dst_dir", type=Path, help="候选文件目录")
     parser.add_argument(
-        "-r", "--ref_ext", type=str, default="json", help="参考文件扩展名"
+        "-r", "--ref_ext", type=str, default="json", help="参考文件扩展名",
     )
     parser.add_argument(
-        "-o", "--candi_ext", type=str, default="jpg", help="候选文件扩展名"
+        "-o", "--candi_ext", type=str, default="jpg", help="候选文件扩展名",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="显示详细信息")
     opt = parser.parse_args()

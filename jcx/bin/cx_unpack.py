@@ -2,8 +2,9 @@ import argparse
 import subprocess
 from pathlib import Path
 
-from jcx.sys.fs import du
 from loguru import logger
+
+from jcx.sys.fs import du
 
 cmd_map = {".zip": ["unzip-OGBK"]}
 

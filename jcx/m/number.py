@@ -21,7 +21,6 @@ def is_real(n: Any) -> bool:
 
 def real_2d(n: Real1_2D) -> Real2D:
     """Real1_2D转为2D实数"""
-
     if isinstance(n, tuple):
         assert len(n) == 2
         x, y = n

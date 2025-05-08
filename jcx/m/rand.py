@@ -1,8 +1,8 @@
 from random import shuffle
-from typing import Optional, Any
+from typing import Any
 
 
-def random_choices(arr: list[Any], n: int, excluded: Optional[Any] = None) -> list[Any]:
+def random_choices(arr: list[Any], n: int, excluded: Any | None = None) -> list[Any]:
     """数组中选出指定数量的其他元素"""
     arr1 = list(arr)
     if excluded is not None:

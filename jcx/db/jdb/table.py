@@ -1,12 +1,13 @@
 from pathlib import Path
-from typing import TypeVar, Type
+from typing import TypeVar
+
+from rustshed import Null, Option, Some
 
 from jcx.db.jdb.util import load_dict
 from jcx.db.record import Record, RecordFilter
 from jcx.rs.rs import rs_option_cloned
-from jcx.sys.fs import rm_files_in, StrPath
+from jcx.sys.fs import StrPath, rm_files_in
 from jcx.text.txt_json import save_json
-from rustshed import Option, Null, Some
 
 R = TypeVar("R", bound=Record)
 """记录类型"""
@@ -16,13 +17,13 @@ class Table:
     """数据库表"""
 
     @staticmethod
-    def open(record_type: Type[R], folder: StrPath) -> "Table":
+    def open(record_type: type[R], folder: StrPath) -> "Table":
         """打开数据库表"""
         tab = Table(record_type)
         tab.load(folder)
         return tab
 
-    def __init__(self, record_type: Type[R]):
+    def __init__(self, record_type: type[R]):
         self._type = record_type
         self._folder: Option[Path] = Null
         self._records: dict[int, R] = {}
@@ -36,7 +37,7 @@ class Table:
         self._records = load_dict(self._type, folder)
         return len(self._records)
 
-    def record_type(self) -> Type[R]:
+    def record_type(self) -> type[R]:
         """获取记录类型"""
         return self._type
 

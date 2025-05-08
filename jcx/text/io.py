@@ -1,12 +1,12 @@
-from typing import Optional
 
-from jcx.sys.fs import or_ext, StrPath
-from rustshed import Result, Ok, Option, Some, Err
+from rustshed import Err, Ok, Result
+
+from jcx.sys.fs import StrPath, or_ext
 
 
 def load_txt(file: StrPath) -> Result[str, str]:
     """加载文本"""
-    with open(file, "r") as f:
+    with open(file) as f:
         s = f.read()
         return Ok(s)
     # return Err('load_txt fail.')
@@ -25,7 +25,7 @@ def save_txt(txt: str, file: StrPath, ext: str = ".txt") -> Result[bool, Excepti
 
 
 def save_lines(
-    lines: list[str], file: StrPath, ext: str = "", postfix: str = ""
+    lines: list[str], file: StrPath, ext: str = "", postfix: str = "",
 ) -> None:
     """多行文本保存到文件, 文件自动加扩展名, 自动建立目录, 行尾自动加回车"""
     file = or_ext(file, ext)
@@ -37,7 +37,7 @@ def save_lines(
 
 
 def replace_in_file(
-    src_file: StrPath, input_: str, output: str, dst_file: Optional[StrPath] = None
+    src_file: StrPath, input_: str, output: str, dst_file: StrPath | None = None,
 ) -> None:
     """文本文件替换"""
     dst_file = dst_file or src_file

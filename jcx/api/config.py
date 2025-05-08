@@ -21,6 +21,6 @@ class ApiCfg(BaseModel):
 
 def test_cfg() -> None:
     _cfg = ApiCfg(
-        name="配置", root="/howell/ias", endpoint=Endpoint(host="localhost", port=5000)
+        name="配置", root="/howell/ias", endpoint=Endpoint(host="localhost", port=5000),
     )
     assert _cfg.name == "配置"

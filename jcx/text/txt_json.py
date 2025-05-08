@@ -1,11 +1,10 @@
-from typing import Any, AnyStr, Optional
-from typing import TypeVar, Type
+from typing import Any, AnyStr, TypeVar
 
 import pydantic_core
 from pydantic import BaseModel
-from rustshed import Result, Ok, Err, result_shortcut
+from rustshed import Err, Ok, Result, result_shortcut
 
-from jcx.sys.fs import or_ext, StrPath
+from jcx.sys.fs import StrPath, or_ext
 from jcx.text.io import save_txt
 
 BMT = TypeVar("BMT", bound=BaseModel)
@@ -16,7 +15,7 @@ def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
     """从文件加载文本"""
     file = or_ext(file, ext)
     try:
-        with open(file, "r", encoding="utf-8") as f:
+        with open(file, encoding="utf-8") as f:
             txt = f.read()
     except Exception as e:
         return Err(e)
@@ -31,7 +30,7 @@ def to_json(ob: Any, pretty: bool = True) -> str:
     return decoded_str
 
 
-def from_json(json: AnyStr, ob_type: Type[BMT]) -> Result[BMT, Exception]:
+def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
     """从JSON文本构建对象"""
     assert isinstance(json, str | bytes), "Invalid input type @ try_from_json"
     try:
@@ -49,7 +48,7 @@ def save_json(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exce
 
 
 @result_shortcut
-def load_json(file: StrPath, obj_type: Type[BMT]) -> Result[BMT, Exception]:
+def load_json(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
     """从Json文件加载对象"""
     file = or_ext(file, ".json")
     s = load_txt(file).Q
@@ -59,7 +58,7 @@ def load_json(file: StrPath, obj_type: Type[BMT]) -> Result[BMT, Exception]:
 
 @result_shortcut
 def load_json_or(
-    file: Optional[StrPath], obj_type: Type[BMT], default_value: BMT
+    file: StrPath | None, obj_type: type[BMT], default_value: BMT,
 ) -> Result[BMT, Exception]:
     """从Json文件加载对象, 文件路径未提供则返回默认值"""
     return load_json(file, obj_type) if file else Ok(default_value)

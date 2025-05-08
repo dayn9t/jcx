@@ -1,5 +1,5 @@
-import paho.mqtt.publish as publish
 import requests
+from paho.mqtt import publish
 
 
 def transmitMQTT(strMsg):

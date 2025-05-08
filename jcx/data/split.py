@@ -1,10 +1,10 @@
 import numpy as np
+
 from jcx.util.algo import lookup
 
 
 def random_split_n(n: int, radios: list) -> list[list]:
     """按比例随机分割整数集合[0,n-1]"""
-
     radios_np = np.array(radios)
     s = 0
     for i in range(len(radios_np)):
@@ -28,14 +28,12 @@ def random_split_n(n: int, radios: list) -> list[list]:
 
 def random_split_array(arr: list, radio_arr: list) -> list:
     """按比例随机分割数组"""
-
     slices = random_split_n(len(arr), radio_arr)
     return [lookup(s, arr) for s in slices]
 
 
 def random_split(x: int | list, radio: list) -> list:
     """按比例随机分割整数集合或数组"""
-
     if isinstance(x, int):
         return random_split_n(x, radio)
     if isinstance(x, list):
@@ -58,7 +56,6 @@ def random_split_test() -> None:
 
 def group(arr: list, group_member: int) -> list[list]:
     """分组"""
-
     total = len(arr)
     return [arr[i : i + group_member] for i in range(0, total, group_member)]
 

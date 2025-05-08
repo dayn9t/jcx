@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from rustshed import Result, Ok, Err
+from rustshed import Err, Ok, Result
 
 from jcx.time.clock_time import ClockTime
 

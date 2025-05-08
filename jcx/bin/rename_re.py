@@ -4,10 +4,9 @@ import os
 import os.path
 import re
 import sys
-from typing import Optional
 
 
-def re_cap_fmt(src_str: str, pattern: str, dst_fmt: str) -> Optional[str]:
+def re_cap_fmt(src_str: str, pattern: str, dst_fmt: str) -> str | None:
     """ "RE捕获 & 替换"""
     m = re.search(pattern, src_str)
     if m is None:
@@ -27,7 +26,7 @@ def main():
     samples:
         rename-re.py . '(\d+)_(\d+).jpg' '(2)_(1).jpg'
         rename-re.py . '(\w+).jpg' '(0)_(1).jpg'
-    """
+    """,
         )
         sys.exit(1)
 
@@ -40,7 +39,7 @@ def main():
             new_name = re_cap_fmt(file_name, pattern, repl)
             if new_name is not None:
                 os.rename(
-                    os.path.join(parent, file_name), os.path.join(parent, new_name)
+                    os.path.join(parent, file_name), os.path.join(parent, new_name),
                 )
                 # shutil.move(os.path.join(parent, file_name), os.path.join(parent, new_name))
                 print("rename '%s' to '%s'" % (file_name, new_name))

@@ -1,11 +1,11 @@
 import re
-from typing import TypeVar, Type, Any
+from typing import Any
 from urllib.parse import urlparse
 
 import redis
 from pydantic import BaseModel
 
-from jcx.text.txt_json import to_json, from_json, BMT
+from jcx.text.txt_json import BMT, from_json, to_json
 
 
 class DbCfg(BaseModel):
@@ -33,7 +33,7 @@ class RedisDb:
         # print(db_num)
         self._name = str(db_num)
         self._db = redis.Redis(
-            host=uri.hostname, port=port, db=db_num, decode_responses=True
+            host=uri.hostname, port=port, db=db_num, decode_responses=True,
         )
 
     def name(self) -> str:
@@ -44,7 +44,7 @@ class RedisDb:
         """保存变量"""
         self._db.set(name, to_json(value))
 
-    def get(self, name: str, var_type: Type[BMT], default_value: BMT) -> BMT:
+    def get(self, name: str, var_type: type[BMT], default_value: BMT) -> BMT:
         """获取变量"""
         s = self._db.get(name)
         if not s:

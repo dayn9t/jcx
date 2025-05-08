@@ -1,5 +1,5 @@
 from jcx.db.counter import Counter
-from jcx.db.rdb.db import RedisDb, DbCfg
+from jcx.db.rdb.db import DbCfg, RedisDb
 from jcx.db.rdb.variant import RedisVariant
 
 

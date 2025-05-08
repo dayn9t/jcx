@@ -3,7 +3,7 @@ from typing import Self
 from arrow import Arrow
 from parse import parse  # type: ignore
 from pydantic.dataclasses import dataclass
-from rustshed import Option, Some, Null
+from rustshed import Null, Option, Some
 
 
 # @total_ordering
@@ -54,7 +54,7 @@ class ClockTime:
         t = Arrow.now()
         # now.date()
         return t.replace(
-            hour=self.hour, minute=self.minute, second=self.second, microsecond=0
+            hour=self.hour, minute=self.minute, second=self.second, microsecond=0,
         )
 
 
@@ -67,7 +67,7 @@ def to_clock_time(time: ClockTime | str | Arrow) -> Option[ClockTime]:
         return Some(time)
     if isinstance(time, str):
         return ClockTime.parse(time)
-    elif isinstance(time, Arrow):
+    if isinstance(time, Arrow):
         return Some(ClockTime.from_time(time))
 
     return Null

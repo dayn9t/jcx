@@ -20,7 +20,7 @@ def main() -> None:
         help="重名指定次数的文件, 同目录, 不计扩展名",
     )
     parser.add_argument(
-        "-d", "--include-dir", action="store_true", default=False, help="是否包含目录"
+        "-d", "--include-dir", action="store_true", default=False, help="是否包含目录",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="显示详细信息")
     opt = parser.parse_args()
@@ -48,7 +48,6 @@ def main() -> None:
 
 def insert_channel(folder: StrPath) -> None:
     """给抓图目录插入channel"""
-
     dirs = dirs_in(folder)
     for i, d in enumerate(dirs):
         print(f"#{i:04}  {d}")

@@ -1,6 +1,6 @@
 from typing import Any
 
-from rustshed import Option, Some, Null, to_option
+from rustshed import Null, Option, Some, to_option
 
 
 def lookup(indexes: list, tab: list) -> list:

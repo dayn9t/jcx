@@ -1,4 +1,4 @@
-from jcx.text.txt_json import to_json, from_json
+from jcx.text.txt_json import from_json, to_json
 from jcx.util.lict import *
 
 

@@ -3,10 +3,10 @@ from subprocess import getstatusoutput
 
 from flask_restx import Api, fields  # type: ignore
 from pydantic import BaseModel
+from rustshed import Null, Option
 
 from jcx.api.dao_item import ItemDao, add_item_resource
 from jcx.time.dt import now_iso_str
-from rustshed import Option, Null
 
 
 class CommandInfo(BaseModel):
@@ -53,7 +53,7 @@ class CommandParam(BaseModel):
 
 
 def add_command_resource(
-    api, ns, url, db_root: Path, cmd: str, desc: str, name: Option[str] = Null
+    api, ns, url, db_root: Path, cmd: str, desc: str, name: Option[str] = Null,
 ) -> None:
     """添加命令资源"""
     name1 = name.unwrap_or(Path(url).name)

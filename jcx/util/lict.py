@@ -1,4 +1,6 @@
-from typing import TypeVar, Generic, Mapping, Iterator, Optional
+from collections.abc import Iterator, Mapping
+from typing import Generic, TypeVar
+
 from pydantic import BaseModel
 
 KT = TypeVar("KT")
@@ -61,7 +63,7 @@ class Lict(Mapping[KT, VT]):
             self._items[i].value = value
         self._items.append(LictItem[KT, VT](key=key, value=value))
 
-    def pop(self, key: KT, default_value: Optional[VT] = None) -> Optional[VT]:
+    def pop(self, key: KT, default_value: VT | None = None) -> VT | None:
         """删除 key 对应的值, 并返回"""
         i = self.index(key)
         if i > -1:

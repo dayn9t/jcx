@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import TypeVar, Type, Optional
+from typing import TypeVar
 
 from jcx.db.record import Record, RecordFilter
 from jcx.sys.fs import StrPath
@@ -9,7 +9,7 @@ R = TypeVar("R", bound=Record)
 
 
 def load_list(
-    record_type: Type[R], folder: StrPath, filter_: Optional[RecordFilter] = None
+    record_type: type[R], folder: StrPath, filter_: RecordFilter | None = None,
 ) -> list[R]:
     """加载记录到列表"""
     records: list[R] = []
@@ -27,7 +27,7 @@ def load_list(
 
 
 def load_dict(
-    record_type: Type[R], folder: StrPath, filter_: Optional[RecordFilter] = None
+    record_type: type[R], folder: StrPath, filter_: RecordFilter | None = None,
 ) -> dict[int, R]:
     """加载记录到字典"""
     rs = load_list(record_type, folder, filter_)
