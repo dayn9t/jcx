@@ -1,11 +1,10 @@
-import os
 import re
 import shutil
 import sys
 from collections.abc import Callable, Generator
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import arrow
 import sh
@@ -183,26 +182,26 @@ def or_ext(file: StrPath, ext: str) -> Path:
 
 
 def last_parts(file: StrPath, n: int) -> Path:
-    """获取路径最后的n部分"""
+    """获取路径最后的n部分."""
     p = Path(file)
     return Path(*p.parts[-n:])
 
 
 def with_parent(file: StrPath, parent: str) -> Path:
-    """替换上级目录名"""
+    """替换上级目录名."""
     file = Path(file)
     return file.parent.parent / parent / file.name
 
 
 def find_pattern(folder: StrPath, ext: str, pattern: str) -> Generator[Path, Any, None]:
-    """查找匹配指定模式的文件"""
+    """查找匹配指定模式的文件."""
     for f in Path(folder).rglob("*" + ext):
         if re.search(pattern, str(f)):
             yield f
 
 
 def time_to_file(time: Arrow, ext: str, date_dir: bool = True) -> str:
-    """时间转为文件名"""
+    """时间转为文件名."""
     s = "/" if date_dir else "_"
     fmt = "%Y-%m-%d" + s + "%H-%M-%S.%f"
     name = time.strftime(fmt)[:-3] + ext
@@ -212,7 +211,7 @@ def time_to_file(time: Arrow, ext: str, date_dir: bool = True) -> str:
 def device_time_file(
     folder: Path, dev_id: int | str, time: Arrow, ext: str, date_dir: bool = True
 ) -> Path:
-    """根据设备ID,所在目录创建时间为名称的文件"""
+    """根据设备ID,所在目录创建时间为名称的文件."""
     file = time_to_file(time, ext, date_dir)
     p = Path(folder, str(dev_id), file)
     make_parents(p)
@@ -220,18 +219,18 @@ def device_time_file(
 
 
 def not_file_to_time(path: StrPath) -> Arrow:
-    """文件名转时间 2023-04-10_10-09-39.830"""
+    """文件名转时间 2023-04-10_10-09-39.830."""
     p = Path(path)
-    s = "%sT%s+%s" % (p.parent.name, p.stem.replace("-", ":"), "08:00")
+    s = "{}T{}+{}".format(p.parent.name, p.stem.replace("-", ":"), "08:00")
     return arrow.get(s)
 
 
 def link_files(
     src_files: list[Path],
     dst_dir: Path,
-    check_fun: Optional[Callable[[Path], bool]] = None,
+    check_fun: Callable[[Path], bool] | None = None,
 ) -> None:
-    """链接文件列表到目标目录"""
+    """链接文件列表到目标目录."""
     for f in src_files:
         dst = dst_dir / f.name
         dst.parent.mkdir(exist_ok=True, parents=True)
@@ -241,38 +240,38 @@ def link_files(
 
 
 def real_path(path: StrPath) -> Path:
-    """ "获取真实文件"""
+    """获取真实文件."""
     p = Path(path)
-    return Path(os.readlink(p)) if p.is_symlink() else p
+    return Path.readlink(p) if p.is_symlink() else p
 
 
 def real_exe_path() -> Path:
-    """ "获取真实可执行文件路径"""
+    """获取真实可执行文件路径."""
     return real_path(sys.argv[0])
 
 
 def copy_file(src: Path, dst: Path) -> Result[Path, IOError]:
-    """复制文件"""
+    """复制文件."""
     dst.parent.mkdir(parents=True, exist_ok=True)
     try:
         shutil.copyfile(src, dst)
-    except IOError as e:
+    except OSError as e:
         return Err(e)
     return Ok(dst)
 
 
 def move_file(src: Path, dst: Path) -> Result[Path, IOError]:
-    """移动文件"""
+    """移动文件."""
     dst.parent.mkdir(parents=True, exist_ok=True)
     try:
         shutil.move(src, dst)
-    except IOError as e:
+    except OSError as e:
         return Err(e)
     return Ok(dst)
 
 
 def insert_dir(folder: StrPath, dir_name: str) -> None:
-    """在目录中插入一级目录, 原目录内的文件移动如新目录"""
+    """在目录中插入一级目录, 原目录内的文件移动如新目录."""
     folder = Path(folder)
     assert folder.is_dir()
     tmp = folder.parent / (folder.name + "_tmp")
@@ -286,24 +285,24 @@ def insert_dir(folder: StrPath, dir_name: str) -> None:
 
 
 def file_ctime(file: StrPath) -> Arrow:
-    """获取文件的建立时间"""
+    """获取文件的建立时间."""
     t = Path(file).stat().st_ctime  # 创建时间
     return Arrow.fromtimestamp(t)
 
 
 def file_mtime(file: StrPath) -> Arrow:
-    """获取文件的修改时间"""
+    """获取文件的修改时间."""
     t = Path(file).stat().st_mtime  # 创建时间
     return Arrow.fromtimestamp(t)
 
 
 def ctime_to_name(src: Path) -> str:
-    """以文件创建时间生成文件名"""
+    """以文件创建时间生成文件名."""
     return time_to_file(file_ctime(src), src.suffix)
 
 
 def mtime_to_name(src: Path) -> str:
-    """以文件修改时间生成文件名"""
+    """以文件修改时间生成文件名."""
     return time_to_file(file_mtime(src), src.suffix)
 
 
@@ -323,12 +322,12 @@ def now_to_name(src: Path) -> str:
 
 
 def stem_append(p: Path, s: str) -> Path:
-    """文件名主干后面追加字符串"""
+    """文件名主干后面追加字符串."""
     return p.parent / (p.stem + s + p.suffix)
 
 
 def name_with_parents(path: StrPath, num_parents: int) -> Option[str]:
-    """路径转换成文件名, 文件名中带有指定数量的上级目录, REMARK: 避免上级目录中包含根目录"""
+    """路径转换成文件名, 文件名中带有指定数量的上级目录, REMARK: 避免上级目录中包含根目录."""
     parts = list(Path(path).parts)
     start = len(parts) - 1 - num_parents
     if start < 0:
@@ -338,13 +337,13 @@ def name_with_parents(path: StrPath, num_parents: int) -> Option[str]:
 
 
 def replace_home(p: StrPath) -> Path:
-    """替换~为HOME目录"""
+    """替换~为HOME目录."""
     p = str(p).replace("~", str(Path.home()))
     return Path(p)
 
 
 def remove_parent_prefix(p: StrPath) -> Result[Path, str]:
-    """从文件名中去掉所在目录名前缀"""
+    """从文件名中去掉所在目录名前缀."""
     p = Path(p)
     if p.name.startswith(p.parent.name):
         p1 = p.parent / p.name[len(p.parent.name) + 1 :]
@@ -353,10 +352,7 @@ def remove_parent_prefix(p: StrPath) -> Result[Path, str]:
 
 
 def du(path: StrPath) -> int:
+    """获取文件或目录的大小."""
     s = sh.du("-s", path)
     size, _ = parse("{}\t{}", s)
     return int(size)
-
-
-def fun1(a: int):
-    return 1
