@@ -30,7 +30,7 @@ def catch_show_err(fun: Callable, verbose: bool = False) -> None:
     """捕获并显示异常"""
 
     # 捕获SystemExit/KeyboardInterrupt/GeneratorExit外异常
-    # 想捕获这三个异常，需BaseException
+    # 想捕获这三个异常, 需BaseException
     try:
         fun()
     except Exception as e:

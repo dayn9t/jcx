@@ -2,34 +2,37 @@ import os
 import re
 import shutil
 import sys
+from collections.abc import Callable, Generator
 from enum import Enum
 from pathlib import Path
-from typing import Generator, Any, Callable, Optional
+from typing import Any, Optional
 
 import arrow
-import sh  # type: ignore
+import sh
 from arrow import Arrow
 from loguru import logger
-from parse import parse  # type: ignore
-from rustshed import Err, Result, Ok, Option, Some, Null
+from parse import parse
+from rustshed import Err, Null, Ok, Option, Result, Some
 
 type Paths = list[Path]
 """路径数组"""
 
 type StrPath = str | Path
-"""路径表示：str或者Path"""
+"""路径表示: str或者Path"""
 
 type StrPaths = list[StrPath]
 """可表示路径类型的数组"""
 
 
 class Order(Enum):
+    """排序方式."""
+
     ASC = 1
     DESC = 2
 
 
 def first_file_in(folders: StrPaths, file_name: str) -> Option[Path]:
-    """从一组目录中查找指定文件，只获取第一个"""
+    """从一组目录中查找指定文件, 只获取第一个."""
     for p in folders:
         f = Path(p) / file_name
         if f.is_file():
@@ -38,29 +41,29 @@ def first_file_in(folders: StrPaths, file_name: str) -> Option[Path]:
 
 
 def files_in(folder: StrPath, ext: str, reverse: bool = False) -> list[Path]:
-    """获取文件夹内指定扩展名的文件，有序"""
+    """获取文件夹内指定扩展名的文件, 有序."""
     p = Path(folder)
     return sorted(p.glob("*" + ext), reverse=reverse)
 
 
 def get_project_dir(bin_file: StrPath) -> Path:
-    """获取项目目录 - 通过可执行文件路径"""
+    """获取项目目录 - 通过可执行文件路径."""
     # /project/src/bin/exe_file.py
     return Path(bin_file).parent.parent.parent.resolve()
 
 
 def get_asset_dir(bin_file: StrPath) -> Path:
-    """获取项目资产目录 - 通过可执行文件路径"""
+    """获取项目资产目录 - 通过可执行文件路径."""
     return get_project_dir(bin_file) / "asset"
 
 
 def file_names_in(folder: StrPath, ext: str, reverse: bool = False) -> list[str]:
-    """获取文件夹内指定扩展名的文件名称，有序"""
+    """获取文件夹内指定扩展名的文件名称, 有序."""
     return [f.name for f in files_in(folder, ext, reverse)]
 
 
 def find(src: StrPath, ext: str, order: Order = Order.ASC) -> list[Path]:
-    """查找文件或文件夹内指定扩展名文件"""
+    """查找文件或文件夹内指定扩展名文件."""
     src = Path(src)
     if src.is_dir():
         files = sorted(src.rglob("*" + ext), reverse=(order == Order.DESC))
@@ -74,7 +77,7 @@ def find(src: StrPath, ext: str, order: Order = Order.ASC) -> list[Path]:
 def find_first(
     folder: StrPath, pattern: str, recursive: bool = True
 ) -> Result[Path, str]:
-    """在文件夹内查找满足条件的第一个文件"""
+    """在文件夹内查找满足条件的第一个文件."""
     folder = Path(folder)
     if not folder.is_dir():
         return Err("指定路径不是目录: " + str(folder))
@@ -88,7 +91,7 @@ def find_first(
 
 
 def find_in_parts(folder: StrPath, sub_path: str) -> Option[Path]:
-    """在路径的各个部分里查找指定路径"""
+    """在路径的各个部分里查找指定路径."""
     folder = Path(folder).absolute()
     while True:
         path = folder / sub_path
@@ -101,12 +104,12 @@ def find_in_parts(folder: StrPath, sub_path: str) -> Option[Path]:
 
 
 def file_exist_in(folder: StrPath, pattern: str, recursive: bool = False) -> bool:
-    """判定目录中是否存在指定扩展名的文件"""
+    """判定目录中是否存在指定扩展名的文件."""
     return find_first(folder, pattern, recursive).is_ok()
 
 
 def dirs_in(folder: StrPath, order: Order = Order.ASC) -> list[Path]:
-    """获取文件夹"""
+    """获取文件夹."""
     folder = Path(folder)
     dirs: Paths = []
     if not folder.is_dir():
@@ -120,7 +123,7 @@ def dirs_in(folder: StrPath, order: Order = Order.ASC) -> list[Path]:
 
 
 def find_descendants(folder: StrPath, pattern: str, generation: int) -> list[Path]:
-    """查找匹配模式的指定代子孙文件/目录"""
+    """查找匹配模式的指定代子孙文件/目录."""
     assert generation > 0
     folder = Path(folder)
 
@@ -136,26 +139,27 @@ def find_descendants(folder: StrPath, pattern: str, generation: int) -> list[Pat
 
 
 def rm_files_in(folder: StrPath, ext: str) -> None:
-    """删除文件夹内指定扩展名文件"""
+    """删除文件夹内指定扩展名文件."""
     for f in Path(folder).glob("*" + ext):
         Path(f).unlink()
 
 
 def remake_dir(path: StrPath) -> Path:
-    """删除并重建目录"""
-    if path.exists():
+    """删除并重建目录."""
+    p = Path(path)
+    if p.exists():
         shutil.rmtree(path)
-    path.mkdir(parents=True, exist_ok=True)
-    return path
+    p.mkdir(parents=True, exist_ok=True)
+    return p
 
 
 def remake_subdir(parent: StrPath, name: str) -> Path:
-    """删除并重建子目录"""
+    """删除并重建子目录."""
     return make_subdir(parent, name, True)
 
 
 def make_subdir(parent: StrPath, name: str, remake: bool = False) -> Path:
-    """建立子目录"""
+    """建立子目录."""
     path = Path(parent, name)
     if path.exists() and remake:
         shutil.rmtree(path)
@@ -164,14 +168,14 @@ def make_subdir(parent: StrPath, name: str, remake: bool = False) -> Path:
 
 
 def make_parents(p: StrPath) -> Path:
-    """创建上级目录"""
+    """创建上级目录."""
     p = Path(p).parent
     p.mkdir(parents=True, exist_ok=True)
     return p
 
 
 def or_ext(file: StrPath, ext: str) -> Path:
-    """如果不存在，则补充扩展名"""
+    """如果不存在, 则补充扩展名."""
     file = Path(file)
     if not file.suffix and ext:
         file = file.with_suffix(ext)
@@ -352,3 +356,7 @@ def du(path: StrPath) -> int:
     s = sh.du("-s", path)
     size, _ = parse("{}\t{}", s)
     return int(size)
+
+
+def fun1(a: int):
+    return 1

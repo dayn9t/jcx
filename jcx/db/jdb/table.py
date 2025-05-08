@@ -48,7 +48,7 @@ class Table:
         return list(self._records.keys())
 
     def records(self) -> list[R]:
-        """获取所有记录，防止被外部导致磁盘数据不一致"""
+        """获取所有记录, 防止被外部导致磁盘数据不一致"""
         return sorted(self._records.values(), key=lambda r: r.id)
 
     def get(self, rid: int) -> Option[R]:

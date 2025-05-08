@@ -21,8 +21,8 @@ dependencies = [
     "sh",
     "interval",
     "numpy",
-    "pre-commit",
     "types-paho-mqtt",
+    "poetry-core (>=2.1.3,<3.0.0)",
 ]
 
 
@@ -32,14 +32,17 @@ pytest = "*"
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
-pyinstaller = "*"
 mypy = "*"
 pre-commit = "*"
+nuitka = "*"
 
 
 [tool.ruff]
 ignore = ["F403", "F405"]
 
+[tool.ruff.lint]
+#select = ["E4", "E7", "E9", "F"]
+select = ["ALL"]
 
 [build-system]
 requires = ["poetry-core"]

@@ -40,11 +40,11 @@ class ItemDao(ABC):
         return r
 
     def before_update(self, r: R, r0: R) -> Optional[R]:
-        """更新记录之前的检查，可修改r值"""
+        """更新记录之前的检查, 可修改r值"""
         return r
 
     def after_update(self, r: R) -> None:
-        """更新记录之后的检查，不可修改r值"""
+        """更新记录之后的检查, 不可修改r值"""
         pass
 
 
@@ -64,7 +64,7 @@ def add_item_resource(ns, url, dao: ItemDao, model):
 
     @ns.route(url)
     class Item(Resource):
-        """展示所有条目列表，允许创建新条目"""
+        """展示所有条目列表, 允许创建新条目"""
 
         @ns.doc("get_item")
         @ns.marshal_with(model)

@@ -7,7 +7,6 @@ from jcx.text.txt_json import to_json
 
 
 class Publisher:
-
     def __init__(self, cfg: MqttCfg):
         uri = urlparse(cfg.server_url)
         strs = uri.netloc.split(":", 1)

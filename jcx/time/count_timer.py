@@ -41,12 +41,12 @@ class CountTimer(BaseModel):
         return self.count >= self.interval
 
     def inc_check(self) -> bool:
-        """计数器累计，并检查是否到规定的间隔"""
+        """计数器累计, 并检查是否到规定的间隔"""
         self.inc()
         return self.check()
 
     def auto_check(self) -> bool:
-        """计数器累计，并检查是否到规定的间隔，到规定时间则自动复位"""
+        """计数器累计, 并检查是否到规定的间隔, 到规定时间则自动复位"""
         ok = self.inc_check()
         if ok:
             self.reset()

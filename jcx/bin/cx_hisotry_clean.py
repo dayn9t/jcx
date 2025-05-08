@@ -47,7 +47,7 @@ def main():
     print("备份历史文件到：", bak_file)
     move_file(history_file, bak_file).unwrap()
 
-    print("历史文件，行数变化：%d -> %d" % (num_lines, len(lines)))
+    print("历史文件, 行数变化：%d -> %d" % (num_lines, len(lines)))
     save_lines(lines, history_file)
 
 

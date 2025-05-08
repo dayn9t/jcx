@@ -35,5 +35,5 @@ def up_pos(arr: list, value):
 
 @to_option
 def list_index(arr: list, value) -> int:
-    """List中查找值的索引，失败则Null"""
+    """List中查找值的索引, 失败则Null"""
     return arr.index(value)

@@ -5,7 +5,7 @@ from pathlib import Path
 from jcx.sys.fs import du
 from loguru import logger
 
-cmd_map = {".zip": ["unzip" "-O" "GBK"]}
+cmd_map = {".zip": ["unzip-OGBK"]}
 
 
 def main():

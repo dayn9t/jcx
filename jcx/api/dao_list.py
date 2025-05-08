@@ -104,7 +104,7 @@ def add_list_resource(ns, url, dao: ItemListDao, model):
 
     @ns.route(url)
     class ItemList(Resource):
-        """展示所有条目列表，允许创建新条目"""
+        """展示所有条目列表, 允许创建新条目"""
 
         @ns.doc("list_items")
         @ns.marshal_list_with(model)
@@ -130,7 +130,7 @@ def add_list_resource(ns, url, dao: ItemListDao, model):
     @ns.response(404, "指定条目未找到")
     @ns.param("id", "条目ID")
     class Item(Resource):
-        """展示一个单独的条目，并允许修改和删除"""
+        """展示一个单独的条目, 并允许修改和删除"""
 
         @ns.doc("get_item")
         @ns.marshal_with(model)

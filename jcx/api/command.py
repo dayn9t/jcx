@@ -37,7 +37,7 @@ def command_model(api: Api, description):
     return api.model(
         "Command",
         {
-            "time": fields.String(description="命令执行结束时间，PUT时忽略"),
+            "time": fields.String(description="命令执行结束时间, PUT时忽略"),
             "output": fields.String(description=description),
         },
     )

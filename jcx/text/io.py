@@ -27,7 +27,7 @@ def save_txt(txt: str, file: StrPath, ext: str = ".txt") -> Result[bool, Excepti
 def save_lines(
     lines: list[str], file: StrPath, ext: str = "", postfix: str = ""
 ) -> None:
-    """多行文本保存到文件，文件自动加扩展名，自动建立目录，行尾自动加回车"""
+    """多行文本保存到文件, 文件自动加扩展名, 自动建立目录, 行尾自动加回车"""
     file = or_ext(file, ext)
     file.parent.mkdir(parents=True, exist_ok=True)
     print("save:", file)

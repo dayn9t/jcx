@@ -61,5 +61,5 @@ def load_json(file: StrPath, obj_type: Type[BMT]) -> Result[BMT, Exception]:
 def load_json_or(
     file: Optional[StrPath], obj_type: Type[BMT], default_value: BMT
 ) -> Result[BMT, Exception]:
-    """从Json文件加载对象，文件路径未提供则返回默认值"""
+    """从Json文件加载对象, 文件路径未提供则返回默认值"""
     return load_json(file, obj_type) if file else Ok(default_value)
