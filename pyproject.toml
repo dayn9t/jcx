@@ -24,14 +24,7 @@ dependencies = [
 ]
 
 [project.scripts]
-jcx = "jcx:main"
-
-[tool.ruff]
-ignore = ["F403", "F405"]
-
-[tool.ruff.lint]
-#select = ["E4", "E7", "E9", "F"]
-select = ["ALL"]
+cx_rename = "jcx/bin/cx_rename.py"
 
 [build-system]
 requires = ["hatchling"]

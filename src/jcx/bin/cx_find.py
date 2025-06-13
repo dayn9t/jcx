@@ -1,5 +1,3 @@
-#!/opt/ias/env/bin/python
-
 import argparse
 from pathlib import Path
 
