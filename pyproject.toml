@@ -24,8 +24,13 @@ dependencies = [
 ]
 
 [project.scripts]
-cx_rename = "jcx/bin/cx_rename.py"
+#cx_rename = "src/jcx/bin/cx_rename.py"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
