@@ -39,7 +39,8 @@ def main():
             new_name = re_cap_fmt(file_name, pattern, repl)
             if new_name is not None:
                 os.rename(
-                    os.path.join(parent, file_name), os.path.join(parent, new_name),
+                    os.path.join(parent, file_name),
+                    os.path.join(parent, new_name),
                 )
                 # shutil.move(os.path.join(parent, file_name), os.path.join(parent, new_name))
                 print("rename '%s' to '%s'" % (file_name, new_name))

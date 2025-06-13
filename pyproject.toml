@@ -1,13 +1,12 @@
 [project]
 name = "jcx"
-version = "0.4.0"
-description = ""
+version = "0.4.1"
+description = "Add your description here"
 readme = "README.md"
 authors = [
     { name = "dayn9t", email = "dayn9t@gmail.com" }
 ]
 requires-python = "~=3.12"
-
 dependencies = [
     "rustshed",
     "pydantic",
@@ -22,20 +21,10 @@ dependencies = [
     "interval",
     "numpy",
     "types-paho-mqtt",
-    "poetry-core (>=2.1.3,<3.0.0)",
 ]
 
-
-[tool.poetry.group.test.dependencies]
-pytest = "*"
-
-
-[tool.poetry.group.dev.dependencies]
-black = "*"
-mypy = "*"
-pre-commit = "*"
-nuitka = "*"
-
+[project.scripts]
+jcx = "jcx:main"
 
 [tool.ruff]
 ignore = ["F403", "F405"]
@@ -45,5 +34,5 @@ ignore = ["F403", "F405"]
 select = ["ALL"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

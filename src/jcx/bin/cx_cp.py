@@ -32,10 +32,17 @@ def main() -> None:
     parser.add_argument("dst_dir", type=str, help="文件目标目录")
     parser.add_argument("-e", "--ext", type=str, default="jpg", help="文件扩展名")
     parser.add_argument(
-        "-r", "--retain_num", type=int, default=5, help="保留的路径节数",
+        "-r",
+        "--retain_num",
+        type=int,
+        default=5,
+        help="保留的路径节数",
     )
     parser.add_argument(
-        "-m", "--make_date_dir", action="store_true", help="创建日期目录",
+        "-m",
+        "--make_date_dir",
+        action="store_true",
+        help="创建日期目录",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="显示详细信息")
     opt = parser.parse_args()

@@ -74,7 +74,9 @@ def find(src: StrPath, ext: str, order: Order = Order.ASC) -> list[Path]:
 
 
 def find_first(
-    folder: StrPath, pattern: str, recursive: bool = True,
+    folder: StrPath,
+    pattern: str,
+    recursive: bool = True,
 ) -> Result[Path, str]:
     """在文件夹内查找满足条件的第一个文件."""
     folder = Path(folder)
@@ -209,7 +211,11 @@ def time_to_file(time: Arrow, ext: str, date_dir: bool = True) -> str:
 
 
 def device_time_file(
-    folder: Path, dev_id: int | str, time: Arrow, ext: str, date_dir: bool = True,
+    folder: Path,
+    dev_id: int | str,
+    time: Arrow,
+    ext: str,
+    date_dir: bool = True,
 ) -> Path:
     """根据设备ID,所在目录创建时间为名称的文件."""
     file = time_to_file(time, ext, date_dir)

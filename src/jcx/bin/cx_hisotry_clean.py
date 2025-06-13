@@ -9,7 +9,11 @@ from jcx.time.dt import now_file
 def main():
     parser = argparse.ArgumentParser("History文件清理工具")
     parser.add_argument(
-        "-f", "--history-file", type=Path, default="~/.zsh_history", help="History文件",
+        "-f",
+        "--history-file",
+        type=Path,
+        default="~/.zsh_history",
+        help="History文件",
     )
     parser.add_argument(
         "-b",

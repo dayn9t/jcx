@@ -33,7 +33,10 @@ class RedisDb:
         # print(db_num)
         self._name = str(db_num)
         self._db = redis.Redis(
-            host=uri.hostname, port=port, db=db_num, decode_responses=True,
+            host=uri.hostname,
+            port=port,
+            db=db_num,
+            decode_responses=True,
         )
 
     def name(self) -> str:

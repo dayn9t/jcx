@@ -54,7 +54,10 @@ class ClockTime:
         t = Arrow.now()
         # now.date()
         return t.replace(
-            hour=self.hour, minute=self.minute, second=self.second, microsecond=0,
+            hour=self.hour,
+            minute=self.minute,
+            second=self.second,
+            microsecond=0,
         )
 
 

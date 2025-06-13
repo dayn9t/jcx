@@ -9,7 +9,9 @@ R = TypeVar("R", bound=Record)
 
 
 def load_list(
-    record_type: type[R], folder: StrPath, filter_: RecordFilter | None = None,
+    record_type: type[R],
+    folder: StrPath,
+    filter_: RecordFilter | None = None,
 ) -> list[R]:
     """加载记录到列表"""
     records: list[R] = []
@@ -27,7 +29,9 @@ def load_list(
 
 
 def load_dict(
-    record_type: type[R], folder: StrPath, filter_: RecordFilter | None = None,
+    record_type: type[R],
+    folder: StrPath,
+    filter_: RecordFilter | None = None,
 ) -> dict[int, R]:
     """加载记录到字典"""
     rs = load_list(record_type, folder, filter_)

@@ -53,7 +53,13 @@ class CommandParam(BaseModel):
 
 
 def add_command_resource(
-    api, ns, url, db_root: Path, cmd: str, desc: str, name: Option[str] = Null,
+    api,
+    ns,
+    url,
+    db_root: Path,
+    cmd: str,
+    desc: str,
+    name: Option[str] = Null,
 ) -> None:
     """添加命令资源"""
     name1 = name.unwrap_or(Path(url).name)

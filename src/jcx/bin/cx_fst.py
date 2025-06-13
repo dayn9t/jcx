@@ -20,7 +20,11 @@ def main() -> None:
         help="重名指定次数的文件, 同目录, 不计扩展名",
     )
     parser.add_argument(
-        "-d", "--include-dir", action="store_true", default=False, help="是否包含目录",
+        "-d",
+        "--include-dir",
+        action="store_true",
+        default=False,
+        help="是否包含目录",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="显示详细信息")
     opt = parser.parse_args()
