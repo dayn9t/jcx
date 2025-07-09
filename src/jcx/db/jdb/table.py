@@ -71,14 +71,14 @@ class Table:
             return Null
 
         record = record.clone()  # 避免影响传入对象
-        if record.id < 1:
+        if record.id < 1:  # FIXME
             record.id = self.next_id()
 
         return self.update(record)
 
     def update(self, record: R) -> Option[R]:
         """更新记录"""
-        if record.id < 1:
+        if not record.id:
             return Null
         record = record.clone()  # 避免影响传入对象
         self._records[record.id] = record
