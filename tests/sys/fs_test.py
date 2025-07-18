@@ -59,6 +59,11 @@ def fs_test() -> None:
     print(files)
 
 
+def test_file_stems_in() -> None:
+    ds = file_stems_in("/etc/supervisor", ".conf")
+    print(ds)
+
+
 def test_dirs_in() -> None:
     ds = dirs_in("/usr")
     assert ds.count(Path("/usr/local")) > 0

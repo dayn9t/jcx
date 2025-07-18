@@ -18,6 +18,7 @@ class Record(BaseModel):
 type RecordFilter = Callable[[Record], bool]
 """记录过滤器"""
 
+
 class RecordSid(BaseModel):
     """数据库记录"""
 

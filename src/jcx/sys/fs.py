@@ -61,6 +61,11 @@ def file_names_in(folder: StrPath, ext: str, reverse: bool = False) -> list[str]
     return [f.name for f in files_in(folder, ext, reverse)]
 
 
+def file_stems_in(folder: StrPath, ext: str, reverse: bool = False) -> list[str]:
+    """获取文件夹内指定扩展名的文件名主干（不包括扩展名）, 有序."""
+    return [f.stem for f in files_in(folder, ext, reverse)]
+
+
 def find(src: StrPath, ext: str, order: Order = Order.ASC) -> list[Path]:
     """查找文件或文件夹内指定扩展名文件."""
     src = Path(src)
