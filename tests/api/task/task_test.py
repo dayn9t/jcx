@@ -1,4 +1,3 @@
-from enum import IntEnum
 from pydantic import BaseModel
 
 from jcx.api.task.task import TaskStatus

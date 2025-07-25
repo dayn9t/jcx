@@ -44,12 +44,14 @@ class StatusInfo(Record):
     """任务状态码，0-未启动，1-进行，2-完成，3-出错"""
     progress: int = 0
     """任务进度值，范围从起始进度到结束进度"""
-    start_time: Datetime | None
+    start_time: Datetime | None = None
     """任务开始执行时间"""
-    update_time: Datetime | None
+    update_time: Datetime | None = None
     """任务数据更新时间"""
     enabled: bool = True
     """任务是否启用"""
+    worker: str | None = None
+    """执行任务的工作者标识，例如线程名或进程名"""
 
 
 class TaskDb(Generic[TaskRecord]):
@@ -57,8 +59,8 @@ class TaskDb(Generic[TaskRecord]):
         self,
         db_dir: Path,
         task_record_cls: type[TaskRecord],
-        task_table_name: str,
-        status_table_name: str,
+        task_table_name: str = "task",
+        status_table_name: str = "status",
     ):
         """初始化任务数据库管理器
 
@@ -90,20 +92,24 @@ class TaskDb(Generic[TaskRecord]):
 
     def task_done(self, task_id: int) -> None:
         """终结指定任务"""
-        status: StatusInfo = self.status_tab.get(task_id).unwrap()
-        status.progress = 100
-        status.status = TaskStatus.COMPLETED
-        self.status_tab.update(status)
+        self.update_progress(task_id, 100)
 
     def task_error(self, task_id: int) -> None:
         """标记指定任务为出错"""
         status: StatusInfo = self.status_tab.get(task_id).unwrap()
         status.status = TaskStatus.ERROR
+        status.update_time = now_sh_dt()
         self.status_tab.update(status)
 
     def update_progress(self, task_id: int, progress: int) -> None:
         """更新指定任务进度"""
         status: StatusInfo = self.status_tab.get(task_id).unwrap()
+        assert status.status < TaskStatus.COMPLETED, "任务已完成，无法更新进度"
+        assert 0 <= progress <= 100, "进度值必须在0到100之间"
+        if status.status == TaskStatus.NOT_STARTED:
+            status.status = TaskStatus.IN_PROGRESS
+        if status.status == TaskStatus.IN_PROGRESS and progress == 100:
+            status.status = TaskStatus.COMPLETED
         status.progress = progress
         status.update_time = now_sh_dt()
         if status.start_time is None:
