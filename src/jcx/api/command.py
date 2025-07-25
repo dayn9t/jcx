@@ -5,7 +5,7 @@ from flask_restx import Api, fields  # type: ignore
 from pydantic import BaseModel
 from rustshed import Null, Option
 
-from jcx.api.dao_item import ItemDao, add_item_resource
+from jcx.api._dao_item import ItemDao, add_item_resource
 from jcx.time.dt import now_iso_str
 
 

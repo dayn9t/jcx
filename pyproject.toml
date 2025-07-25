@@ -1,6 +1,6 @@
 [project]
 name = "jcx"
-version = "0.4.6"
+version = "0.4.7"
 description = "Add your description here"
 readme = "README.md"
 authors = [
@@ -10,7 +10,9 @@ requires-python = "~=3.12"
 dependencies = [
     "rustshed",
     "pydantic",
+    "pydantic-extra-types",
     "typer",
+    "arrow",
     "loguru",
     "arrow",
     "paho-mqtt",
