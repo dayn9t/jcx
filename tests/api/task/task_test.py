@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from jcx.api.task.task import TaskStatus
+from jcx.api.task.task_db import TaskStatus
 from jcx.text.txt_json import to_json
 
 

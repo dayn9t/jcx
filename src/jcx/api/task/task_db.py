@@ -16,8 +16,8 @@ class TaskStatus(IntEnum):
     ERROR = 3  # 出错
 
 
-class TaskInfoBase(Record):
-    """任务信息基础类
+class TaskInfo(Record):
+    """任务信息
 
     包含任务基本信息，用于描述需要处理的视频分析任务
     """
@@ -28,10 +28,10 @@ class TaskInfoBase(Record):
     """任务类型，例如视频跟踪、标记等不同处理类型"""
     created_at: Datetime = now_sh_dt()
     """任务创建时间，ISO格式字符串"""
-
-
-TaskRecord = TypeVar("TaskRecord", bound=TaskInfoBase)
-"""任务记录类型"""
+    desc: str | None = None
+    """任务描述信息，可选字段"""
+    data: str
+    """任务数据，存储任务相关的JSON数据或其他信息"""
 
 
 class StatusInfo(Record):
@@ -50,29 +50,51 @@ class StatusInfo(Record):
     """任务数据更新时间"""
     enabled: bool = True
     """任务是否启用"""
-    worker: str | None = None
+    worker_id: str | None = None
     """执行任务的工作者标识，例如线程名或进程名"""
 
 
-class TaskDb(Generic[TaskRecord]):
+class TaskDb:
     def __init__(
         self,
-        db_dir: Path,
-        task_record_cls: type[TaskRecord],
+        db_url: str,
         task_table_name: str = "task",
         status_table_name: str = "status",
     ):
         """初始化任务数据库管理器
 
         Args:
-            db_dir: 数据库目录路径
-            task_record_cls: 任务记录类，必须是 TaskInfoBase 的子类
+            db_url: 数据库URL，通常是文件路径或数据库连接字符串
+            task_table_name: 任务表名称，默认为"task"
+            status_table_name: 状态表名称，默认为"status"
 
         """
-        self.task_tab = Table(task_record_cls)
-        self.status_tab = Table(StatusInfo)
-        self.task_tab.load(db_dir / task_table_name)
-        self.status_tab.load(db_dir / status_table_name)
+        self._db_url = db_url
+        self._task_table_name = task_table_name
+        self._status_table_name = status_table_name
+
+    def add_task(self, task: TaskInfo) -> Option[TaskInfo]:
+        """添加新任务记录
+
+        Args:
+            task: 任务记录实例
+
+        Returns:
+            Option[TaskRecord]: 添加后的任务记录，如果ID已存在则返回None
+        """
+
+        return Some(task)
+
+    def get_task_status(self, task_id: int) -> Option[StatusInfo]:
+        """获取指定任务的状态信息
+
+        Args:
+            task_id: 任务ID
+
+        Returns:
+            Option[StatusInfo]: 任务状态信息，如果任务不存在则返回None
+        """
+        pass
 
     def show(self) -> None:
         for task in self.task_tab.records():
@@ -90,6 +112,18 @@ class TaskDb(Generic[TaskRecord]):
             return Some((task, status))
         return Null
 
+    def task_start(self, task_id: int, worker: str | None) -> None:
+        """开始执行指定任务"""
+        status: StatusInfo = self.status_tab.get(task_id).unwrap()
+        if status.status == TaskStatus.NOT_STARTED:
+            status.status = TaskStatus.IN_PROGRESS
+            status.start_time = now_sh_dt()
+            status.update_time = status.start_time
+            status.worker_id = worker
+            self.status_tab.put(status)
+        else:
+            raise ValueError("任务已开始或已完成，无法重新开始")
+
     def task_done(self, task_id: int) -> None:
         """终结指定任务"""
         self.update_progress(task_id, 100)
@@ -99,13 +133,15 @@ class TaskDb(Generic[TaskRecord]):
         status: StatusInfo = self.status_tab.get(task_id).unwrap()
         status.status = TaskStatus.ERROR
         status.update_time = now_sh_dt()
-        self.status_tab.update(status)
+        self.status_tab.put(status)
 
     def update_progress(self, task_id: int, progress: int) -> None:
         """更新指定任务进度"""
         status: StatusInfo = self.status_tab.get(task_id).unwrap()
-        assert status.status < TaskStatus.COMPLETED, "任务已完成，无法更新进度"
-        assert 0 <= progress <= 100, "进度值必须在0到100之间"
+        if status.status >= TaskStatus.COMPLETED:
+            raise ValueError("任务已完成，无法更新进度")
+        if not (0 <= progress <= 100):
+            raise ValueError("进度值必须在0到100之间")
         if status.status == TaskStatus.NOT_STARTED:
             status.status = TaskStatus.IN_PROGRESS
         if status.status == TaskStatus.IN_PROGRESS and progress == 100:
@@ -114,4 +150,4 @@ class TaskDb(Generic[TaskRecord]):
         status.update_time = now_sh_dt()
         if status.start_time is None:
             status.start_time = status.update_time
-        self.status_tab.update(status)
+        self.status_tab.put(status)

@@ -1,12 +1,11 @@
-import os
 import tempfile
 from pathlib import Path
 import pytest
 
-from jcx.api.task.task import TaskDb, TaskInfoBase, StatusInfo, TaskStatus
+from jcx.api.task.task_db import TaskDb, TaskInfo, StatusInfo, TaskStatus
 
 
-class TestTaskInfo(TaskInfoBase):
+class TestTaskInfo(TaskInfo):
     """测试用任务信息类"""
 
     content: str = ""  # 测试内容字段
@@ -36,11 +35,11 @@ def test_task_operations():
 
         # 创建测试任务
         task = TestTaskInfo(id=1, name="test_task", type=1, content="test content")
-        db.task_tab.update(task)
+        db.task_tab.put(task)
 
         # 创建对应的状态记录
         status = StatusInfo(id=1)
-        db.status_tab.update(status)
+        db.status_tab.put(status)
 
         # 测试查找任务
         task_result = db.find_task()
@@ -78,11 +77,11 @@ def test_task_error_handling():
 
         # 创建测试任务
         task = TestTaskInfo(id=2, name="error_task", type=1)
-        db.task_tab.update(task)
+        db.task_tab.put(task)
 
         # 创建对应的状态记录
         status = StatusInfo(id=2)
-        db.status_tab.update(status)
+        db.status_tab.put(status)
 
         # 测试标记任务为错误状态
         db.task_error(2)
@@ -102,14 +101,14 @@ def test_multiple_tasks():
         # 创建多个测试任务
         for i in range(1, 4):
             task = TestTaskInfo(id=i, name=f"task_{i}", type=1)
-            db.task_tab.update(task)
+            db.task_tab.put(task)
 
             status = StatusInfo(id=i)
             if i == 2:
                 status.status = TaskStatus.IN_PROGRESS  # 任务2处于进行中
             elif i == 3:
                 status.enabled = False  # 任务3被禁用
-            db.status_tab.update(status)
+            db.status_tab.put(status)
 
         # 验证首先找到的任务1
         task_result = db.find_task()
@@ -129,7 +128,7 @@ def test_multiple_tasks():
         # 将任务3启用
         status = db.status_tab.get(3).unwrap()
         status.enabled = True
-        db.status_tab.update(status)
+        db.status_tab.put(status)
 
         # 完成任务1
         db.task_done(2)

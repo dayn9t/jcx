@@ -65,7 +65,7 @@ class Table:
         """查询满足条件的记录ID集"""
         return [r.id for r in self._records.values() if fun(r)]
 
-    def add(self, record: R) -> Option[R]:
+    def post(self, record: R) -> Option[R]:
         """添加新记录"""
         if record.id in self._records:
             return Null
@@ -74,9 +74,9 @@ class Table:
         if record.id < 1:  # FIXME
             record.id = self.next_id()
 
-        return self.update(record)
+        return self.put(record)
 
-    def update(self, record: R) -> Option[R]:
+    def put(self, record: R) -> Option[R]:
         """更新记录"""
         if not record.id:
             return Null

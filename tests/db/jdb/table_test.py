@@ -16,26 +16,26 @@ def test_tab1() -> None:
     r2 = Student(id=2, name="one", age=10)
     r9 = Student(id=9, name="one", age=10)
 
-    r = tab.add(r0).unwrap()
+    r = tab.post(r0).unwrap()
     assert r.id == 1
     assert len(tab) == 1
     assert tab.get(1).unwrap() == r1
 
-    r = tab.add(r0).unwrap()
+    r = tab.post(r0).unwrap()
     assert r.id == 2
     assert len(tab) == 2
     assert tab.get(1).unwrap() == r1
     assert tab.get(2).unwrap() == r2
 
     # 已经存在的记录
-    r = tab.add(r1)
+    r = tab.post(r1)
     assert r.is_null()
     assert len(tab) == 2
     assert tab.get(1).unwrap() == r1
     assert tab.get(2).unwrap() == r2
 
     # 指定合法ID的记录
-    r = tab.add(r9).unwrap()
+    r = tab.post(r9).unwrap()
     assert r.id == 9
     assert len(tab) == 3
     assert tab.get(1).unwrap() == r1
@@ -45,7 +45,7 @@ def test_tab1() -> None:
     # 更新
     r9.name = "nine"
     assert tab.get(9).unwrap() != r9
-    tab.update(r9)
+    tab.put(r9)
     assert len(tab) == 3
     assert tab.get(1).unwrap() == r1
     assert tab.get(2).unwrap() == r2

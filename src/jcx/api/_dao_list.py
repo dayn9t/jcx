@@ -40,7 +40,7 @@ class ItemListDao(ABC):
         if r is None:
             return r
 
-        record = self._tab.add(r)
+        record = self._tab.post(r)
         self.after_add(record)
         return record
 
@@ -49,7 +49,7 @@ class ItemListDao(ABC):
         r = self.before_update(record)
         if not r:
             return r
-        record = self._tab.update(r).unwrap()
+        record = self._tab.put(r).unwrap()
         self.after_update(record)
         return record
 
