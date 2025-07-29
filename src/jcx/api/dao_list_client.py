@@ -1,10 +1,15 @@
-from typing import TypeVar, Optional, List, Dict, Any
+from typing import TypeVar, Optional, List, Dict, Any, Generic
 import requests
 
 from jcx.db.record import Record
-from rustshed import *
+from rustshed import Result, Ok, Err
 
 R = TypeVar("R", bound=Record)
+T = TypeVar("T")
+
+# 定义类型别名，简化 Result[X, Exception] 的重复使用
+ResultE = Result[T, Exception]
+"""返回结果或异常的 Result 类型"""
 
 
 class DaoListClient:
@@ -29,7 +34,7 @@ class DaoListClient:
         record_type: type[R],
         table_name: str,
         params: Optional[Dict[str, Any]] = None,
-    ) -> Result[List[R]]:
+    ) -> ResultE[List[R]]:
         """获取所有资源项目
 
         发送GET请求获取指定表中的所有记录
@@ -58,7 +63,7 @@ class DaoListClient:
         except Exception as e:
             return Err(f"获取所有资源失败: {str(e)}")
 
-    def get(self, record_type: type[R], table_name: str, record_id: int) -> Result[R]:
+    def get(self, record_type: type[R], table_name: str, record_id: int) -> ResultE[R]:
         """获取单个资源项目
 
         发送GET请求获取指定表中的单条记录
@@ -88,7 +93,7 @@ class DaoListClient:
         except Exception as e:
             return Err(f"获取资源失败: {str(e)}")
 
-    def post(self, table_name: str, record: R) -> Result[R]:
+    def post(self, table_name: str, record: R) -> ResultE[R]:
         """创建新资源项目
 
         发送POST请求创建新记录
@@ -115,7 +120,7 @@ class DaoListClient:
         except Exception as e:
             return Err(f"创建资源失败: {str(e)}")
 
-    def put(self, table_name: str, record: R) -> Result[R]:
+    def put(self, table_name: str, record: R) -> ResultE[R]:
         """更新资源项目
 
         发送PUT请求更新已有记录
@@ -145,7 +150,7 @@ class DaoListClient:
         except Exception as e:
             return Err(f"更新资源失败: {str(e)}")
 
-    def delete(self, table_name: str, record_id: int) -> Result[bool]:
+    def delete(self, table_name: str, record_id: int) -> ResultE[bool]:
         """删除资源项目
 
         发送DELETE请求删除指定记录
