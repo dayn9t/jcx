@@ -1,6 +1,6 @@
 [project]
 name = "jcx"
-version = "0.4.8"
+version = "0.4.9"
 description = "Add your description here"
 readme = "README.md"
 authors = [
@@ -37,5 +37,3 @@ dev = [
     "pytest",
 ]
 
-[tool.uv]
-required-environments = ["manylinux_2_17_x86_64", "manylinux2014_x86_64"]
