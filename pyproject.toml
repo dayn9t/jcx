@@ -14,15 +14,15 @@ dependencies = [
     "typer",
     "arrow",
     "loguru",
-    "arrow",
+
     "paho-mqtt",
+    "types-paho-mqtt",
     "parse",
     "redis",
     "requests",
     "sh",
     "interval",
     "numpy",
-    "types-paho-mqtt",
 ]
 
 [project.scripts]

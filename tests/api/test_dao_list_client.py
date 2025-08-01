@@ -20,6 +20,7 @@ from rustshed import Ok, Err, Result
 
 class TestRecord(Record):
     """用于测试的记录类"""
+
     name: str
     value: int
     active: bool = True
@@ -93,7 +94,7 @@ class TestDaoListClient:
         mock_get.assert_called_once_with(
             "http://api.example.com/v1/tests",
             params=None,
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
     @patch("requests.Session.get")
@@ -115,7 +116,7 @@ class TestDaoListClient:
         mock_get.assert_called_once_with(
             "http://api.example.com/v1/tests",
             params=params,
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
     @patch("requests.Session.get")
@@ -138,7 +139,12 @@ class TestDaoListClient:
         """测试 get 方法成功场景"""
         # 准备模拟响应
         mock_response = Mock()
-        mock_response.json.return_value = {"id": 1, "name": "测试记录", "value": 100, "active": True}
+        mock_response.json.return_value = {
+            "id": 1,
+            "name": "测试记录",
+            "value": 100,
+            "active": True,
+        }
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
 
@@ -156,7 +162,7 @@ class TestDaoListClient:
         # 验证请求
         mock_get.assert_called_once_with(
             "http://api.example.com/v1/tests/1",
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
     @patch("requests.Session.get")
@@ -179,7 +185,12 @@ class TestDaoListClient:
         """测试 post 方法成功场景"""
         # 准备模拟响应
         mock_response = Mock()
-        mock_response.json.return_value = {"id": 1, "name": "测试记录", "value": 100, "active": True}
+        mock_response.json.return_value = {
+            "id": 1,
+            "name": "测试记录",
+            "value": 100,
+            "active": True,
+        }
         mock_response.raise_for_status.return_value = None
         mock_post.return_value = mock_response
 
@@ -221,7 +232,12 @@ class TestDaoListClient:
         """测试 put 方法成功场景"""
         # 准备模拟响应
         mock_response = Mock()
-        mock_response.json.return_value = {"id": 1, "name": "更新的记录", "value": 200, "active": True}
+        mock_response.json.return_value = {
+            "id": 1,
+            "name": "更新的记录",
+            "value": 200,
+            "active": True,
+        }
         mock_response.raise_for_status.return_value = None
         mock_put.return_value = mock_response
 
@@ -246,7 +262,6 @@ class TestDaoListClient:
         assert call_args[0][0] == "http://api.example.com/v1/tests/1"
         assert "json" in call_args[1]
         assert call_args[1]["json"] == test_record.model_dump()
-
 
     @patch("requests.Session.put")
     def test_put_error(self, mock_put, client, test_record):
@@ -281,7 +296,7 @@ class TestDaoListClient:
         # 验证请求
         mock_delete.assert_called_once_with(
             "http://api.example.com/v1/tests/1",
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
     @patch("requests.Session.delete")
