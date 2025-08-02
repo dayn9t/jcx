@@ -2,7 +2,7 @@ from enum import IntEnum
 
 from rich.table import Table
 
-from jcx.db.record import Record
+from jcx.db.record import RecordSid
 from jcx.time.dt_util import now_sh_dt, Datetime
 
 
@@ -15,7 +15,7 @@ class TaskStatus(IntEnum):
     ERROR = 3  # 出错
 
 
-class TaskInfo(Record):
+class TaskInfo(RecordSid):
     """任务信息
 
     包含任务基本信息，用于描述需要处理的视频分析任务
@@ -33,7 +33,7 @@ class TaskInfo(Record):
     """任务数据，存储任务相关的JSON数据或其他信息"""
 
 
-class StatusInfo(Record):
+class StatusInfo(RecordSid):
     """任务状态记录类
 
     记录任务的状态信息，用于跟踪任务的执行进度和状态

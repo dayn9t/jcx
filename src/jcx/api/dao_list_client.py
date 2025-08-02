@@ -1,17 +1,15 @@
 from typing import TypeVar, Optional, List, Dict, Any, Generic
 import requests
 
-from jcx.db.record import Record
+from jcx.db.record import RecordSid
 from rustshed import Result, Ok, Err
 
-R = TypeVar("R", bound=Record)
+R = TypeVar("R", bound=RecordSid)
 T = TypeVar("T")
 
 # 定义类型别名，简化 Result[X, Exception] 的重复使用
 ResultE = Result[T, Exception]
 """返回结果或异常的 Result 类型"""
-ResultBool = Result[bool, Exception]
-"""返回布尔值或异常的 Result 类型"""
 
 
 class DaoListClient:
