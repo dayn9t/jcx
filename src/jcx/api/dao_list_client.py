@@ -1,4 +1,4 @@
-from typing import TypeVar, Optional, List, Dict, Any, Generic
+from typing import TypeVar, Optional, List, Dict, Any
 import requests
 
 from jcx.db.record import RecordSid
@@ -48,9 +48,9 @@ class DaoListClient:
             包含记录对象列表的Result
 
         Example:
-            >>> result = client.get_all(UserRecord, "users", {"status": "active"})
-            >>> if result.is_ok():
-            >>>     users = result.unwrap()
+            result = client.get_all(UserRecord, "users", {"status": "active"})
+            if result.is_ok():
+                 users = result.unwrap()
         """
         try:
             url = f"{self.base_url}/{table_name}"
@@ -77,9 +77,9 @@ class DaoListClient:
             包含记录对象的Result
 
         Example:
-            >>> result = client.get(UserRecord, "users", 123)
-            >>> if result.is_ok():
-            >>>     user = result.unwrap()
+            result = client.get(UserRecord, "users", 123)
+            if result.is_ok():
+                user = result.unwrap()
         """
         try:
             url = f"{self.base_url}/{table_name}/{record_id}"
@@ -106,8 +106,8 @@ class DaoListClient:
             包含创建后的记录对象的Result
 
         Example:
-            >>> user = UserRecord(name="张三", age=30)
-            >>> result = client.post("users", user)
+            user = UserRecord(name="张三", age=30)
+            result = client.post("users", user)
         """
         try:
             url = f"{self.base_url}/{table_name}"
@@ -133,8 +133,8 @@ class DaoListClient:
             包含更新后的记录对象的Result
 
         Example:
-            >>> user.name = "李四"
-            >>> result = client.put("users", user)
+            user.name = "李四"
+            result = client.put("users", user)
         """
         try:
             if not hasattr(record, "id") or record.id is None:
@@ -163,7 +163,7 @@ class DaoListClient:
             包含操作成功状态的Result
 
         Example:
-            >>> result = client.delete("users", 123)
+            result = client.delete("users", 123)
         """
         try:
             url = f"{self.base_url}/{table_name}/{record_id}"
