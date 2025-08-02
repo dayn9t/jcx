@@ -63,7 +63,7 @@ class DaoListClient:
         except Exception as e:
             return Err(f"获取所有资源失败: {str(e)}")
 
-    def get(self, record_type: type[R], table_name: str, record_id: int) -> ResultE[R]:
+    def get(self, record_type: type[R], table_name: str, record_id: str) -> ResultE[R]:
         """获取单个资源项目
 
         发送GET请求获取指定表中的单条记录
@@ -150,7 +150,7 @@ class DaoListClient:
         except Exception as e:
             return Err(f"更新资源失败: {str(e)}")
 
-    def delete(self, table_name: str, record_id: int) -> ResultE[bool]:
+    def delete(self, table_name: str, record_id: str) -> ResultE[bool]:
         """删除资源项目
 
         发送DELETE请求删除指定记录
