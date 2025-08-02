@@ -1,10 +1,9 @@
 from enum import IntEnum
 
+from rich.table import Table
+
 from jcx.db.record import Record
 from jcx.time.dt_util import now_sh_dt, Datetime
-from rich.console import Console
-from rich.table import Table
-from rich import print as rprint
 
 
 class TaskStatus(IntEnum):
