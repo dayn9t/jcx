@@ -1,8 +1,10 @@
-from jcx.api.dao_list_client import ResultE, DaoListClient
-from jcx.api.task.task_db import TaskInfo, StatusInfo, TaskStatus
-from jcx.time.dt_util import now_sh_dt
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, Tuple
+
 from rustshed import Ok, Err
+
+from jcx.api.dao_list_client import ResultE, DaoListClient
+from jcx.api.task.task_types import TaskInfo, StatusInfo, TaskStatus
+from jcx.time.dt_util import now_sh_dt
 
 
 class TaskClient:
