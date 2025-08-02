@@ -10,6 +10,8 @@ T = TypeVar("T")
 # 定义类型别名，简化 Result[X, Exception] 的重复使用
 ResultE = Result[T, Exception]
 """返回结果或异常的 Result 类型"""
+ResultBool = Result[bool, Exception]
+"""返回布尔值或异常的 Result 类型"""
 
 
 class DaoListClient:
