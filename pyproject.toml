@@ -26,10 +26,10 @@ dependencies = [
 ]
 
 [project.scripts]
-cx_rename = "jcx.bin.cx_rename.py:main"
-cx_task = "jcx.bin.cx_task.py:main"
-mv_re = "jcx.bin.mv_re.py:main"
-rename_re = "jcx.bin.rename_re.py:main"
+cx_rename = "jcx.bin.cx_rename:main"
+cx_task = "jcx.bin.cx_task:main"
+mv_re = "jcx.bin.mv_re:main"
+rename_re = "jcx.bin.rename_re:main"
 
 [build-system]
 requires = ["hatchling"]
