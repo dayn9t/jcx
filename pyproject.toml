@@ -39,4 +39,3 @@ build-backend = "hatchling.build"
 dev = [
     "pytest",
 ]
-
