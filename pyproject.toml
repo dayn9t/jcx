@@ -1,6 +1,6 @@
 [project]
 name = "jcx"
-version = "0.5.0"
+version = "0.5.1"
 description = "Add your description here"
 readme = "README.md"
 authors = [
@@ -25,6 +25,11 @@ dependencies = [
     "numpy",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
 [project.scripts]
 cx_rename = "jcx.bin.cx_rename:main"
 cx_task = "jcx.bin.cx_task:main"
@@ -35,7 +40,3 @@ rename_re = "jcx.bin.rename_re:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[dependency-groups]
-dev = [
-    "pytest",
-]
