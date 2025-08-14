@@ -2,7 +2,7 @@ from typing import Optional, Tuple
 
 from rustshed import Ok, Err
 
-from jcx.api.dao_list_client import ResultE, DaoListClient
+from jcx.api.dao_client import ResultE, DaoListClient
 from jcx.api.task.task_types import TaskInfo, StatusInfo, TaskStatus
 from jcx.time.dt_util import now_sh_dt
 
@@ -26,6 +26,24 @@ class TaskClient:
         self._task_table_name = task_table_name
         self._status_table_name = status_table_name
 
+    def set_auth_token(self, token: str) -> None:
+        """设置认证令牌
+
+        Args:
+            token: 认证令牌字符串
+        """
+        self._client.set_auth_token(token)
+
+    def get_all_tasks(self, params: Optional[dict] = None) -> ResultE[list[TaskInfo]]:
+        """获取全部任务列表，可选过滤参数
+
+        Args:
+            params: 查询参数字典，用于过滤结果集
+        Returns:
+            ResultE[list[TaskInfo]]: 所有任务记录列表
+        """
+        return self._client.get_all(TaskInfo, self._task_table_name, params)
+
     def add_task(self, task: TaskInfo) -> ResultE[TaskInfo]:
         """添加新任务记录
 
@@ -36,6 +54,18 @@ class TaskClient:
             ResultE[TaskInfo]: 添加后的任务记录，如果ID已存在则返回None
         """
         return self._client.post(self._task_table_name, task)
+
+    def get_all_statuses(
+        self, params: Optional[dict] = None
+    ) -> ResultE[list[StatusInfo]]:
+        """获取全部任务状态列表，可选过滤参数
+
+        Args:
+            params: 查询参数字典，用于过滤结果集
+        Returns:
+            ResultE[list[StatusInfo]]: 所有任务状态记录列表
+        """
+        return self._client.get_all(StatusInfo, self._status_table_name, params)
 
     def get_task_status(self, task_id: str) -> ResultE[StatusInfo]:
         """获取指定任务的状态信息

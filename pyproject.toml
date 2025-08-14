@@ -1,6 +1,6 @@
 [project]
 name = "jcx"
-version = "0.5.1"
+version = "0.5.2"
 description = "Add your description here"
 readme = "README.md"
 authors = [
@@ -33,6 +33,7 @@ dev = [
 [project.scripts]
 cx_rename = "jcx.bin.cx_rename:main"
 cx_task = "jcx.bin.cx_task:main"
+cx_dao = "jcx.bin.cx_dao:main"
 mv_re = "jcx.bin.mv_re:main"
 rename_re = "jcx.bin.rename_re:main"
 

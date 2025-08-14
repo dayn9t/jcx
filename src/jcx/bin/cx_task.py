@@ -1,346 +1,327 @@
-"""
-任务管理命令行工具
-
-使用 DaoListClient 与任务管理服务进行交互，支持任务和任务状态的 CRUD 操作。
-基于 typer 构建的完整命令行应用，演示 REST API 交互。
-"""
-
-import json
-import uuid
-
-import sys
+from pathlib import Path
 from typing import Optional
 
 import typer
 from rich import print as rprint
 from rich.console import Console
+from rich.table import Table
 
-from jcx.api.dao_list_client import DaoListClient
-from jcx.api.task.task_types import (
-    TaskInfo,
-    StatusInfo,
-    tasks_table,
-    task_table,
-    status_list_table,
-    status_table,
-    TaskStatus,
-)
+import sys
+from jcx.api.task.task_client import TaskClient
+from jcx.api.task.task_types import TaskInfo, TaskStatus
+from jcx.time.dt_util import now_sh_dt
 
-# 创建 typer 应用和控制台对象
 app = typer.Typer(help="任务管理命令行工具")
-tasks_app = typer.Typer(help="任务相关操作")
-statuses_app = typer.Typer(help="任务状态相关操作")
-app.add_typer(tasks_app, name="tasks")
-app.add_typer(statuses_app, name="statuses")
 console = Console()
 
 
-@tasks_app.callback()
-def tasks_callback():
-    """任务管理相关命令"""
-    pass
+class Config:
+    """配置类，存储全局配置"""
+
+    # 默认数据库URL
+    db_url: str = "http://localhost:8080/api"
+    # 默认表名
+    task_table: str = "tasks"
+    status_table: str = "statuses"
+    # TaskClient实例
+    client: Optional[TaskClient] = None
 
 
-@statuses_app.callback()
-def statuses_callback():
-    """任务状态相关命令"""
-    pass
+def get_client(base_url: Optional[str] = None) -> TaskClient:
+    """获取或创建TaskClient实例"""
+    if Config.client is None:
+        url = base_url or Config.db_url
+        Config.client = TaskClient(url, Config.task_table, Config.status_table)
+    return Config.client
 
 
-@tasks_app.command("list")
-def list_tasks(
-    base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-    filter_json: Optional[str] = typer.Option(
-        None, "--filter", "-f", help="过滤条件 (JSON格式)"
-    ),
+@app.callback()
+def callback(
+    db_url: str = typer.Option(None, "--url", "-u", help="服务器URL"),
+    task_table: str = typer.Option(None, "--task-table", help="任务表名称"),
+    status_table: str = typer.Option(None, "--status-table", help="状态表名称"),
 ):
-    """获取所有任务
+    """全局配置选项"""
+    if db_url:
+        Config.db_url = db_url
+    if task_table:
+        Config.task_table = task_table
+    if status_table:
+        Config.status_table = status_table
 
-    GET /tasks
-    """
-    client = DaoListClient(base_url)
 
-    # 解析过滤参数
-    params = None
-    if filter_json:
-        try:
-            params = json.loads(filter_json)
-        except json.JSONDecodeError:
-            rprint("[red]过滤参数格式错误，请提供有效的JSON字符串[/red]")
-            sys.exit(1)
+@app.command("list")
+def list_tasks():
+    """列出所有任务"""
+    client = get_client()
+    result = client.get_all_tasks()
 
-    # 获取所有任务
-    result = client.get_all(TaskInfo, "tasks", params)
-
-    if result.is_ok():
-        tasks = result.unwrap()
-        console.print(tasks_table(tasks))
-    else:
-        rprint(f"[red]获取任务列表失败: {result.unwrap_err()}[/red]")
+    if result.is_err():
+        console.print(f"[red]获取任务列表失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
+    tasks = result.unwrap()
+    if not tasks:
+        console.print("[yellow]没有找到任何任务[/yellow]")
+        return
 
-@tasks_app.command("get")
-def get_task(
-    task_id: str = typer.Argument(..., help="任务ID"),
-    base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-):
-    """获取指定任务
+    # 创建表格
+    table = Table("ID", "名称", "类型", "创建时间", "描述")
+    for task in tasks:
+        table.add_row(
+            task.id, task.name, str(task.type), str(task.created_at), task.desc or ""
+        )
 
-    GET /tasks/{id}
-    """
-    client = DaoListClient(base_url)
+    console.print(table)
 
-    # 获取指定任务
-    result = client.get(TaskInfo, "tasks", task_id)
 
-    if result.is_ok():
-        task = result.unwrap()
-        console.print(task_table(task))
-    else:
-        rprint(f"[red]获取任务失败: {result.unwrap_err()}[/red]")
+@app.command("status")
+def list_statuses():
+    """列出所有任务状态"""
+    client = get_client()
+    result = client.get_all_statuses()
+
+    if result.is_err():
+        console.print(f"[red]获取任务状态列表失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
+    statuses = result.unwrap()
+    if not statuses:
+        console.print("[yellow]没有找到任何任务状态[/yellow]")
+        return
 
-@tasks_app.command("create")
-def create_task(
-    base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
+    # 创建表格
+    table = Table("任务ID", "状态", "进度", "开始时间", "更新时间", "启用")
+    for status in statuses:
+        status_text = {
+            TaskStatus.NOT_STARTED: "未启动",
+            TaskStatus.IN_PROGRESS: "进行中",
+            TaskStatus.COMPLETED: "已完成",
+            TaskStatus.ERROR: "出错",
+        }.get(status.status, str(status.status))
+
+        table.add_row(
+            status.id,
+            status_text,
+            f"{status.progress}%",
+            str(status.start_time or ""),
+            str(status.update_time or ""),
+            "是" if status.enabled else "否",
+        )
+
+    console.print(table)
+
+
+@app.command("add")
+def add_task(
     name: str = typer.Option(..., "--name", "-n", help="任务名称"),
     task_type: int = typer.Option(..., "--type", "-t", help="任务类型"),
-    desc: Optional[str] = typer.Option(None, "--desc", "-d", help="任务描述"),
-    data: str = typer.Option(..., "--data", help="任务数据 (JSON格式)"),
+    data: str = typer.Option(..., "--data", "-d", help="任务数据，JSON格式或文件路径"),
+    desc: Optional[str] = typer.Option(None, "--desc", help="任务描述"),
 ):
-    """创建新任务
-
-    POST /tasks
-    """
-    client = DaoListClient(base_url)
+    """添加新任务"""
+    # 判断data是否为文件路径
+    data_content = data
+    if Path(data).is_file():
+        try:
+            with open(data, "r", encoding="utf-8") as f:
+                data_content = f.read()
+        except Exception as e:
+            console.print(f"[red]读取数据文件失败: {str(e)}[/red]")
+            sys.exit(1)
 
     # 创建任务对象
     task = TaskInfo(
-        id=str(uuid.uuid4()),  # ID将由服务器分配
+        id="",  # ID会由系统生成
         name=name,
         type=task_type,
+        created_at=now_sh_dt(),
         desc=desc,
-        data=data,
+        data=data_content,
     )
 
-    # 提交创建请求
-    result = client.post("tasks", task)
+    # 添加任务
+    client = get_client()
+    result = client.add_task(task)
 
-    if result.is_ok():
-        created_task = result.unwrap()
-        rprint("[green]任务创建成功[/green]")
-        task_table(created_task)
-    else:
-        rprint(f"[red]创建任务失败: {result.unwrap_err()}[/red]")
+    if result.is_err():
+        console.print(f"[red]添加任务失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
+    new_task = result.unwrap()
+    console.print(f"[green]成功添加任务[/green]: {new_task.id}")
 
-@tasks_app.command("delete")
-def delete_task(
+
+@app.command("start")
+def start_task(
     task_id: str = typer.Argument(..., help="任务ID"),
-    base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-    force: bool = typer.Option(False, "--force", "-f", help="强制删除，不提示确认"),
+    worker: Optional[str] = typer.Option(None, "--worker", "-w", help="工作者标识"),
 ):
-    """删除指定任务
+    """开始执行指定任务"""
+    client = get_client()
+    result = client.task_start(task_id, worker)
 
-    DELETE /tasks/{id}
-    """
-    # 确认删除
-    if not force:
-        confirm = typer.confirm(f"确定要删除ID为 {task_id} 的任务吗?")
-        if not confirm:
-            rprint("操作已取消")
-            return
-
-    client = DaoListClient(base_url)
-
-    # 发送删除请求
-    result = client.delete("tasks", task_id)
-
-    if result.is_ok():
-        rprint(f"[green]已成功删除ID为 {task_id} 的任务[/green]")
-    else:
-        rprint(f"[red]删除任务失败: {result.unwrap_err()}[/red]")
+    if result.is_err():
+        console.print(f"[red]启动任务失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
+    status = result.unwrap()
+    console.print(f"[green]成功启动任务[/green]: {status.id}")
 
-@statuses_app.command("list")
-def list_statuses(
-    base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-    filter_json: Optional[str] = typer.Option(
-        None, "--filter", "-f", help="过滤条件 (JSON格式)"
+
+@app.command("update")
+def update_progress(
+    task_id: str = typer.Argument(..., help="任务ID"),
+    progress: int = typer.Option(
+        ..., "--progress", "-p", min=0, max=100, help="任务进度(0-100)"
     ),
+    status: Optional[int] = typer.Option(None, "--status", "-s", help="任务状态码"),
 ):
-    """获取所有任务状态
+    """更新任务进度"""
+    client = get_client()
 
-    GET /statuses
-    """
-    client = DaoListClient(base_url)
-
-    # 解析过滤参数
-    params = None
-    if filter_json:
-        try:
-            params = json.loads(filter_json)
-        except json.JSONDecodeError:
-            rprint("[red]过滤参数格式错误，请提供有效的JSON字符串[/red]")
-            sys.exit(1)
-
-    # 获取所有任务状态
-    result = client.get_all(StatusInfo, "statuses", params)
-
-    if result.is_ok():
-        statuses = result.unwrap()
-        console.print(status_list_table(statuses))
-    else:
-        rprint(f"[red]获取任务状态列表失败: {result.unwrap_err()}[/red]")
-        sys.exit(1)
-
-
-@statuses_app.command("get")
-def get_status(
-    status_id: str = typer.Argument(..., help="状态ID"),
-    base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-):
-    """获取指定任务状态
-
-    GET /statuses/{id}
-    """
-    client = DaoListClient(base_url)
-
-    # 获取指定任务状态
-    result = client.get(StatusInfo, "statuses", status_id)
-
-    if result.is_ok():
-        status = result.unwrap()
-        console.print(status_table(status))
-    else:
-        rprint(f"[red]获取任务状态失败: {result.unwrap_err()}[/red]")
-        sys.exit(1)
-
-
-@statuses_app.command("update")
-def update_status(
-    status_id: str = typer.Argument(..., help="状态ID"),
-    base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-    status: Optional[int] = typer.Option(
-        None, "--status", "-s", help="任务状态码 (0-3)"
-    ),
-    progress: Optional[int] = typer.Option(
-        None, "--progress", "-p", help="任务进度 (0-100)"
-    ),
-    enabled: Optional[bool] = typer.Option(
-        None, "--enabled/--disabled", help="是否启用"
-    ),
-):
-    """更新指定任务状态
-
-    PUT /statuses/{id}
-    """
-    client = DaoListClient(base_url)
-
-    # 首先获取当前任务状态
-    get_result = client.get(StatusInfo, "statuses", status_id)
-    if not get_result.is_ok():
-        rprint(f"[red]获取任务状态失败: {get_result.unwrap_err()}[/red]")
-        sys.exit(1)
-
-    current_status = get_result.unwrap()
-
-    # 更新提供的字段
+    task_status = None
     if status is not None:
         try:
-            current_status.status = TaskStatus(status)
+            task_status = TaskStatus(status)
         except ValueError:
-            rprint("[red]无效的状态码，必须是 0-3 之间的整数[/red]")
+            console.print(f"[red]无效的状态码: {status}[/red]")
             sys.exit(1)
 
-    if progress is not None:
-        if not (0 <= progress <= 100):
-            rprint("[red]无效的进度值，必须是 0-100 之间的整数[/red]")
-            sys.exit(1)
-        current_status.progress = progress
+    result = client.update_progress(task_id, progress, task_status)
 
-    if enabled is not None:
-        current_status.enabled = enabled
-
-    # 发送更新请求
-    result = client.put("statuses", current_status)
-
-    if result.is_ok():
-        updated_status = result.unwrap()
-        rprint("[green]任务状态更新成功[/green]")
-        status_table(updated_status)
-    else:
-        rprint(f"[red]更新任务状态失败: {result.unwrap_err()}[/red]")
+    if result.is_err():
+        console.print(f"[red]更新任务进度失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-
-@app.command()
-def demo():
-    """运行演示程序
-
-    展示如何使用此工具操作任务和任务状态
-    """
-    rprint("[bold blue]===== 任务管理命令行工具演示 =====[/bold blue]")
-    rprint("以下是一些常用命令示例：\n")
-
-    rprint("[bold cyan]1. 获取所有任务[/bold cyan]")
-    rprint("  python -m jcx.bin.cx_task tasks list --url http://api.example.com/v1")
-    rprint("  # 可选：添加过滤条件")
-    rprint(
-        "  python -m jcx.bin.cx_task tasks list --url http://api.example.com/v1 --filter '{\"type\": 1}'\n"
+    status = result.unwrap()
+    console.print(
+        f"[green]成功更新任务进度[/green]: {status.id}，当前进度: {status.progress}%"
     )
 
-    rprint("[bold cyan]2. 获取单个任务[/bold cyan]")
-    rprint(
-        "  python -m jcx.bin.cx_task tasks get 123 --url http://api.example.com/v1\n"
+
+@app.command("complete")
+def complete_task(task_id: str = typer.Argument(..., help="任务ID")):
+    """标记任务为已完成"""
+    client = get_client()
+    result = client.task_done(task_id)
+
+    if result.is_err():
+        console.print(f"[red]完成任务失败: {result.unwrap_err()}[/red]")
+        sys.exit(1)
+
+    status = result.unwrap()
+    console.print(f"[green]成功完成任务[/green]: {status.id}")
+
+
+@app.command("error")
+def mark_error(task_id: str = typer.Argument(..., help="任务ID")):
+    """标记任务为出错状态"""
+    client = get_client()
+    result = client.task_error(task_id)
+
+    if result.is_err():
+        console.print(f"[red]标记任务出错失败: {result.unwrap_err()}[/red]")
+        sys.exit(1)
+
+    status = result.unwrap()
+    console.print(f"[green]成功标记任务为出错状态[/green]: {status.id}")
+
+
+@app.command("info")
+def get_task_info(task_id: str = typer.Argument(..., help="任务ID")):
+    """获取指定任务的详细信息和状态"""
+    client = get_client()
+
+    # 获取任务信息
+    task_result = client._client.get(TaskInfo, client._task_table_name, task_id)
+    status_result = client.get_task_status(task_id)
+
+    if task_result.is_err():
+        console.print(f"[red]获取任务信息失败: {task_result.unwrap_err()}[/red]")
+        sys.exit(1)
+
+    if status_result.is_err():
+        console.print(f"[red]获取任务状态失败: {status_result.unwrap_err()}[/red]")
+        sys.exit(1)
+
+    task = task_result.unwrap()
+    status = status_result.unwrap()
+
+    # 显示任务详细信息
+    console.print("[blue]任务信息[/blue]")
+    console.print(f"ID: {task.id}")
+    console.print(f"名称: {task.name}")
+    console.print(f"类型: {task.type}")
+    console.print(f"创建时间: {task.created_at}")
+    console.print(f"描述: {task.desc or '无'}")
+    console.print(
+        f"数据: {task.data[:100]}..." if len(task.data) > 100 else f"数据: {task.data}"
     )
 
-    rprint("[bold cyan]3. 创建新任务[/bold cyan]")
-    rprint(
-        "  python -m jcx.bin.cx_task tasks create --url http://api.example.com/v1 \\"
-    )
-    rprint(
-        '    --name "视频分析任务" --type 2 --desc "分析监控视频" --data "{\\"video_url\\": \\"http://example.com/video.mp4\\"}"'
-    )
+    console.print("\n[blue]任务状态[/blue]")
+    status_text = {
+        TaskStatus.NOT_STARTED: "未启动",
+        TaskStatus.IN_PROGRESS: "进行中",
+        TaskStatus.COMPLETED: "已完成",
+        TaskStatus.ERROR: "出错",
+    }.get(status.status, str(status.status))
+    console.print(f"状态: {status_text}")
+    console.print(f"进度: {status.progress}%")
+    console.print(f"开始时间: {status.start_time or '未开始'}")
+    console.print(f"更新时间: {status.update_time or '无'}")
+    console.print(f"启用状态: {'已启用' if status.enabled else '已禁用'}")
 
-    rprint("[bold cyan]4. 删除任务[/bold cyan]")
-    rprint(
-        "  python -m jcx.bin.cx_task tasks delete 123 --url http://api.example.com/v1"
-    )
-    rprint("  # 强制删除（不提示确认）")
-    rprint(
-        "  python -m jcx.bin.cx_task tasks delete 123 --url http://api.example.com/v1 --force\n"
-    )
 
-    rprint("[bold cyan]5. 获取所有任务状态[/bold cyan]")
-    rprint(
-        "  python -m jcx.bin.cx_task statuses list --url http://api.example.com/v1\n"
-    )
+@app.command("next")
+def find_next_task():
+    """查找下一个可执行的任务"""
+    client = get_client()
+    result = client.find_task()
 
-    rprint("[bold cyan]6. 获取单个任务状态[/bold cyan]")
-    rprint(
-        "  python -m jcx.bin.cx_task statuses get 123 --url http://api.example.com/v1\n"
-    )
+    if result.is_err():
+        console.print(f"[yellow]{result.unwrap_err()}[/yellow]")
+        return
 
-    rprint("[bold cyan]7. 更新任务状态[/bold cyan]")
-    rprint("  # 更新状态为进行中")
-    rprint(
-        "  python -m jcx.bin.cx_task statuses update 123 --url http://api.example.com/v1 --status 1 --progress 50"
-    )
-    rprint("  # 更新状态为完成")
-    rprint(
-        "  python -m jcx.bin.cx_task statuses update 123 --url http://api.example.com/v1 --status 2 --progress 100"
-    )
-    rprint("  # 禁用任务")
-    rprint(
-        "  python -m jcx.bin.cx_task statuses update 123 --url http://api.example.com/v1 --disabled\n"
-    )
+    task, status = result.unwrap()
+    console.print("[green]找到可执行任务[/green]:")
+    console.print(f"ID: {task.id}")
+    console.print(f"名称: {task.name}")
+    console.print(f"类型: {task.type}")
+    console.print(f"描述: {task.desc or '无'}")
+    console.print(f"创建时间: {task.created_at}")
 
-    rprint("[bold blue]提示：所有命令都需要 --url 参数指定API服务器地址[/bold blue]")
+
+@app.command("enable")
+def enable_task(
+    task_id: str = typer.Argument(..., help="任务ID"),
+    enable: bool = typer.Option(True, help="是否启用任务"),
+):
+    """启用或禁用任务"""
+    client = get_client()
+
+    # 获取当前状态
+    status_result = client.get_task_status(task_id)
+    if status_result.is_err():
+        console.print(f"[red]获取任务状态失败: {status_result.unwrap_err()}[/red]")
+        sys.exit(1)
+
+    status = status_result.unwrap()
+    # 更新启用状态
+    status.enabled = enable
+    status.update_time = now_sh_dt()
+
+    # 提交更新
+    result = client._client.put(client._status_table_name, status)
+
+    if result.is_err():
+        console.print(
+            f"[red]{'启用' if enable else '禁用'}任务失败: {result.unwrap_err()}[/red]"
+        )
+        sys.exit(1)
+
+    status = result.unwrap()
+    console.print(f"[green]已{'启用' if enable else '禁用'}任务[/green]: {status.id}")
 
 
 def main():

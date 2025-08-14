@@ -13,7 +13,7 @@ import json
 import pytest
 from typing import List, Dict, Any
 
-from jcx.api.dao_list_client import DaoListClient
+from jcx.api.dao_client import DaoListClient
 from jcx.db.record import Record
 from rustshed import Ok, Err, Result
 
