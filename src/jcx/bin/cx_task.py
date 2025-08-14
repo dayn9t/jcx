@@ -6,6 +6,8 @@
 """
 
 import json
+import uuid
+
 import sys
 from typing import Optional
 
@@ -80,7 +82,7 @@ def list_tasks(
 
 @tasks_app.command("get")
 def get_task(
-    task_id: int = typer.Argument(..., help="任务ID"),
+    task_id: str = typer.Argument(..., help="任务ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
 ):
     """获取指定任务
@@ -116,7 +118,7 @@ def create_task(
 
     # 创建任务对象
     task = TaskInfo(
-        id=0,  # ID将由服务器分配
+        id=str(uuid.uuid4()),  # ID将由服务器分配
         name=name,
         type=task_type,
         desc=desc,
@@ -137,7 +139,7 @@ def create_task(
 
 @tasks_app.command("delete")
 def delete_task(
-    task_id: int = typer.Argument(..., help="任务ID"),
+    task_id: str = typer.Argument(..., help="任务ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
     force: bool = typer.Option(False, "--force", "-f", help="强制删除，不提示确认"),
 ):
@@ -199,7 +201,7 @@ def list_statuses(
 
 @statuses_app.command("get")
 def get_status(
-    status_id: int = typer.Argument(..., help="状态ID"),
+    status_id: str = typer.Argument(..., help="状态ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
 ):
     """获取指定任务状态
@@ -221,7 +223,7 @@ def get_status(
 
 @statuses_app.command("update")
 def update_status(
-    status_id: int = typer.Argument(..., help="状态ID"),
+    status_id: str = typer.Argument(..., help="状态ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
     status: Optional[int] = typer.Option(
         None, "--status", "-s", help="任务状态码 (0-3)"

@@ -37,7 +37,7 @@ class TaskClient:
         """
         return self._client.post(self._task_table_name, task)
 
-    def get_task_status(self, task_id: int) -> ResultE[StatusInfo]:
+    def get_task_status(self, task_id: str) -> ResultE[StatusInfo]:
         """获取指定任务的状态信息
 
         Args:
@@ -80,7 +80,7 @@ class TaskClient:
         return Ok((task_result.unwrap(), first_status))
 
     def task_start(
-        self, task_id: int, worker: Optional[str] = None
+        self, task_id: str, worker: Optional[str] = None
     ) -> ResultE[StatusInfo]:
         """开始执行指定任务
 
@@ -108,7 +108,7 @@ class TaskClient:
         # 提交更新
         return self._client.put(self._status_table_name, status)
 
-    def task_done(self, task_id: int) -> ResultE[StatusInfo]:
+    def task_done(self, task_id: str) -> ResultE[StatusInfo]:
         """终结指定任务
 
         将任务状态设置为已完成，进度设为100%
@@ -121,7 +121,7 @@ class TaskClient:
         """
         return self.update_progress(task_id, 100, TaskStatus.COMPLETED)
 
-    def task_error(self, task_id: int) -> ResultE[StatusInfo]:
+    def task_error(self, task_id: str) -> ResultE[StatusInfo]:
         """标记指定任务为出错
 
         Args:
@@ -144,7 +144,7 @@ class TaskClient:
         return self._client.put(self._status_table_name, status)
 
     def update_progress(
-        self, task_id: int, progress: int, status: TaskStatus = None
+        self, task_id: str, progress: int, status: TaskStatus = None
     ) -> ResultE[StatusInfo]:
         """更新指定任务进度
 
