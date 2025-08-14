@@ -136,6 +136,7 @@ class TaskClient:
         status.progress = 0
         status.start_time = now_sh_dt()
         status.update_time = now_sh_dt()
+        status.worker_id = worker
 
         # 提交更新
         return self._client.put(self._status_table_name, status)

@@ -9,10 +9,14 @@ from jcx.time.dt_util import now_sh_dt, Datetime
 class TaskStatus(IntEnum):
     """任务状态枚举类型"""
 
-    PENDING = 0  # 未启动
-    IN_PROGRESS = 1  # 进行中
-    COMPLETED = 2  # 完成
-    ERROR = 3  # 出错
+    PENDING = 0
+    """未启动"""
+    IN_PROGRESS = 1
+    """进行中"""
+    COMPLETED = 2
+    """完成"""
+    ERROR = 3
+    """出错"""
 
 
 class TaskInfo(RecordSid):
