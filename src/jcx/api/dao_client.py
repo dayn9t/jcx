@@ -4,6 +4,8 @@ import requests
 from jcx.db.record import RecordSid
 from rustshed import Result, Ok, Err
 
+from jcx.text.txt_json import to_json
+
 R = TypeVar("R", bound=RecordSid)
 T = TypeVar("T")
 
@@ -111,8 +113,8 @@ class DaoListClient:
         """
         try:
             url = f"{self.base_url}/{table_name}"
-            data = record.model_dump()
-            response = self.session.post(url, json=data, headers=self.headers)
+            data = to_json(record)
+            response = self.session.post(url, data=data, headers=self.headers)
             response.raise_for_status()
 
             response_data = response.json()
@@ -141,8 +143,8 @@ class DaoListClient:
                 return Err("更新资源失败: 记录缺少id字段")
 
             url = f"{self.base_url}/{table_name}/{record.id}"
-            data = record.model_dump()
-            response = self.session.put(url, json=data, headers=self.headers)
+            data = to_json(record)
+            response = self.session.put(url, data=data, headers=self.headers)
             response.raise_for_status()
 
             response_data = response.json()

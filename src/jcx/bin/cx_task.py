@@ -15,6 +15,13 @@ app = typer.Typer(help="任务管理命令行工具")
 console = Console()
 
 
+def format_datetime(dt) -> str:
+    """将日期时间格式化为简洁格式"""
+    if dt is None:
+        return ""
+    return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+
 class Config:
     """配置类，存储全局配置"""
 
@@ -66,10 +73,15 @@ def list_tasks():
         return
 
     # 创建表格
-    table = Table("ID", "名称", "类型", "创建时间", "描述")
+    table = Table("ID", "名称", "类型", "创建时间", "数据", "描述")
     for task in tasks:
         table.add_row(
-            task.id, task.name, str(task.type), str(task.created_at), task.desc or ""
+            task.id,
+            task.name,
+            str(task.type),
+            format_datetime(task.created_at),
+            task.data,
+            task.desc or "",
         )
 
     console.print(table)
@@ -94,7 +106,7 @@ def list_statuses():
     table = Table("任务ID", "状态", "进度", "开始时间", "更新时间", "启用")
     for status in statuses:
         status_text = {
-            TaskStatus.NOT_STARTED: "未启动",
+            TaskStatus.PENDING: "未启动",
             TaskStatus.IN_PROGRESS: "进行中",
             TaskStatus.COMPLETED: "已完成",
             TaskStatus.ERROR: "出错",
@@ -104,8 +116,8 @@ def list_statuses():
             status.id,
             status_text,
             f"{status.progress}%",
-            str(status.start_time or ""),
-            str(status.update_time or ""),
+            format_datetime(status.start_time),
+            format_datetime(status.update_time),
             "是" if status.enabled else "否",
         )
 
@@ -253,7 +265,7 @@ def get_task_info(task_id: str = typer.Argument(..., help="任务ID")):
     console.print(f"ID: {task.id}")
     console.print(f"名称: {task.name}")
     console.print(f"类型: {task.type}")
-    console.print(f"创建时间: {task.created_at}")
+    console.print(f"创建时间: {format_datetime(task.created_at)}")
     console.print(f"描述: {task.desc or '无'}")
     console.print(
         f"数据: {task.data[:100]}..." if len(task.data) > 100 else f"数据: {task.data}"
@@ -261,15 +273,19 @@ def get_task_info(task_id: str = typer.Argument(..., help="任务ID")):
 
     console.print("\n[blue]任务状态[/blue]")
     status_text = {
-        TaskStatus.NOT_STARTED: "未启动",
+        TaskStatus.PENDING: "未启动",
         TaskStatus.IN_PROGRESS: "进行中",
         TaskStatus.COMPLETED: "已完成",
         TaskStatus.ERROR: "出错",
     }.get(status.status, str(status.status))
     console.print(f"状态: {status_text}")
     console.print(f"进度: {status.progress}%")
-    console.print(f"开始时间: {status.start_time or '未开始'}")
-    console.print(f"更新时间: {status.update_time or '无'}")
+    console.print(
+        f"开始时间: {status.start_time and format_datetime(status.start_time) or '未开始'}"
+    )
+    console.print(
+        f"更新时间: {status.update_time and format_datetime(status.update_time) or '无'}"
+    )
     console.print(f"启用状态: {'已启用' if status.enabled else '已禁用'}")
 
 
@@ -289,7 +305,7 @@ def find_next_task():
     console.print(f"名称: {task.name}")
     console.print(f"类型: {task.type}")
     console.print(f"描述: {task.desc or '无'}")
-    console.print(f"创建时间: {task.created_at}")
+    console.print(f"创建时间: {format_datetime(task.created_at)}")
 
 
 @app.command("enable")

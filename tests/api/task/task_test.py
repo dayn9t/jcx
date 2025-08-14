@@ -5,7 +5,7 @@ from jcx.text.txt_json import to_json
 
 
 class TaskStatusModel(BaseModel):
-    status: TaskStatus = TaskStatus.NOT_STARTED
+    status: TaskStatus = TaskStatus.PENDING
 
 
 def test_task_status_serialization():

@@ -9,7 +9,7 @@ from jcx.time.dt_util import now_sh_dt, Datetime
 class TaskStatus(IntEnum):
     """任务状态枚举类型"""
 
-    NOT_STARTED = 0  # 未启动
+    PENDING = 0  # 未启动
     IN_PROGRESS = 1  # 进行中
     COMPLETED = 2  # 完成
     ERROR = 3  # 出错
@@ -39,7 +39,7 @@ class StatusInfo(RecordSid):
     记录任务的状态信息，用于跟踪任务的执行进度和状态
     """
 
-    status: TaskStatus = TaskStatus.NOT_STARTED
+    status: TaskStatus = TaskStatus.PENDING
     """任务状态码，0-未启动，1-进行，2-完成，3-出错"""
     progress: int = 0
     """任务进度值，范围从起始进度到结束进度"""
@@ -86,6 +86,7 @@ def tasks_table(tasks: list[TaskInfo]) -> Table:
     table.add_column("名称", style="green")
     table.add_column("类型", style="blue")
     table.add_column("创建时间", style="magenta")
+    table.add_column("数据", style="white")
     table.add_column("描述", style="yellow")
 
     for task in tasks:
@@ -94,6 +95,7 @@ def tasks_table(tasks: list[TaskInfo]) -> Table:
             task.name,
             str(task.type),
             str(task.created_at),
+            task.data,
             task.desc or "无",
         )
 

@@ -49,7 +49,7 @@ def test_task_operations():
         assert found_task.id == 1
         assert found_task.name == "test_task"
         assert found_task.content == "test content"
-        assert found_status.status == TaskStatus.NOT_STARTED
+        assert found_status.status == TaskStatus.PENDING
         assert found_status.progress == 0
 
         # 测试更新任务进度

@@ -90,7 +90,7 @@ class TaskClient:
         status_result = self._client.get_all(
             StatusInfo,
             self._status_table_name,
-            {"status": TaskStatus.NOT_STARTED.value, "enabled": True},
+            {"status": TaskStatus.PENDING.value, "enabled": "true"},
         )
 
         if status_result.is_err():
@@ -127,8 +127,10 @@ class TaskClient:
         status_result = self.get_task_status(task_id)
         if status_result.is_err():
             return status_result
-
         status = status_result.unwrap()
+        if status.status != TaskStatus.PENDING:
+            return Err(f"任务 #{task_id} 当前状态为 {status.status}，无法启动")
+
         # 更新状态为进行中
         status.status = TaskStatus.IN_PROGRESS
         status.progress = 0
