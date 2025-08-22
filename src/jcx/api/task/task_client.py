@@ -44,6 +44,17 @@ class TaskClient:
         """
         return self._client.get_all(TaskInfo, self._task_table_name, params)
 
+    def get_task(self, task_id: str) -> ResultE[TaskInfo]:
+        """获取指定ID的任务信息
+
+        Args:
+            task_id: 任务ID
+
+        Returns:
+            ResultE[TaskInfo]: 任务信息，如果任务不存在则返回错误
+        """
+        return self._client.get(TaskInfo, self._task_table_name, task_id)
+
     def add_task(self, task: TaskInfo) -> ResultE[TaskInfo]:
         """添加新任务记录
 
@@ -77,6 +88,17 @@ class TaskClient:
             ResultE[StatusInfo]: 任务状态信息，如果任务不存在则返回错误
         """
         return self._client.get(StatusInfo, self._status_table_name, task_id)
+
+    def update_status(self, status: StatusInfo) -> ResultE[StatusInfo]:
+        """更新任务状态信息
+
+        Args:
+            status: 待更新的任务状态对象
+
+        Returns:
+            ResultE[StatusInfo]: 更新后的任务状态
+        """
+        return self._client.put(self._status_table_name, status)
 
     def find_task(self) -> ResultE[Tuple[TaskInfo, StatusInfo]]:
         """找到可执行任务

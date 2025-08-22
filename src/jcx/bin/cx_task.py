@@ -26,7 +26,7 @@ class Config:
     """配置类，存储全局配置"""
 
     # 默认数据库URL
-    db_url: str = "http://localhost:8080/api"
+    url: str = "http://localhost:8080/api"
     # 默认表名
     task_table: str = "tasks"
     status_table: str = "statuses"
@@ -37,20 +37,20 @@ class Config:
 def get_client(base_url: Optional[str] = None) -> TaskClient:
     """获取或创建TaskClient实例"""
     if Config.client is None:
-        url = base_url or Config.db_url
+        url = base_url or Config.url
         Config.client = TaskClient(url, Config.task_table, Config.status_table)
     return Config.client
 
 
 @app.callback()
 def callback(
-    db_url: str = typer.Option(None, "--url", "-u", help="服务器URL"),
+    url: str = typer.Option(None, "--url", "-u", help="服务器URL"),
     task_table: str = typer.Option(None, "--task-table", help="任务表名称"),
     status_table: str = typer.Option(None, "--status-table", help="状态表名称"),
 ):
     """全局配置选项"""
-    if db_url:
-        Config.db_url = db_url
+    if url:
+        Config.url = url
     if task_table:
         Config.task_table = task_table
     if status_table:
@@ -246,7 +246,7 @@ def get_task_info(task_id: str = typer.Argument(..., help="任务ID")):
     client = get_client()
 
     # 获取任务信息
-    task_result = client._client.get(TaskInfo, client._task_table_name, task_id)
+    task_result = client.get_task(task_id)
     status_result = client.get_task_status(task_id)
 
     if task_result.is_err():
@@ -328,7 +328,7 @@ def enable_task(
     status.update_time = now_sh_dt()
 
     # 提交更新
-    result = client._client.put(client._status_table_name, status)
+    result = client.update_status(status)
 
     if result.is_err():
         console.print(
