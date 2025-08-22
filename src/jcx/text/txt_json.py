@@ -12,7 +12,7 @@ BMT = TypeVar("BMT", bound=BaseModel)
 
 
 def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
-    """从文件加载文本"""
+    """从文件加载文本."""
     file = or_ext(file, ext)
     try:
         with open(file, encoding="utf-8") as f:
@@ -23,15 +23,14 @@ def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
 
 
 def to_json(ob: Any, pretty: bool = True) -> str:
-    """对象序列化为JSON"""
+    """对象序列化为JSON."""
     indent = 4 if pretty else None
     byte_str = pydantic_core.to_json(ob, indent=indent)
-    decoded_str = byte_str.decode("utf-8")
-    return decoded_str
+    return byte_str.decode("utf-8")
 
 
 def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
-    """从JSON文本构建对象"""
+    """从JSON文本构建对象."""
     assert isinstance(json, str | bytes), "Invalid input type @ try_from_json"
     try:
         ob = ob_type.model_validate_json(json)
@@ -41,7 +40,7 @@ def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
 
 
 def save_json(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exception]:
-    """对象序保存为JSON文件"""
+    """对象序保存为JSON文件."""
     file = or_ext(file, ".json")
     s = to_json(obj, pretty)
     return save_txt(s, file)
@@ -49,7 +48,7 @@ def save_json(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exce
 
 @result_shortcut
 def load_json(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
-    """从Json文件加载对象"""
+    """从Json文件加载对象."""
     file = or_ext(file, ".json")
     s = load_txt(file).Q
     # print('load_json:', file)
@@ -62,5 +61,5 @@ def load_json_or(
     obj_type: type[BMT],
     default_value: BMT,
 ) -> Result[BMT, Exception]:
-    """从Json文件加载对象, 文件路径未提供则返回默认值"""
+    """从Json文件加载对象, 文件路径未提供则返回默认值."""
     return load_json(file, obj_type) if file else Ok(default_value)
