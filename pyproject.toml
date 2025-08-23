@@ -38,6 +38,6 @@ mv_re = "jcx.bin.mv_re:main"
 rename_re = "jcx.bin.rename_re:main"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build"]
+build-backend = "uv_build"
 

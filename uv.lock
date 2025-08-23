@@ -137,7 +137,7 @@ requires-dist = [
     { name = "parse" },
     { name = "pydantic" },
     { name = "pydantic-extra-types" },
-    { name = "pyjson5", specifier = ">=1.6.9" },
+    { name = "pyjson5" },
     { name = "redis" },
     { name = "requests" },
     { name = "rustshed" },
