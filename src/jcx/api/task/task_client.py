@@ -1,9 +1,8 @@
-from typing import Optional, Tuple
 
-from rustshed import Ok, Err
+from rustshed import Err, Ok
 
-from jcx.api.dao_client import ResultE, DaoListClient
-from jcx.api.task.task_types import TaskInfo, StatusInfo, TaskStatus
+from jcx.api.dao_client import DaoListClient, ResultE
+from jcx.api.task.task_types import StatusInfo, TaskInfo, TaskStatus
 from jcx.time.dt_util import now_sh_dt
 
 
@@ -31,16 +30,18 @@ class TaskClient:
 
         Args:
             token: 认证令牌字符串
+
         """
         self._client.set_auth_token(token)
 
-    def get_all_tasks(self, params: Optional[dict] = None) -> ResultE[list[TaskInfo]]:
+    def get_all_tasks(self, params: dict | None = None) -> ResultE[list[TaskInfo]]:
         """获取全部任务列表，可选过滤参数
 
         Args:
             params: 查询参数字典，用于过滤结果集
         Returns:
             ResultE[list[TaskInfo]]: 所有任务记录列表
+
         """
         return self._client.get_all(TaskInfo, self._task_table_name, params)
 
@@ -52,6 +53,7 @@ class TaskClient:
 
         Returns:
             ResultE[TaskInfo]: 任务信息，如果任务不存在则返回错误
+
         """
         return self._client.get(TaskInfo, self._task_table_name, task_id)
 
@@ -63,11 +65,12 @@ class TaskClient:
 
         Returns:
             ResultE[TaskInfo]: 添加后的任务记录，如果ID已存在则返回None
+
         """
         return self._client.post(self._task_table_name, task)
 
     def get_all_statuses(
-        self, params: Optional[dict] = None
+        self, params: dict | None = None
     ) -> ResultE[list[StatusInfo]]:
         """获取全部任务状态列表，可选过滤参数
 
@@ -75,6 +78,7 @@ class TaskClient:
             params: 查询参数字典，用于过滤结果集
         Returns:
             ResultE[list[StatusInfo]]: 所有任务状态记录列表
+
         """
         return self._client.get_all(StatusInfo, self._status_table_name, params)
 
@@ -86,6 +90,7 @@ class TaskClient:
 
         Returns:
             ResultE[StatusInfo]: 任务状态信息，如果任务不存在则返回错误
+
         """
         return self._client.get(StatusInfo, self._status_table_name, task_id)
 
@@ -97,16 +102,18 @@ class TaskClient:
 
         Returns:
             ResultE[StatusInfo]: 更新后的任务状态
+
         """
         return self._client.put(self._status_table_name, status)
 
-    def find_task(self) -> ResultE[Tuple[TaskInfo, StatusInfo]]:
+    def find_task(self) -> ResultE[tuple[TaskInfo, StatusInfo]]:
         """找到可执行任务
 
         查找状态为未启动且已启用的任务
 
         Returns:
             ResultE[Tuple[TaskInfo, StatusInfo]]: 任务信息和状态的元组，如果没有可执行任务则返回错误
+
         """
         # 获取所有任务状态
         status_result = self._client.get_all(
@@ -132,7 +139,7 @@ class TaskClient:
         return Ok((task_result.unwrap(), first_status))
 
     def task_start(
-        self, task_id: str, worker: Optional[str] = None
+        self, task_id: str, worker: str | None = None
     ) -> ResultE[StatusInfo]:
         """开始执行指定任务
 
@@ -144,6 +151,7 @@ class TaskClient:
 
         Returns:
             ResultE[StatusInfo]: 更新后的任务状态
+
         """
         # 获取当前状态
         status_result = self.get_task_status(task_id)
@@ -173,6 +181,7 @@ class TaskClient:
 
         Returns:
             ResultE[StatusInfo]: 更新后的任务状态
+
         """
         return self.update_progress(task_id, 100, TaskStatus.COMPLETED)
 
@@ -184,6 +193,7 @@ class TaskClient:
 
         Returns:
             ResultE[StatusInfo]: 更新后的任务状态
+
         """
         # 获取当前状态
         status_result = self.get_task_status(task_id)
@@ -210,6 +220,7 @@ class TaskClient:
 
         Returns:
             ResultE[StatusInfo]: 更新后的任务状态
+
         """
         if not 0 <= progress <= 100:
             return Err(f"无效的进度值: {progress}，必须在 0-100 之间")

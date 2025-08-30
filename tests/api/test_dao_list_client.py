@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """DaoListClient 单元测试
 
@@ -7,15 +6,12 @@
 使用 unittest.mock 来模拟 HTTP 请求，避免对实际服务器的依赖。
 """
 
-import unittest
-from unittest.mock import patch, Mock, MagicMock
-import json
+from unittest.mock import Mock, patch
+
 import pytest
-from typing import List, Dict, Any
 
 from jcx.api.dao_client import DaoListClient
 from jcx.db.record import Record
-from rustshed import Ok, Err, Result
 
 
 class TestRecord(Record):

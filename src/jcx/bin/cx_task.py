@@ -1,12 +1,11 @@
+import sys
 from pathlib import Path
-from typing import Optional
 
 import typer
 from rich import print as rprint
 from rich.console import Console
 from rich.table import Table
 
-import sys
 from jcx.api.task.task_client import TaskClient
 from jcx.api.task.task_types import TaskInfo, TaskStatus
 from jcx.time.dt_util import now_sh_dt
@@ -31,10 +30,10 @@ class Config:
     task_table: str = "tasks"
     status_table: str = "statuses"
     # TaskClient实例
-    client: Optional[TaskClient] = None
+    client: TaskClient | None = None
 
 
-def get_client(base_url: Optional[str] = None) -> TaskClient:
+def get_client(base_url: str | None = None) -> TaskClient:
     """获取或创建TaskClient实例"""
     if Config.client is None:
         url = base_url or Config.url
@@ -129,17 +128,17 @@ def add_task(
     name: str = typer.Option(..., "--name", "-n", help="任务名称"),
     task_type: int = typer.Option(..., "--type", "-t", help="任务类型"),
     data: str = typer.Option(..., "--data", "-d", help="任务数据，JSON格式或文件路径"),
-    desc: Optional[str] = typer.Option(None, "--desc", help="任务描述"),
+    desc: str | None = typer.Option(None, "--desc", help="任务描述"),
 ):
     """添加新任务"""
     # 判断data是否为文件路径
     data_content = data
     if Path(data).is_file():
         try:
-            with open(data, "r", encoding="utf-8") as f:
+            with open(data, encoding="utf-8") as f:
                 data_content = f.read()
         except Exception as e:
-            console.print(f"[red]读取数据文件失败: {str(e)}[/red]")
+            console.print(f"[red]读取数据文件失败: {e!s}[/red]")
             sys.exit(1)
 
     # 创建任务对象
@@ -167,7 +166,7 @@ def add_task(
 @app.command("start")
 def start_task(
     task_id: str = typer.Argument(..., help="任务ID"),
-    worker: Optional[str] = typer.Option(None, "--worker", "-w", help="工作者标识"),
+    worker: str | None = typer.Option(None, "--worker", "-w", help="工作者标识"),
 ):
     """开始执行指定任务"""
     client = get_client()
@@ -187,7 +186,7 @@ def update_progress(
     progress: int = typer.Option(
         ..., "--progress", "-p", min=0, max=100, help="任务进度(0-100)"
     ),
-    status: Optional[int] = typer.Option(None, "--status", "-s", help="任务状态码"),
+    status: int | None = typer.Option(None, "--status", "-s", help="任务状态码"),
 ):
     """更新任务进度"""
     client = get_client()
@@ -281,10 +280,10 @@ def get_task_info(task_id: str = typer.Argument(..., help="任务ID")):
     console.print(f"状态: {status_text}")
     console.print(f"进度: {status.progress}%")
     console.print(
-        f"开始时间: {status.start_time and format_datetime(status.start_time) or '未开始'}"
+        f"开始时间: {(status.start_time and format_datetime(status.start_time)) or '未开始'}"
     )
     console.print(
-        f"更新时间: {status.update_time and format_datetime(status.update_time) or '无'}"
+        f"更新时间: {(status.update_time and format_datetime(status.update_time)) or '无'}"
     )
     console.print(f"启用状态: {'已启用' if status.enabled else '已禁用'}")
 
@@ -345,7 +344,7 @@ def main():
     try:
         app()
     except Exception as e:
-        rprint(f"[red]程序异常: {str(e)}[/red]")
+        rprint(f"[red]程序异常: {e!s}[/red]")
         return 1
     return 0
 

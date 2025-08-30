@@ -34,8 +34,7 @@ def save_lines(
     file.parent.mkdir(parents=True, exist_ok=True)
     print("save:", file)
     with open(file, "w") as f:
-        for line in lines:
-            f.write(line + postfix)
+        f.writelines(line + postfix for line in lines)
 
 
 def replace_in_file(

@@ -1,7 +1,6 @@
 from typing import Any, AnyStr, TypeVar
 
 import json5
-import pydantic_core
 from pydantic import BaseModel
 from rustshed import Err, Ok, Result, result_shortcut
 
@@ -29,9 +28,8 @@ def to_json5(ob: Any, pretty: bool = True) -> str:
         # 如果是Pydantic模型，先转为字典
         ob_dict = ob.model_dump()
         return json5.dumps(ob_dict, indent=4 if pretty else None)
-    else:
-        # 尝试直接序列化
-        return json5.dumps(ob, indent=4 if pretty else None)
+    # 尝试直接序列化
+    return json5.dumps(ob, indent=4 if pretty else None)
 
 
 def from_json5(json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:

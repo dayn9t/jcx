@@ -3,7 +3,7 @@ from enum import IntEnum
 from rich.table import Table
 
 from jcx.db.record import RecordSid
-from jcx.time.dt_util import now_sh_dt, Datetime
+from jcx.time.dt_util import Datetime, now_sh_dt
 
 
 class TaskStatus(IntEnum):
@@ -62,6 +62,7 @@ def task_table(task: TaskInfo) -> Table:
 
     Args:
         task: 要显示的任务信息对象
+
     """
     table = Table(title=f"任务 #{task.id}: {task.name}")
 
@@ -83,6 +84,7 @@ def tasks_table(tasks: list[TaskInfo]) -> Table:
 
     Args:
         tasks: 任务列表
+
     """
     table = Table(title="任务列表")
 
@@ -111,6 +113,7 @@ def status_table(status: StatusInfo) -> Table:
 
     Args:
         status: 要显示的任务状态对象
+
     """
     table = Table(title=f"任务状态 #{status.id}")
 
@@ -132,6 +135,7 @@ def status_list_table(statuses: list[StatusInfo]) -> Table:
 
     Args:
         statuses: 任务状态列表
+
     """
     table = Table(title="任务状态列表")
 

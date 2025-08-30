@@ -1,9 +1,9 @@
-from typing import TypeVar, Optional, List, Dict, Any
+from typing import Any, TypeVar
+
 import requests
+from rustshed import Err, Ok, Result
 
 from jcx.db.record import RecordSid
-from rustshed import Result, Ok, Err
-
 from jcx.text.txt_json import to_json
 
 R = TypeVar("R", bound=RecordSid)
@@ -26,6 +26,7 @@ class DaoListClient:
 
         Args:
             base_url: API服务器基础URL，例如 'http://api.example.com/v1'
+
         """
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
@@ -35,8 +36,8 @@ class DaoListClient:
         self,
         record_type: type[R],
         table_name: str,
-        params: Optional[Dict[str, Any]] = None,
-    ) -> ResultE[List[R]]:
+        params: dict[str, Any] | None = None,
+    ) -> ResultE[list[R]]:
         """获取所有资源项目
 
         发送GET请求获取指定表中的所有记录
@@ -53,6 +54,7 @@ class DaoListClient:
             result = client.get_all(UserRecord, "users", {"status": "active"})
             if result.is_ok():
                  users = result.unwrap()
+
         """
         try:
             url = f"{self.base_url}/{table_name}"
@@ -63,7 +65,7 @@ class DaoListClient:
             records = [record_type(**item) for item in data_list]
             return Ok(records)
         except Exception as e:
-            return Err(f"获取所有资源失败: {str(e)}")
+            return Err(f"获取所有资源失败: {e!s}")
 
     def get(self, record_type: type[R], table_name: str, record_id: str) -> ResultE[R]:
         """获取单个资源项目
@@ -82,6 +84,7 @@ class DaoListClient:
             result = client.get(UserRecord, "users", 123)
             if result.is_ok():
                 user = result.unwrap()
+
         """
         try:
             url = f"{self.base_url}/{table_name}/{record_id}"
@@ -93,7 +96,7 @@ class DaoListClient:
             record = record_type(**data)
             return Ok(record)
         except Exception as e:
-            return Err(f"获取资源失败: {str(e)}")
+            return Err(f"获取资源失败: {e!s}")
 
     def post(self, table_name: str, record: R) -> ResultE[R]:
         """创建新资源项目
@@ -110,6 +113,7 @@ class DaoListClient:
         Example:
             user = UserRecord(name="张三", age=30)
             result = client.post("users", user)
+
         """
         try:
             url = f"{self.base_url}/{table_name}"
@@ -120,7 +124,7 @@ class DaoListClient:
             response_data = response.json()
             return Ok(record.__class__(**response_data))
         except Exception as e:
-            return Err(f"创建资源失败: {str(e)}")
+            return Err(f"创建资源失败: {e!s}")
 
     def put(self, table_name: str, record: R) -> ResultE[R]:
         """更新资源项目
@@ -137,6 +141,7 @@ class DaoListClient:
         Example:
             user.name = "李四"
             result = client.put("users", user)
+
         """
         try:
             if not hasattr(record, "id") or record.id is None:
@@ -150,7 +155,7 @@ class DaoListClient:
             response_data = response.json()
             return Ok(record.__class__(**response_data))
         except Exception as e:
-            return Err(f"更新资源失败: {str(e)}")
+            return Err(f"更新资源失败: {e!s}")
 
     def delete(self, table_name: str, record_id: str) -> ResultE[bool]:
         """删除资源项目
@@ -166,6 +171,7 @@ class DaoListClient:
 
         Example:
             result = client.delete("users", 123)
+
         """
         try:
             url = f"{self.base_url}/{table_name}/{record_id}"
@@ -174,13 +180,14 @@ class DaoListClient:
 
             return Ok(True)
         except Exception as e:
-            return Err(f"删除资源失败: {str(e)}")
+            return Err(f"删除资源失败: {e!s}")
 
     def set_auth_token(self, token: str) -> None:
         """设置认证令牌
 
         Args:
             token: JWT或其他认证令牌
+
         """
         self.headers["Authorization"] = f"Bearer {token}"
 

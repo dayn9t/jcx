@@ -19,7 +19,6 @@ def test_now_utc_dt_timezone_is_utc():
 
 def test_now_utc_dt_correct_time():
     """测试now_utc_dt返回的时间正确"""
-
     result = now_sh_dt()
 
     s = to_json(result)

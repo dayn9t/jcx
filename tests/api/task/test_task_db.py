@@ -1,8 +1,9 @@
 import tempfile
 from pathlib import Path
+
 import pytest
 
-from jcx.api.task.task_db import TaskDb, TaskInfo, StatusInfo, TaskStatus
+from jcx.api.task.task_db import StatusInfo, TaskDb, TaskInfo, TaskStatus
 
 
 class TestTaskInfo(TaskInfo):

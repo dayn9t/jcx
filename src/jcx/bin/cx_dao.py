@@ -1,15 +1,12 @@
-"""
-任务管理命令行工具
+"""任务管理命令行工具
 
 使用 DaoListClient 与任务管理服务进行交互，支持任务和任务状态的 CRUD 操作。
 基于 typer 构建的完整命令行应用，演示 REST API 交互。
 """
 
 import json
-import uuid
-
 import sys
-from typing import Optional
+import uuid
 
 import typer
 from rich import print as rprint
@@ -17,13 +14,13 @@ from rich.console import Console
 
 from jcx.api.dao_client import DaoListClient
 from jcx.api.task.task_types import (
-    TaskInfo,
     StatusInfo,
-    tasks_table,
-    task_table,
+    TaskInfo,
+    TaskStatus,
     status_list_table,
     status_table,
-    TaskStatus,
+    task_table,
+    tasks_table,
 )
 
 # 创建 typer 应用和控制台对象
@@ -38,19 +35,17 @@ console = Console()
 @tasks_app.callback()
 def tasks_callback():
     """任务管理相关命令"""
-    pass
 
 
 @statuses_app.callback()
 def statuses_callback():
     """任务状态相关命令"""
-    pass
 
 
 @tasks_app.command("list")
 def list_tasks(
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-    filter_json: Optional[str] = typer.Option(
+    filter_json: str | None = typer.Option(
         None, "--filter", "-f", help="过滤条件 (JSON格式)"
     ),
 ):
@@ -107,7 +102,7 @@ def create_task(
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
     name: str = typer.Option(..., "--name", "-n", help="任务名称"),
     task_type: int = typer.Option(..., "--type", "-t", help="任务类型"),
-    desc: Optional[str] = typer.Option(None, "--desc", "-d", help="任务描述"),
+    desc: str | None = typer.Option(None, "--desc", "-d", help="任务描述"),
     data: str = typer.Option(..., "--data", help="任务数据 (JSON格式)"),
 ):
     """创建新任务
@@ -169,7 +164,7 @@ def delete_task(
 @statuses_app.command("list")
 def list_statuses(
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-    filter_json: Optional[str] = typer.Option(
+    filter_json: str | None = typer.Option(
         None, "--filter", "-f", help="过滤条件 (JSON格式)"
     ),
 ):
@@ -225,13 +220,13 @@ def get_status(
 def update_status(
     status_id: str = typer.Argument(..., help="状态ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-    status: Optional[int] = typer.Option(
+    status: int | None = typer.Option(
         None, "--status", "-s", help="任务状态码 (0-3)"
     ),
-    progress: Optional[int] = typer.Option(
+    progress: int | None = typer.Option(
         None, "--progress", "-p", help="任务进度 (0-100)"
     ),
-    enabled: Optional[bool] = typer.Option(
+    enabled: bool | None = typer.Option(
         None, "--enabled/--disabled", help="是否启用"
     ),
 ):
@@ -348,7 +343,7 @@ def main():
     try:
         app()
     except Exception as e:
-        rprint(f"[red]程序异常: {str(e)}[/red]")
+        rprint(f"[red]程序异常: {e!s}[/red]")
         return 1
     return 0
 
