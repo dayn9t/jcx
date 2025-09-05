@@ -220,15 +220,11 @@ def get_status(
 def update_status(
     status_id: str = typer.Argument(..., help="状态ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-    status: int | None = typer.Option(
-        None, "--status", "-s", help="任务状态码 (0-3)"
-    ),
+    status: int | None = typer.Option(None, "--status", "-s", help="任务状态码 (0-3)"),
     progress: int | None = typer.Option(
         None, "--progress", "-p", help="任务进度 (0-100)"
     ),
-    enabled: bool | None = typer.Option(
-        None, "--enabled/--disabled", help="是否启用"
-    ),
+    enabled: bool | None = typer.Option(None, "--enabled/--disabled", help="是否启用"),
 ):
     """更新指定任务状态
 

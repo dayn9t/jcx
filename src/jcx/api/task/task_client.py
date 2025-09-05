@@ -1,4 +1,3 @@
-
 from rustshed import Err, Ok
 
 from jcx.api.dao_client import DaoListClient, ResultE
@@ -69,9 +68,7 @@ class TaskClient:
         """
         return self._client.post(self._task_table_name, task)
 
-    def get_all_statuses(
-        self, params: dict | None = None
-    ) -> ResultE[list[StatusInfo]]:
+    def get_all_statuses(self, params: dict | None = None) -> ResultE[list[StatusInfo]]:
         """获取全部任务状态列表，可选过滤参数
 
         Args:
