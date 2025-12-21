@@ -105,7 +105,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/b3/2d/b337afbd232ea1ea9
 
 [[package]]
 name = "jcx"
-version = "0.5.5"
+version = "0.5.6"
 source = { editable = "." }
 dependencies = [
     { name = "arrow" },
