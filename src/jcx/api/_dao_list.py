@@ -49,7 +49,10 @@ class ItemListDao(ABC):
         r = self.before_update(record)
         if not r:
             return r
-        record = self._tab.put(r).unwrap()
+        result = self._tab.put(r)
+        if result.is_null():
+            return None
+        record = result.unwrap()
         self.after_update(record)
         return record
 
