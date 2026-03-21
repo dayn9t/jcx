@@ -49,7 +49,10 @@ def main():
 
     bak_file = backup_dir / now_file()
     print("备份历史文件到：", bak_file)
-    move_file(history_file, bak_file).unwrap()
+    result = move_file(history_file, bak_file)
+    if result.is_err():
+        print(f"移动文件失败: {history_file} -> {bak_file}: {result.unwrap_err()}")
+        return
 
     print("历史文件, 行数变化：%d -> %d" % (num_lines, len(lines)))
     save_lines(lines, history_file)
