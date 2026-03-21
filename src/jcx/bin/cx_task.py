@@ -66,7 +66,7 @@ def list_tasks():
         console.print(f"[red]获取任务列表失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    tasks = result.unwrap()
+    tasks = result.expect("Failed to get tasks after error check")
     if not tasks:
         console.print("[yellow]没有找到任何任务[/yellow]")
         return
@@ -96,7 +96,7 @@ def list_statuses():
         console.print(f"[red]获取任务状态列表失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    statuses = result.unwrap()
+    statuses = result.expect("Failed to get statuses after error check")
     if not statuses:
         console.print("[yellow]没有找到任何任务状态[/yellow]")
         return
@@ -159,7 +159,7 @@ def add_task(
         console.print(f"[red]添加任务失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    new_task = result.unwrap()
+    new_task = result.expect("Failed to add task after error check")
     console.print(f"[green]成功添加任务[/green]: {new_task.id}")
 
 
@@ -176,7 +176,7 @@ def start_task(
         console.print(f"[red]启动任务失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    status = result.unwrap()
+    status = result.expect("Failed to start task after error check")
     console.print(f"[green]成功启动任务[/green]: {status.id}")
 
 
@@ -205,7 +205,7 @@ def update_progress(
         console.print(f"[red]更新任务进度失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    status = result.unwrap()
+    status = result.expect("Failed to update progress after error check")
     console.print(
         f"[green]成功更新任务进度[/green]: {status.id}，当前进度: {status.progress}%"
     )
@@ -221,7 +221,7 @@ def complete_task(task_id: str = typer.Argument(..., help="任务ID")):
         console.print(f"[red]完成任务失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    status = result.unwrap()
+    status = result.expect("Failed to complete task after error check")
     console.print(f"[green]成功完成任务[/green]: {status.id}")
 
 
@@ -235,7 +235,7 @@ def mark_error(task_id: str = typer.Argument(..., help="任务ID")):
         console.print(f"[red]标记任务出错失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    status = result.unwrap()
+    status = result.expect("Failed to mark task error after error check")
     console.print(f"[green]成功标记任务为出错状态[/green]: {status.id}")
 
 
@@ -256,8 +256,8 @@ def get_task_info(task_id: str = typer.Argument(..., help="任务ID")):
         console.print(f"[red]获取任务状态失败: {status_result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    task = task_result.unwrap()
-    status = status_result.unwrap()
+    task = task_result.expect("Failed to get task after error check")
+    status = status_result.expect("Failed to get status after error check")
 
     # 显示任务详细信息
     console.print("[blue]任务信息[/blue]")
@@ -298,7 +298,7 @@ def find_next_task():
         console.print(f"[yellow]{result.unwrap_err()}[/yellow]")
         return
 
-    task, status = result.unwrap()
+    task, status = result.expect("Failed to find next task after error check")
     console.print("[green]找到可执行任务[/green]:")
     console.print(f"ID: {task.id}")
     console.print(f"名称: {task.name}")
@@ -321,7 +321,7 @@ def enable_task(
         console.print(f"[red]获取任务状态失败: {status_result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    status = status_result.unwrap()
+    status = status_result.expect("Failed to get task status after error check")
     # 更新启用状态
     status.enabled = enable
     status.update_time = now_sh_dt()
@@ -335,7 +335,7 @@ def enable_task(
         )
         sys.exit(1)
 
-    status = result.unwrap()
+    status = result.expect("Failed to update status after error check")
     console.print(f"[green]已{'启用' if enable else '禁用'}任务[/green]: {status.id}")
 
 
