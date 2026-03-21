@@ -1,3 +1,5 @@
+import pytest
+
 from paho.mqtt.client import MQTTMessage
 
 from jcx.net.mqtt.subscriber import *
@@ -9,6 +11,7 @@ class Output:
         print("Output:", mqtt_msg.payload)
 
 
+@pytest.mark.integration
 def demo_sub() -> None:
     """FIXME: 不能用单元测试, 会卡死在消息分发"""
     output = Output()
