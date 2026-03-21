@@ -37,6 +37,12 @@ cx_dao = "jcx.bin.cx_dao:main"
 mv_re = "jcx.bin.mv_re:main"
 rename_re = "jcx.bin.rename_re:main"
 
+[tool.pytest.ini_options]
+addopts = "-m 'not integration'"
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
+
 [build-system]
 requires = ["uv_build"]
 build-backend = "uv_build"
