@@ -12,7 +12,7 @@ Refactoring the jcx Python utility library to eliminate crash risks, improve err
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation Repair** - Eliminate crash risks from unsafe unwrap patterns and repair broken tests
+- [x] **Phase 1: Foundation Repair** - Eliminate crash risks from unsafe unwrap patterns and repair broken tests
 - [ ] **Phase 2: Security & Robustness** - Add timeouts, narrow exception handling, complete incomplete implementations
 - [ ] **Phase 3: Quality Infrastructure** - Establish CI/CD, coverage reporting, linting, and structured logging
 - [ ] **Phase 4: Type Safety & Documentation** - Fix type:ignore issues, add stubs, complete documentation
@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01: Test infrastructure setup (pytest config, import fixes, MQTT marker)
 - [x] 01-02: Pydantic v2 migration (ConfigDict for all BaseModel subclasses)
-- [ ] 01-03: Unwrap replacement in library code (API, DB, Text layers)
+- [x] 01-03: Unwrap replacement in library code (API, DB, Text layers)
 - [ ] 01-04: Unwrap replacement in CLI tools (cx_task, cx_dao, cx_hisotry_clean)
 
 **Note**: FIX-02 (assert replacement) is deferred. Asserts are working as intended and can be addressed in a future phase if needed.
@@ -102,12 +102,12 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation Repair | 2/4 | In progress | 01-01, 01-02 |
+| 1. Foundation Repair | 4/4 | Complete | 01-01, 01-02, 01-03, 01-04 |
 | 2. Security & Robustness | 0/4 | Not started | - |
 | 3. Quality Infrastructure | 0/5 | Not started | - |
 | 4. Type Safety & Documentation | 0/4 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-21*
-*Last updated: 2026-03-21 - Phase 1 plan 01-02 completed*
+*Last updated: 2026-03-21 - Phase 1 complete*
 *Granularity: coarse (4 phases)*
