@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from rustshed import Err, Ok, Result
 
 from jcx.time.clock_time import ClockTime
@@ -7,13 +7,12 @@ from jcx.time.clock_time import ClockTime
 class ClockPeriod(BaseModel):
     """时钟时间段"""
 
+    model_config = ConfigDict(frozen=True)
+
     begin: ClockTime = ClockTime()
     """起始时间"""
     end: ClockTime = ClockTime()
     """截至时间"""
-
-    class Config:
-        frozen = True
 
     def __str__(self) -> str:
         return "[%s,%s)" % (self.begin, self.end)
@@ -29,11 +28,10 @@ type ClockPeriods = list[ClockPeriod]
 class CalendarTrigger(BaseModel):
     """日程表触发器"""
 
+    model_config = ConfigDict(frozen=True)
+
     periods: ClockPeriods
     """触发时段集合"""
-
-    class Config:
-        frozen = True
 
     def start_time(self) -> ClockTime:
         """日程的开始时间"""
