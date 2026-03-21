@@ -68,7 +68,7 @@ def list_tasks(
     result = client.get_all(TaskInfo, "tasks", params)
 
     if result.is_ok():
-        tasks = result.unwrap()
+        tasks = result.expect("Failed to get tasks after is_ok check")
         console.print(tasks_table(tasks))
     else:
         rprint(f"[red]获取任务列表失败: {result.unwrap_err()}[/red]")
@@ -90,7 +90,7 @@ def get_task(
     result = client.get(TaskInfo, "tasks", task_id)
 
     if result.is_ok():
-        task = result.unwrap()
+        task = result.expect("Failed to get task after is_ok check")
         console.print(task_table(task))
     else:
         rprint(f"[red]获取任务失败: {result.unwrap_err()}[/red]")
@@ -124,7 +124,7 @@ def create_task(
     result = client.post("tasks", task)
 
     if result.is_ok():
-        created_task = result.unwrap()
+        created_task = result.expect("Failed to create task after is_ok check")
         rprint("[green]任务创建成功[/green]")
         task_table(created_task)
     else:
@@ -187,7 +187,7 @@ def list_statuses(
     result = client.get_all(StatusInfo, "statuses", params)
 
     if result.is_ok():
-        statuses = result.unwrap()
+        statuses = result.expect("Failed to get statuses after is_ok check")
         console.print(status_list_table(statuses))
     else:
         rprint(f"[red]获取任务状态列表失败: {result.unwrap_err()}[/red]")
@@ -209,7 +209,7 @@ def get_status(
     result = client.get(StatusInfo, "statuses", status_id)
 
     if result.is_ok():
-        status = result.unwrap()
+        status = result.expect("Failed to get status after is_ok check")
         console.print(status_table(status))
     else:
         rprint(f"[red]获取任务状态失败: {result.unwrap_err()}[/red]")
@@ -238,7 +238,7 @@ def update_status(
         rprint(f"[red]获取任务状态失败: {get_result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    current_status = get_result.unwrap()
+    current_status = get_result.expect("Failed to get current status after is_ok check")
 
     # 更新提供的字段
     if status is not None:
@@ -261,7 +261,7 @@ def update_status(
     result = client.put("statuses", current_status)
 
     if result.is_ok():
-        updated_status = result.unwrap()
+        updated_status = result.expect("Failed to update status after is_ok check")
         rprint("[green]任务状态更新成功[/green]")
         status_table(updated_status)
     else:
