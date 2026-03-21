@@ -12,7 +12,7 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 - [ ] **FIX-01**: Replace all 33 unsafe `.unwrap()` calls with safe patterns (`unwrap_or()`, `unwrap_or_else()`, or match)
 - [ ] **FIX-02**: Replace all 23 production `assert` statements with proper validation (if/raise or Result types)
 - [ ] **FIX-03**: Fix MQTT subscriber test hang (currently blocks CI/CD)
-- [ ] **FIX-04**: Fix Pydantic migration test failures
+- [x] **FIX-04**: Fix Pydantic migration test failures
 - [ ] **FIX-05**: Complete calendar weekday checking in `CalendarTrigger.check()`
 - [ ] **FIX-06**: Implement file time utility using Iterator pattern
 
@@ -82,7 +82,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FIX-01 | Phase 1: Foundation Repair | Pending |
 | FIX-02 | Phase 1: Foundation Repair | Pending |
 | FIX-03 | Phase 1: Foundation Repair | Pending |
-| FIX-04 | Phase 1: Foundation Repair | Pending |
+| FIX-04 | Phase 1: Foundation Repair | Complete |
 | FIX-05 | Phase 2: Security & Robustness | Pending |
 | FIX-06 | Phase 2: Security & Robustness | Pending |
 | SEC-01 | Phase 2: Security & Robustness | Pending |
@@ -109,4 +109,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-21 after roadmap creation*
+*Last updated: 2026-03-21 - FIX-04 completed*

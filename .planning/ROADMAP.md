@@ -30,8 +30,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 01-01: Test infrastructure setup (pytest config, import fixes, MQTT marker)
-- [ ] 01-02: Pydantic v2 migration (ConfigDict for all BaseModel subclasses)
+- [x] 01-01: Test infrastructure setup (pytest config, import fixes, MQTT marker)
+- [x] 01-02: Pydantic v2 migration (ConfigDict for all BaseModel subclasses)
 - [ ] 01-03: Unwrap replacement in library code (API, DB, Text layers)
 - [ ] 01-04: Unwrap replacement in CLI tools (cx_task, cx_dao, cx_hisotry_clean)
 
@@ -102,12 +102,12 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation Repair | 0/4 | Not started | - |
+| 1. Foundation Repair | 2/4 | In progress | 01-01, 01-02 |
 | 2. Security & Robustness | 0/4 | Not started | - |
 | 3. Quality Infrastructure | 0/5 | Not started | - |
 | 4. Type Safety & Documentation | 0/4 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-21*
-*Last updated: 2026-03-21 - Phase 1 plans created*
+*Last updated: 2026-03-21 - Phase 1 plan 01-02 completed*
 *Granularity: coarse (4 phases)*
