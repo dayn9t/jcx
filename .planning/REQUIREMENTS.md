@@ -9,7 +9,7 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 
 ### Critical Fixes
 
-- [ ] **FIX-01**: Replace all 33 unsafe `.unwrap()` calls with safe patterns (`unwrap_or()`, `unwrap_or_else()`, or match)
+- [x] **FIX-01**: Replace all 33 unsafe `.unwrap()` calls with safe patterns (`unwrap_or()`, `unwrap_or_else()`, or match)
 - [ ] **FIX-02**: Replace all 23 production `assert` statements with proper validation (if/raise or Result types)
 - [ ] **FIX-03**: Fix MQTT subscriber test hang (currently blocks CI/CD)
 - [x] **FIX-04**: Fix Pydantic migration test failures
@@ -79,7 +79,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FIX-01 | Phase 1: Foundation Repair | Pending |
+| FIX-01 | Phase 1: Foundation Repair | Complete |
 | FIX-02 | Phase 1: Foundation Repair | Pending |
 | FIX-03 | Phase 1: Foundation Repair | Pending |
 | FIX-04 | Phase 1: Foundation Repair | Complete |
