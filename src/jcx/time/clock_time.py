@@ -18,9 +18,6 @@ class ClockTime:
     second: int = 0
     """秒"""
 
-    class Config:
-        allow_mutation = False
-
     @classmethod
     def new(cls, hour: int, minute: int, second: int) -> Self:
         """构造"""
