@@ -42,10 +42,20 @@ def replace_in_file(
     input_: str,
     output: str,
     dst_file: StrPath | None = None,
-) -> None:
-    """文本文件替换"""
+) -> Result[bool, str]:
+    """文本文件替换
+
+    Returns:
+        Result[bool, str]: Ok(True) on success, Err with error message on failure
+    """
     dst_file = dst_file or src_file
 
-    txt = load_txt(src_file).unwrap()
+    result = load_txt(src_file)
+    if result.is_err():
+        return Err(f"Failed to load {src_file}: {result.unwrap_err()}")
+    txt = result.unwrap()
     new_data = txt.replace(input_, output)
-    save_txt(new_data, dst_file)
+    save_result = save_txt(new_data, dst_file)
+    if save_result.is_err():
+        return Err(f"Failed to save {dst_file}: {save_result.unwrap_err()}")
+    return Ok(True)

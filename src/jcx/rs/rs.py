@@ -27,4 +27,4 @@ def py_optional(v: Option[T]) -> T | None:
     """Option => Optional"""
     if v.is_null():
         return None
-    return v.unwrap()
+    return v.expect("Option was Null in py_optional conversion")

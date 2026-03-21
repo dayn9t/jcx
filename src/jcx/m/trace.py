@@ -28,7 +28,11 @@ def detail(arr: np.ndarray | torch.Tensor) -> Result[str, str]:
 
 def trace_arr(title: str, arr: np.ndarray | torch.Tensor) -> None:
     """显示类型细节"""
-    s = detail(arr).unwrap()
+    result = detail(arr)
+    if result.is_err():
+        print(f"[{title}]: Error - {result.unwrap_err()}")
+        return
+    s = result.unwrap()
     print(f"[{title}]: {s}")
 
 
