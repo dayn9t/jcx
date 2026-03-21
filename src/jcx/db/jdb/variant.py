@@ -32,7 +32,9 @@ class JdbVariant(IVariant):
 
     def get(self) -> BMT:
         """获取变量"""
-        return load_json(self._path, self._type).unwrap()
+        return load_json(self._path, self._type).expect(
+            f"Failed to load variant from {self._path}"
+        )
 
     def set(self, value: BMT) -> None:
         """设置变量"""

@@ -96,7 +96,8 @@ class Table:
     def clear(self) -> None:
         """删除所有记录"""
         self._records.clear()
-        rm_files_in(self._folder.unwrap(), ".json")
+        folder = self._folder.expect("Table folder not initialized")
+        rm_files_in(folder, ".json")
 
     def next_id(self) -> int:
         """获取下一个ID"""
@@ -104,7 +105,8 @@ class Table:
 
     def __record_path(self, rid: int) -> Path:
         """获取记录对应路径"""
-        return self._folder.unwrap() / f"{rid}.json"
+        folder = self._folder.expect("Table folder not initialized")
+        return folder / f"{rid}.json"
 
     def __save(self, record: R) -> None:
         """保存路径"""

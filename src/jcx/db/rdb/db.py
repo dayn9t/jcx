@@ -52,7 +52,10 @@ class RedisDb:
         s = self._db.get(name)
         if not s:
             return default_value
-        return from_json(s, var_type).unwrap()
+        result = from_json(s, var_type)
+        if result.is_err():
+            return default_value
+        return result.unwrap()
 
     def exists(self, name: str) -> bool:
         """ "判断是否存在"""

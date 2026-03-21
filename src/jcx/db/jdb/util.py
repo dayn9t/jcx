@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 from typing import TypeVar
 
@@ -21,7 +22,11 @@ def load_list(
         return records
 
     for f in folder.glob("*.json"):
-        r = load_json(f, record_type).unwrap()
+        result = load_json(f, record_type)
+        if result.is_err():
+            warnings.warn(f"Failed to load {f}: {result.unwrap_err()}")
+            continue
+        r = result.unwrap()
         if filter_ and not filter_(r):
             continue
         records.append(r)
