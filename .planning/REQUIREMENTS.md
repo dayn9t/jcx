@@ -1,7 +1,7 @@
 # Requirements: jcx Library Refactoring
 
 **Defined:** 2026-03-21
-**Core Value:** 质量优先 — 统一API风格、改进错误处理、确保代码正确性
+**Core Value:** Quality first - unified API style, improved error handling, code correctness
 
 ## v1 Requirements
 
@@ -79,34 +79,34 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FIX-01 | Phase 1 | Pending |
-| FIX-02 | Phase 1 | Pending |
-| FIX-03 | Phase 1 | Pending |
-| FIX-04 | Phase 1 | Pending |
-| FIX-05 | Phase 2 | Pending |
-| FIX-06 | Phase 2 | Pending |
-| SEC-01 | Phase 2 | Pending |
-| SEC-02 | Phase 2 | Pending |
-| SEC-03 | Phase 2 | Pending |
-| SEC-04 | Phase 2 | Pending |
-| SEC-05 | Phase 3 | Pending |
-| QLTY-01 | Phase 3 | Pending |
-| QLTY-02 | Phase 3 | Pending |
-| QLTY-03 | Phase 3 | Pending |
-| QLTY-04 | Phase 3 | Pending |
-| QLTY-05 | Phase 3 | Pending |
-| TYPE-01 | Phase 4 | Pending |
-| TYPE-02 | Phase 4 | Pending |
-| TYPE-03 | Phase 4 | Pending |
-| DOC-01 | Phase 5 | Pending |
-| DOC-02 | Phase 5 | Pending |
-| DOC-03 | Phase 5 | Pending |
+| FIX-01 | Phase 1: Foundation Repair | Pending |
+| FIX-02 | Phase 1: Foundation Repair | Pending |
+| FIX-03 | Phase 1: Foundation Repair | Pending |
+| FIX-04 | Phase 1: Foundation Repair | Pending |
+| FIX-05 | Phase 2: Security & Robustness | Pending |
+| FIX-06 | Phase 2: Security & Robustness | Pending |
+| SEC-01 | Phase 2: Security & Robustness | Pending |
+| SEC-02 | Phase 2: Security & Robustness | Pending |
+| SEC-03 | Phase 2: Security & Robustness | Pending |
+| SEC-04 | Phase 2: Security & Robustness | Pending |
+| SEC-05 | Phase 3: Quality Infrastructure | Pending |
+| QLTY-01 | Phase 3: Quality Infrastructure | Pending |
+| QLTY-02 | Phase 3: Quality Infrastructure | Pending |
+| QLTY-03 | Phase 3: Quality Infrastructure | Pending |
+| QLTY-04 | Phase 3: Quality Infrastructure | Pending |
+| QLTY-05 | Phase 3: Quality Infrastructure | Pending |
+| TYPE-01 | Phase 4: Type Safety & Documentation | Pending |
+| TYPE-02 | Phase 4: Type Safety & Documentation | Pending |
+| TYPE-03 | Phase 4: Type Safety & Documentation | Pending |
+| DOC-01 | Phase 4: Type Safety & Documentation | Pending |
+| DOC-02 | Phase 4: Type Safety & Documentation | Pending |
+| DOC-03 | Phase 4: Type Safety & Documentation | Pending |
 
 **Coverage:**
 - v1 requirements: 21 total
 - Mapped to phases: 21
-- Unmapped: 0 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-21 after initial definition*
+*Last updated: 2026-03-21 after roadmap creation*
