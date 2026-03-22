@@ -9,10 +9,35 @@ import sys
 import uuid
 
 import typer
+from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 from rich import print as rprint
 from rich.console import Console
 
 from jcx.api.dao_client import DaoListClient
+
+
+class TaskCreateInput(BaseModel):
+    """Validation model for task creation input."""
+
+    model_config = ConfigDict(frozen=True)
+    name: str
+    task_type: int
+    data: str
+    desc: str | None = None
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        if not v or not v.strip():
+            raise ValueError("name cannot be empty")
+        return v.strip()
+
+    @field_validator("task_type")
+    @classmethod
+    def validate_task_type(cls, v: int) -> int:
+        if v < 0:
+            raise ValueError("task_type must be non-negative")
+        return v
 from jcx.api.task.task_types import (
     StatusInfo,
     TaskInfo,
@@ -338,6 +363,9 @@ def main():
     """程序入口点"""
     try:
         app()
+    except ValidationError as e:
+        rprint(f"[red]输入验证失败: {e}[/red]")
+        return 1
     except Exception as e:
         rprint(f"[red]程序异常: {e!s}[/red]")
         return 1

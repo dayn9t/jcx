@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 
 import typer
+from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 from rich import print as rprint
 from rich.console import Console
 from rich.table import Table
@@ -31,6 +32,44 @@ class Config:
     status_table: str = "statuses"
     # TaskClient实例
     client: TaskClient | None = None
+
+
+class TaskCreateInput(BaseModel):
+    """Validation model for task creation input."""
+
+    model_config = ConfigDict(frozen=True)
+    name: str
+    task_type: int
+    data: str
+    desc: str | None = None
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        if not v or not v.strip():
+            raise ValueError("name cannot be empty")
+        return v.strip()
+
+    @field_validator("task_type")
+    @classmethod
+    def validate_task_type(cls, v: int) -> int:
+        if v < 0:
+            raise ValueError("task_type must be non-negative")
+        return v
+
+
+class ProgressUpdateInput(BaseModel):
+    """Validation model for progress update input."""
+
+    model_config = ConfigDict(frozen=True)
+    progress: int
+
+    @field_validator("progress")
+    @classmethod
+    def validate_progress(cls, v: int) -> int:
+        if not (0 <= v <= 100):
+            raise ValueError("progress must be between 0 and 100")
+        return v
 
 
 def get_client(base_url: str | None = None) -> TaskClient:
@@ -343,6 +382,9 @@ def main():
     """程序入口点"""
     try:
         app()
+    except ValidationError as e:
+        rprint(f"[red]输入验证失败: {e}[/red]")
+        return 1
     except Exception as e:
         rprint(f"[red]程序异常: {e!s}[/red]")
         return 1
