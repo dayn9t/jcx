@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 import redis
 from pydantic import BaseModel
+from rustshed import Err, Ok, Result
 
 from jcx.text.txt_json import BMT, from_json, to_json
 
@@ -11,6 +12,38 @@ from jcx.text.txt_json import BMT, from_json, to_json
 class DbCfg(BaseModel):
     hot_db: str
     pretty: bool = True
+
+
+def parse_redis_url(url: str) -> Result[tuple[str, int, int], str]:
+    """Parse Redis URL and return (host, port, db_num) or error message.
+
+    Expected format: redis://host:port/db_num
+    Example: redis://127.0.0.1:6379/10
+
+    Args:
+        url: Redis connection URL string
+
+    Returns:
+        Ok((host, port, db_num)) on success
+        Err(error_message) on invalid URL
+    """
+    try:
+        uri = urlparse(url)
+        if uri.scheme != "redis":
+            return Err(f"Invalid Redis URL scheme: expected 'redis://', got '{uri.scheme}://'")
+
+        host = uri.hostname or "localhost"
+        port = uri.port or 6379
+
+        p = re.compile(r"/(\d+)")
+        m = p.match(uri.path)
+        if not m:
+            return Err(f"Invalid Redis URL path: expected '/<db_num>', got '{uri.path}'")
+
+        db_num = int(m.groups()[0])
+        return Ok((host, port, db_num))
+    except Exception as e:
+        return Err(f"Failed to parse Redis URL: {e}")
 
 
 class RedisDb:
