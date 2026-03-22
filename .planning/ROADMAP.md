@@ -53,7 +53,7 @@ Plans:
 Plans:
 - [ ] 02-01: HTTP timeouts, pool limits, and specific exceptions in DaoListClient (SEC-01, SEC-02)
 - [ ] 02-02: Redis URL Result-based parsing (SEC-04)
-- [ ] 02-03: Calendar weekday checking in CalendarTrigger (FIX-05)
+- [x] 02-03: Calendar weekday checking in CalendarTrigger (FIX-05)
 - [ ] 02-04: FileTimeIterator implementation (FIX-06)
 - [ ] 02-05: Specific exception handling in text utilities (SEC-02)
 - [ ] 02-06: CLI input validation and exception handling (SEC-02, SEC-03)
@@ -105,11 +105,11 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation Repair | 4/4 | Complete | 01-01, 01-02, 01-03, 01-04 |
-| 2. Security & Robustness | 0/6 | Not started | - |
+| 2. Security & Robustness | 1/6 | In progress | 02-03 |
 | 3. Quality Infrastructure | 0/5 | Not started | - |
 | 4. Type Safety & Documentation | 0/4 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-21*
-*Last updated: 2026-03-21 - Phase 2 planning complete*
+*Last updated: 2026-03-22 - Phase 2 plan 02-03 complete*
 *Granularity: coarse (4 phases)*

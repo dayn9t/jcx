@@ -13,7 +13,7 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 - [ ] **FIX-02**: Replace all 23 production `assert` statements with proper validation (if/raise or Result types)
 - [ ] **FIX-03**: Fix MQTT subscriber test hang (currently blocks CI/CD)
 - [x] **FIX-04**: Fix Pydantic migration test failures
-- [ ] **FIX-05**: Complete calendar weekday checking in `CalendarTrigger.check()`
+- [x] **FIX-05**: Complete calendar weekday checking in `CalendarTrigger.check()`
 - [ ] **FIX-06**: Implement file time utility using Iterator pattern
 
 ### Security
@@ -21,7 +21,7 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 - [ ] **SEC-01**: Add HTTP connection timeouts and pool limits to `dao_client.py`
 - [ ] **SEC-02**: Replace broad `except Exception` with specific exception types (10 locations)
 - [ ] **SEC-03**: Add input validation to CLI tools using Pydantic models
-- [ ] **SEC-04**: Replace Redis URL assert with proper Result/Option error handling
+- [x] **SEC-04**: Replace Redis URL assert with proper Result/Option error handling
 - [ ] **SEC-05**: Add secret management documentation (`.env.example`, required env vars)
 
 ### Quality Infrastructure
@@ -88,7 +88,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-01 | Phase 2: Security & Robustness | Pending |
 | SEC-02 | Phase 2: Security & Robustness | Pending |
 | SEC-03 | Phase 2: Security & Robustness | Pending |
-| SEC-04 | Phase 2: Security & Robustness | Pending |
+| SEC-04 | Phase 2: Security & Robustness | Complete |
 | SEC-05 | Phase 3: Quality Infrastructure | Pending |
 | QLTY-01 | Phase 3: Quality Infrastructure | Pending |
 | QLTY-02 | Phase 3: Quality Infrastructure | Pending |
