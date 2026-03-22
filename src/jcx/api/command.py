@@ -1,7 +1,8 @@
 from pathlib import Path
 from subprocess import getstatusoutput
 
-from flask_restx import Api, fields  # type: ignore
+# flask-restx has no type stubs available
+from flask_restx import Api, fields  # type: ignore[import]
 from pydantic import BaseModel
 from rustshed import Null, Option
 

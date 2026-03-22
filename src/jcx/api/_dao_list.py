@@ -2,7 +2,8 @@ from abc import ABC
 from typing import TypeVar
 
 from cattr import structure, unstructure
-from flask_restx import Resource  # type: ignore
+# flask-restx has no type stubs available
+from flask_restx import Resource  # type: ignore[import]
 
 from jcx.db.jdb.table import Table
 from jcx.db.record import PRecord

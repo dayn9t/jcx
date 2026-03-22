@@ -1,7 +1,8 @@
 from typing import Self
 
 from arrow import Arrow
-from parse import parse  # type: ignore
+# parse library (v1.20.2) has no type stubs available
+from parse import parse  # type: ignore[import]
 from pydantic.dataclasses import dataclass
 from rustshed import Null, Option, Some
 
