@@ -40,9 +40,9 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 
 ### Documentation
 
-- [ ] **DOC-01**: Update README with usage examples
+- [x] **DOC-01**: Update README with usage examples
 - [ ] **DOC-02**: Add docstrings to all public functions
-- [ ] **DOC-03**: Document required environment variables
+- [x] **DOC-03**: Document required environment variables
 
 ## v2 Requirements
 
@@ -98,9 +98,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TYPE-01 | Phase 4: Type Safety & Documentation | Complete |
 | TYPE-02 | Phase 4: Type Safety & Documentation | Complete |
 | TYPE-03 | Phase 4: Type Safety & Documentation | Pending |
-| DOC-01 | Phase 4: Type Safety & Documentation | Pending |
+| DOC-01 | Phase 4: Type Safety & Documentation | Complete |
 | DOC-02 | Phase 4: Type Safety & Documentation | Pending |
-| DOC-03 | Phase 4: Type Safety & Documentation | Pending |
+| DOC-03 | Phase 4: Type Safety & Documentation | Complete |
 
 **Coverage:**
 - v1 requirements: 21 total
