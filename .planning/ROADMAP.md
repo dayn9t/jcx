@@ -69,14 +69,14 @@ Plans:
   4. Pre-commit hooks enforce quality gates before commits land
   5. Structured logging configuration available across all modules
   6. Secret management documented with .env.example and required env vars list
-**Plans**: TBD
+**Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 03-01: Configure pytest-cov with 80% threshold
-- [ ] 03-02: Establish GitHub Actions CI/CD pipeline
-- [ ] 03-03: Configure Ruff for linting and formatting
-- [ ] 03-04: Add pre-commit hooks
-- [ ] 03-05: Implement structured logging and secret docs
+- [ ] 03-01: Ruff and coverage configuration (QLTY-03, QLTY-01)
+- [ ] 03-02: GitHub Actions CI/CD pipeline (QLTY-02)
+- [ ] 03-03: Pre-commit hooks with ruff (QLTY-04)
+- [ ] 03-04: Structured logging configuration (QLTY-05)
+- [ ] 03-05: Secret management documentation (SEC-05)
 
 ### Phase 4: Type Safety & Documentation
 **Goal**: All type:ignore comments resolved, public APIs documented with examples
@@ -111,5 +111,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 ---
 *Roadmap created: 2026-03-21*
-*Last updated: 2026-03-22 - Phase 2 complete*
+*Last updated: 2026-03-22 - Phase 3 planned*
 *Granularity: coarse (4 phases)*
