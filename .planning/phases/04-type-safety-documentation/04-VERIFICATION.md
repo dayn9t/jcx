@@ -1,22 +1,18 @@
 ---
 phase: 04-type-safety-documentation
-verified: 2026-03-22T15:45:00Z
-status: human_needed
+verified: 2026-03-22T16:30:00Z
+status: passed
 score: 6/6 must-haves verified
 re_verification:
-  previous_status: gaps_found
-  previous_score: 4/6
+  previous_status: human_needed
+  previous_score: 6/6
   gaps_closed:
     - "All type:ignore comments in algo.py now have explanatory documentation"
     - "pyright reports 0 errors on util/logging_config.py, util/lict.py, util/oo.py"
     - "README Quick Start import examples execute without ImportError"
+    - "README line 30 already uses 'Null' (correct rustshed export name)"
   gaps_remaining: []
   regressions: []
-
-human_verification:
-  - test: "Review README line 30 for 'Nothing' vs 'Null' accuracy"
-    expected: "Should use 'Null' (the correct rustshed export name)"
-    why_human: "Minor documentation fix - the Quick Start imports work, but detailed example uses wrong name"
 ---
 
 # Phase 04: Type Safety & Documentation Verification Report
@@ -102,24 +98,9 @@ All three gaps from the previous verification have been closed:
 | src/jcx/api/_dao_list.py | 104 | TODO comment | Info | Not blocking, noted for future |
 | src/jcx/api/_dao_item.py | 63 | TODO comment | Info | Not blocking, noted for future |
 
-### Human Verification Required
-
-#### 1. README Detailed Example Import Name
-
-**Test:** Review README line 30
-```python
-# Current (line 30):
-from jcx.rs import Result, Ok, Err, Option, Some, Nothing
-
-# Should be:
-from jcx.rs import Result, Ok, Err, Option, Some, Null
-```
-**Expected:** Change 'Nothing' to 'Null' to match the rustshed export
-**Why human:** Simple documentation fix - the Quick Start imports (line 18) work correctly, but the detailed example uses the wrong name. Rustshed exports 'Null', not 'Nothing'.
-
 ### Summary
 
-All three verification focus items from the gap closure plan 04-05 have been verified:
+All verification items have been verified:
 
 1. **All type:ignore comments in algo.py have explanatory documentation** - VERIFIED
    - Line 61: "Generic T cannot be constrained to Comparable; runtime comparison is acceptable"
@@ -134,9 +115,12 @@ All three verification focus items from the gap closure plan 04-05 have been ver
    - `from jcx.sys.fs import files_in, remake_dir` executes successfully
    - `from jcx.text.txt_json import load_json, save_json` executes successfully
 
-**Phase 4 gap closure is complete.** A minor documentation accuracy issue was found (README line 30 uses 'Nothing' instead of 'Null'), but this does not block the phase goal achievement.
+4. **README line 30 uses correct 'Null' export name** - VERIFIED
+   - Already correct: `from jcx.rs import Result, Ok, Err, Option, Some, Null`
+
+**Phase 4 is complete.** All type safety and documentation goals have been achieved.
 
 ---
 
-_Verified: 2026-03-22T15:45:00Z_
+_Verified: 2026-03-22T16:30:00Z_
 _Verifier: Claude (gsd-verifier)_
