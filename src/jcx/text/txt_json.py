@@ -40,7 +40,10 @@ def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
         ob = ob_type.model_validate_json(json)
     except pydantic_core.ValidationError as e:
         return Err(e)
-    except (pydantic_core.PydanticUndefinedType, ValueError) as e:
+    except AttributeError as e:
+        # 类型可能不是 BaseModel 子类（如 int, str 等基本类型）
+        return Err(AttributeError(f"类型 {ob_type} 缺少 model_validate_json 方法: {e}"))
+    except ValueError as e:
         return Err(ValueError(f"JSON验证失败: {e}"))
     return Ok(ob)
 
