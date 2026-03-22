@@ -36,7 +36,7 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 
 - [x] **TYPE-01**: Review and fix all 9 `# type: ignore` comments
 - [x] **TYPE-02**: Add type stubs for paho-mqtt or document why ignore is necessary
-- [ ] **TYPE-03**: Verify all public APIs have type hints
+- [x] **TYPE-03**: Verify all public APIs have type hints
 
 ### Documentation
 
@@ -97,7 +97,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | QLTY-05 | Phase 3: Quality Infrastructure | Complete |
 | TYPE-01 | Phase 4: Type Safety & Documentation | Complete |
 | TYPE-02 | Phase 4: Type Safety & Documentation | Complete |
-| TYPE-03 | Phase 4: Type Safety & Documentation | Pending |
+| TYPE-03 | Phase 4: Type Safety & Documentation | Complete |
 | DOC-01 | Phase 4: Type Safety & Documentation | Complete |
 | DOC-02 | Phase 4: Type Safety & Documentation | Complete |
 | DOC-03 | Phase 4: Type Safety & Documentation | Complete |
