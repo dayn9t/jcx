@@ -3,6 +3,7 @@
 import argparse
 import subprocess
 from pathlib import Path
+from typing import cast
 
 from loguru import logger
 
@@ -15,7 +16,7 @@ def main():
     parser.add_argument("-v", "--verbose", action="store_true", help="显示详细信息")
     opt = parser.parse_args()
 
-    src_file: Path = opt.file  # type: ignore
+    src_file = cast(Path, opt.file)
     if src_file.suffix == opt.ext:
         return
 
@@ -24,7 +25,7 @@ def main():
         logger.error(f"源文件尺寸无效: {src_size}")
         return
 
-    dst_file: Path = src_file.with_suffix(opt.ext)  # type: ignore
+    dst_file = src_file.with_suffix(cast(str, opt.ext))
     if not dst_file.exists():
         r = subprocess.call(["convert", src_file, dst_file])
         if r != 0:
