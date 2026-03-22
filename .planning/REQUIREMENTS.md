@@ -29,7 +29,7 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 - [x] **QLTY-01**: Add pytest-cov for coverage reporting with 80% threshold
 - [x] **QLTY-02**: Establish CI/CD pipeline (GitHub Actions recommended)
 - [x] **QLTY-03**: Configure Ruff for linting and formatting (replace black, isort, flake8)
-- [ ] **QLTY-04**: Add pre-commit hooks for quality gates
+- [x] **QLTY-04**: Add pre-commit hooks for quality gates
 - [ ] **QLTY-05**: Implement structured logging configuration
 
 ### Type Safety
@@ -93,7 +93,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | QLTY-01 | Phase 3: Quality Infrastructure | Complete |
 | QLTY-02 | Phase 3: Quality Infrastructure | Complete |
 | QLTY-03 | Phase 3: Quality Infrastructure | Complete |
-| QLTY-04 | Phase 3: Quality Infrastructure | Pending |
+| QLTY-04 | Phase 3: Quality Infrastructure | Complete |
 | QLTY-05 | Phase 3: Quality Infrastructure | Pending |
 | TYPE-01 | Phase 4: Type Safety & Documentation | Pending |
 | TYPE-02 | Phase 4: Type Safety & Documentation | Pending |
