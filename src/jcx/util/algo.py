@@ -58,6 +58,7 @@ def low_pos(arr: list[T], value: T) -> int:
 
     """
     for i, v in enumerate(arr):
+        # Generic T cannot be constrained to Comparable; runtime comparison is acceptable
         if value <= v:  # type: ignore[operator]
             return i
     return len(arr)
@@ -76,6 +77,7 @@ def up_pos(arr: list[T], value: T) -> int:
 
     """
     for i, v in enumerate(arr):
+        # Generic T cannot be constrained to Comparable; runtime comparison is acceptable
         if value < v:  # type: ignore[operator]
             return i
     return len(arr)
@@ -93,4 +95,5 @@ def list_index(arr: list[T], value: T) -> int:
         Some(int) if found, Null if not found.
 
     """
+    # list.index returns Any for generic T; to_option wrapper handles TypeError if value not found
     return arr.index(value)  # type: ignore[no-any-return]
