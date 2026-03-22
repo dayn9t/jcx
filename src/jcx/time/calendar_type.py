@@ -1,3 +1,9 @@
+"""Calendar-based trigger types for scheduling.
+
+This module provides types for defining time-based triggers that can
+check if a given time falls within specified periods and weekdays.
+"""
+
 from typing import Literal
 
 from arrow import Arrow
@@ -11,7 +17,12 @@ type Weekday = Literal[0, 1, 2, 3, 4, 5, 6]
 
 
 class ClockPeriod(BaseModel):
-    """时钟时间段"""
+    """Clock time period representing a half-open interval [begin, end).
+
+    Attributes:
+        begin: Start time of the period (inclusive).
+        end: End time of the period (exclusive).
+    """
 
     model_config: ConfigDict = ConfigDict(frozen=True)
 
@@ -21,9 +32,18 @@ class ClockPeriod(BaseModel):
     """截至时间"""
 
     def __str__(self) -> str:
+        """Return string representation "[begin,end)"."""
         return "[%s,%s)" % (self.begin, self.end)
 
     def __contains__(self, clock_time: ClockTime) -> bool:
+        """Check if a ClockTime falls within this period.
+
+        Args:
+            clock_time: Time to check.
+
+        Returns:
+            True if begin <= clock_time < end.
+        """
         return self.begin <= clock_time < self.end
 
 
@@ -32,7 +52,16 @@ type ClockPeriods = list[ClockPeriod]
 
 
 class CalendarTrigger(BaseModel):
-    """日程表触发器"""
+    """Calendar-based trigger for scheduling.
+
+    Combines time periods with optional weekday restrictions to determine
+    if a given time should trigger an action.
+
+    Attributes:
+        periods: List of time periods during which triggers are allowed.
+        weekdays: Optional list of allowed weekdays (0=Monday, 6=Sunday).
+                  None means no weekday restriction.
+    """
 
     model_config: ConfigDict = ConfigDict(frozen=True)
 
@@ -42,19 +71,23 @@ class CalendarTrigger(BaseModel):
     """允许触发的星期几 (0=周一, 6=周日), None表示不限制"""
 
     def start_time(self) -> ClockTime:
-        """日程的开始时间"""
+        """Get the earliest start time from all periods.
+
+        Returns:
+            The begin time of the first period, or ClockTime() if no periods.
+        """
         return self.periods[0].begin if self.periods else ClockTime()
 
     def check(self, clock_time: ClockTime, dt: Arrow | None = None) -> bool:
-        """判定时间是否满足日历触发条件
+        """Check if the given time satisfies the calendar trigger conditions.
 
         Args:
-            clock_time: 时钟时间
-            dt: 完整日期时间，用于星期检查。如果为None且设置了weekdays，则使用当前日期
+            clock_time: Clock time to check.
+            dt: Full datetime for weekday checking. If None and weekdays is set,
+                uses the current date.
 
         Returns:
-            是否满足触发条件
-
+            True if the time is within a period and on an allowed weekday.
         """
         # 时段检查
         if self.periods:
@@ -71,7 +104,11 @@ class CalendarTrigger(BaseModel):
         return True
 
     def valid(self) -> Result[bool, str]:
-        """判断是否有效"""
+        """Validate that the trigger has at least one period defined.
+
+        Returns:
+            Ok(True) if valid, Err with message if no periods defined.
+        """
         if len(self.periods) > 0:
             return Ok(True)
         return Err("日程表触发器时段不存在")
