@@ -1,7 +1,7 @@
 from typing import Any
 from urllib.parse import urlparse
 
-from paho.mqtt import publish  # type: ignore
+from paho.mqtt import publish
 
 from jcx.net.mqtt.cfg import MqttCfg
 from jcx.text.txt_json import to_json

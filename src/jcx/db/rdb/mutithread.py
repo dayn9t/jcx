@@ -1,6 +1,6 @@
 import threading
 
-import redis  # type: ignore
+import redis
 
 conn = redis.Redis(host="localhost", port=6379, db=1)
 conn.set("num", 1)

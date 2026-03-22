@@ -2,7 +2,7 @@ import os
 from typing import Any
 from urllib.parse import urlparse
 
-import paho.mqtt.client as mqtt  # type: ignore
+import paho.mqtt.client as mqtt
 from loguru import logger
 
 from jcx.net.mqtt.cfg import MqttCfg
