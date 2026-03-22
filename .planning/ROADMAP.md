@@ -89,13 +89,13 @@ Plans:
   4. README updated with usage examples for each major module
   5. All public functions have docstrings with parameter descriptions
   6. Required environment variables documented in README and .env.example
-**Plans**: TBD
+**Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 04-01: Fix or document all type:ignore comments
-- [ ] 04-02: Verify type hints on all public APIs
-- [ ] 04-03: Update README with usage examples
-- [ ] 04-04: Add docstrings to all public functions
+- [ ] 04-01-PLAN.md: Type ignore cleanup and pyright setup (TYPE-01, TYPE-02)
+- [ ] 04-02-PLAN.md: Type hint verification for public APIs (TYPE-03)
+- [ ] 04-03-PLAN.md: README documentation update (DOC-01, DOC-03)
+- [ ] 04-04-PLAN.md: Docstrings for public functions (DOC-02)
 
 ## Progress
 
@@ -111,5 +111,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 ---
 *Roadmap created: 2026-03-21*
-*Last updated: 2026-03-22 - Phase 3 planned*
+*Last updated: 2026-03-22 - Phase 4 planned*
 *Granularity: coarse (4 phases)*
