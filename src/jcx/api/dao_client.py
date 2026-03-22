@@ -130,9 +130,7 @@ class DaoListClient:
         try:
             url = f"{self.base_url}/{table_name}/{record_id}"
 
-            response = self.session.get(
-                url, headers=self.headers, timeout=self.timeout
-            )
+            response = self.session.get(url, headers=self.headers, timeout=self.timeout)
             response.raise_for_status()
 
             data = response.json()

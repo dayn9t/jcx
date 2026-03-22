@@ -133,7 +133,9 @@ class TaskClient:
         if task_result.is_err():
             return Err(f"获取任务信息失败: {task_result.unwrap_err()}")
 
-        return Ok((task_result.expect("Failed to get task after error check"), first_status))
+        return Ok(
+            (task_result.expect("Failed to get task after error check"), first_status)
+        )
 
     def task_start(
         self, task_id: str, worker: str | None = None
@@ -227,7 +229,9 @@ class TaskClient:
         if status_result.is_err():
             return status_result
 
-        status_info = status_result.expect("Failed to get task status after error check")
+        status_info = status_result.expect(
+            "Failed to get task status after error check"
+        )
         # 更新进度
         status_info.progress = progress
         status_info.update_time = now_sh_dt()

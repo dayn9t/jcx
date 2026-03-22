@@ -3,8 +3,6 @@
 import io
 import json
 
-import pytest
-
 from jcx.util.logging_config import configure_logging, get_logger
 
 

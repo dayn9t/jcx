@@ -38,6 +38,8 @@ class TaskCreateInput(BaseModel):
         if v < 0:
             raise ValueError("task_type must be non-negative")
         return v
+
+
 from jcx.api.task.task_types import (
     StatusInfo,
     TaskInfo,

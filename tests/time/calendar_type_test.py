@@ -52,13 +52,12 @@ class TestCalendarTriggerWeekdays:
 
     def test_no_weekday_restriction(self):
         """Test that None weekdays allows all days."""
-        trigger = CalendarTrigger(
-            periods=[],
-            weekdays=None
-        )
+        trigger = CalendarTrigger(periods=[], weekdays=None)
         # Should accept any day - test with various weekdays
         for day_offset in range(7):  # Monday to Sunday
-            dt = Arrow.fromdatetime(datetime(2026, 3, 23 + day_offset))  # Mon 23 through Sun 29
+            dt = Arrow.fromdatetime(
+                datetime(2026, 3, 23 + day_offset)
+            )  # Mon 23 through Sun 29
             ct = ClockTime.from_time(dt)
             assert trigger.check(ct) is True
 
@@ -66,7 +65,7 @@ class TestCalendarTriggerWeekdays:
         """Test filtering for weekdays (Mon-Fri)."""
         trigger = CalendarTrigger(
             periods=[],
-            weekdays=[0, 1, 2, 3, 4]  # Mon-Fri
+            weekdays=[0, 1, 2, 3, 4],  # Mon-Fri
         )
         # Monday (0) should pass
         dt_monday = Arrow.fromdatetime(datetime(2026, 3, 23))  # Monday
@@ -82,7 +81,7 @@ class TestCalendarTriggerWeekdays:
         """Test filtering for weekends (Sat-Sun)."""
         trigger = CalendarTrigger(
             periods=[],
-            weekdays=[5, 6]  # Sat-Sun
+            weekdays=[5, 6],  # Sat-Sun
         )
         # Saturday (5) should pass
         dt_saturday = Arrow.fromdatetime(datetime(2026, 3, 28))
@@ -98,12 +97,11 @@ class TestCalendarTriggerWeekdays:
         """Test that both periods and weekdays must match."""
         # Create period for 9am-5pm
         period = ClockPeriod(
-            begin=ClockTime(hour=9, minute=0),
-            end=ClockTime(hour=17, minute=0)
+            begin=ClockTime(hour=9, minute=0), end=ClockTime(hour=17, minute=0)
         )
         trigger = CalendarTrigger(
             periods=[period],
-            weekdays=[0, 1, 2, 3, 4]  # Mon-Fri
+            weekdays=[0, 1, 2, 3, 4],  # Mon-Fri
         )
         # Monday 10am - should pass both checks
         ct_weekday_work_hour = ClockTime.from_time(

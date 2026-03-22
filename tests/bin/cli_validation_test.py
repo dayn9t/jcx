@@ -14,7 +14,9 @@ class TestTaskCreateInputValidation:
         """Test that valid input passes validation."""
         from jcx.bin.cx_task import TaskCreateInput
 
-        validated = TaskCreateInput(name="Test Task", task_type=1, data="{}", desc="Test")
+        validated = TaskCreateInput(
+            name="Test Task", task_type=1, data="{}", desc="Test"
+        )
         assert validated.name == "Test Task"
         assert validated.task_type == 1
 
@@ -104,7 +106,9 @@ class TestDaoTaskCreateInputValidation:
         """Test that valid input passes validation in cx_dao."""
         from jcx.bin.cx_dao import TaskCreateInput
 
-        validated = TaskCreateInput(name="Test Task", task_type=1, data="{}", desc="Test")
+        validated = TaskCreateInput(
+            name="Test Task", task_type=1, data="{}", desc="Test"
+        )
         assert validated.name == "Test Task"
         assert validated.task_type == 1
 
