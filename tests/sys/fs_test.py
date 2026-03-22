@@ -129,3 +129,125 @@ def test_insert_dir() -> None:
     assert abc.is_dir()
 
     shutil.rmtree(dir1)
+
+
+class TestFileTimeIterator:
+    """Tests for FileTimeIterator class."""
+
+    def test_basic_iteration(self):
+        """Test that iterator yields sequential paths."""
+        from arrow import Arrow
+        from jcx.sys.fs import FileTimeIterator, time_to_file
+
+        start = Arrow(2026, 3, 21, 14, 30, 0)
+        base = Path("/tmp/test")
+        iterator = FileTimeIterator(base, start, ".jpg")
+
+        path1 = next(iterator)
+        path2 = next(iterator)
+        path3 = next(iterator)
+
+        # Check base path
+        assert path1.parent == base
+        assert path2.parent == base
+        assert path3.parent == base
+
+        # Check extension
+        assert path1.suffix == ".jpg"
+        assert path2.suffix == ".jpg"
+        assert path3.suffix == ".jpg"
+
+        # Check sequential timestamps (1 second apart)
+        assert path1.stem != path2.stem
+        assert path2.stem != path3.stem
+
+    def test_timestamp_advances_one_second(self):
+        """Test that each call advances timestamp by 1 second."""
+        from arrow import Arrow
+        from jcx.sys.fs import FileTimeIterator, time_to_file
+
+        start = Arrow(2026, 3, 21, 14, 30, 0)
+        base = Path("/tmp")
+        iterator = FileTimeIterator(base, start, ".txt")
+
+        # Get first path and extract timestamp
+        path1 = next(iterator)
+        expected_name1 = time_to_file(start, ".txt")
+        assert path1.name == expected_name1
+
+        # Get second path - should be 1 second later
+        path2 = next(iterator)
+        expected_name2 = time_to_file(start.shift(seconds=1), ".txt")
+        assert path2.name == expected_name2
+
+    def test_peek_does_not_advance(self):
+        """Test that peek() returns current without advancing."""
+        from arrow import Arrow
+        from jcx.sys.fs import FileTimeIterator
+
+        start = Arrow(2026, 3, 21, 14, 30, 0)
+        base = Path("/tmp")
+        iterator = FileTimeIterator(base, start, ".jpg")
+
+        peeked = iterator.peek()
+        actual = next(iterator)
+
+        assert peeked == actual
+
+        # After next(), peek should return the next one
+        peeked2 = iterator.peek()
+        actual2 = next(iterator)
+        assert peeked2 == actual2
+
+    def test_reset_changes_start_time(self):
+        """Test that reset() changes the current time."""
+        from arrow import Arrow
+        from jcx.sys.fs import FileTimeIterator, time_to_file
+
+        start1 = Arrow(2026, 3, 21, 14, 30, 0)
+        start2 = Arrow(2026, 3, 22, 10, 0, 0)
+        base = Path("/tmp")
+        iterator = FileTimeIterator(base, start1, ".jpg")
+
+        # Get first path
+        path1 = next(iterator)
+
+        # Reset to new time
+        iterator.reset(start2)
+        path2 = next(iterator)
+
+        # Should use new start time
+        expected_name2 = time_to_file(start2, ".jpg")
+        assert path2.name == expected_name2
+
+    def test_multiple_iterators_independent(self):
+        """Test that multiple iterators are independent."""
+        from arrow import Arrow
+        from jcx.sys.fs import FileTimeIterator
+
+        start = Arrow(2026, 3, 21, 14, 30, 0)
+        base = Path("/tmp")
+
+        iter1 = FileTimeIterator(base, start, ".jpg")
+        iter2 = FileTimeIterator(base, start.shift(hours=1), ".jpg")
+
+        path1_from_iter1 = next(iter1)
+        path1_from_iter2 = next(iter2)
+        path2_from_iter1 = next(iter1)
+
+        # Each iterator maintains its own state
+        assert path1_from_iter1 != path1_from_iter2
+        assert path2_from_iter1.name != path1_from_iter1.name
+
+    def test_custom_extension(self):
+        """Test iterator with different extensions."""
+        from arrow import Arrow
+        from jcx.sys.fs import FileTimeIterator
+
+        start = Arrow(2026, 3, 21, 14, 30, 0)
+        base = Path("/tmp")
+
+        for ext in [".png", ".txt", ".mp4", ".csv"]:
+            iterator = FileTimeIterator(base, start, ext)
+            path = next(iterator)
+            assert path.suffix == ext
