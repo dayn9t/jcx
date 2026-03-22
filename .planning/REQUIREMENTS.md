@@ -22,7 +22,7 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 - [ ] **SEC-02**: Replace broad `except Exception` with specific exception types (10 locations)
 - [ ] **SEC-03**: Add input validation to CLI tools using Pydantic models
 - [x] **SEC-04**: Replace Redis URL assert with proper Result/Option error handling
-- [ ] **SEC-05**: Add secret management documentation (`.env.example`, required env vars)
+- [x] **SEC-05**: Add secret management documentation (`.env.example`, required env vars)
 
 ### Quality Infrastructure
 
@@ -89,7 +89,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-02 | Phase 2: Security & Robustness | Pending |
 | SEC-03 | Phase 2: Security & Robustness | Pending |
 | SEC-04 | Phase 2: Security & Robustness | Complete |
-| SEC-05 | Phase 3: Quality Infrastructure | Pending |
+| SEC-05 | Phase 3: Quality Infrastructure | Complete |
 | QLTY-01 | Phase 3: Quality Infrastructure | Complete |
 | QLTY-02 | Phase 3: Quality Infrastructure | Complete |
 | QLTY-03 | Phase 3: Quality Infrastructure | Complete |
