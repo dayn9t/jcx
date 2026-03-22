@@ -6,10 +6,10 @@ from arrow import Arrow
 class Timer:
     """更新时间记录"""
 
-    def __init__(self, last_updated=Arrow(1970, 1, 1)):
+    def __init__(self, last_updated: Arrow = Arrow(1970, 1, 1)) -> None:
         self.__last_updated = last_updated  # 上一次更新时间
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Timer(%s)" % str(self.__last_updated)
 
     def next(self, interval: timedelta) -> Arrow:
@@ -21,6 +21,6 @@ class Timer:
         n = self.next(interval)
         return time >= n
 
-    def update(self, time: Arrow):
+    def update(self, time: Arrow) -> None:
         """更新时间"""
         self.__last_updated = time

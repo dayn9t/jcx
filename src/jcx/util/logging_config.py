@@ -16,7 +16,6 @@ Usage:
 
 import json
 import sys
-from typing import Optional
 
 from loguru import logger
 
@@ -25,7 +24,7 @@ def configure_logging(
     json_format: bool = False,
     level: str = "INFO",
     *,
-    sink: Optional[object] = None,
+    sink: object | None = None,
 ) -> None:
     """Configure loguru for structured logging.
 
@@ -38,6 +37,7 @@ def configure_logging(
     Example:
         >>> configure_logging()  # Development mode
         >>> configure_logging(json_format=True)  # Production mode
+
     """
     # Remove default handler
     logger.remove()
@@ -75,7 +75,12 @@ def configure_logging(
         )
 
 
-def get_logger() -> "logger":
+from loguru import Logger
+
+from loguru import logger
+
+
+def get_logger() -> Logger:
     """Get the configured logger instance.
 
     Returns:
@@ -85,5 +90,6 @@ def get_logger() -> "logger":
         >>> from jcx.util.logging_config import get_logger
         >>> log = get_logger()
         >>> log.info("Application started")
+
     """
     return logger

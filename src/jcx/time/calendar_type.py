@@ -13,7 +13,7 @@ type Weekday = Literal[0, 1, 2, 3, 4, 5, 6]
 class ClockPeriod(BaseModel):
     """时钟时间段"""
 
-    model_config = ConfigDict(frozen=True)
+    model_config: ConfigDict = ConfigDict(frozen=True)
 
     begin: ClockTime = ClockTime()
     """起始时间"""
@@ -34,7 +34,7 @@ type ClockPeriods = list[ClockPeriod]
 class CalendarTrigger(BaseModel):
     """日程表触发器"""
 
-    model_config = ConfigDict(frozen=True)
+    model_config: ConfigDict = ConfigDict(frozen=True)
 
     periods: ClockPeriods
     """触发时段集合"""

@@ -1,14 +1,18 @@
-from typing import Any
+from typing import Any, TypeVar
 
 from rustshed import Null, Option, Some, to_option
 
+K = TypeVar("K")
+V = TypeVar("V")
+T = TypeVar("T")
 
-def lookup(indexes: list, tab: list) -> list:
+
+def lookup(indexes: list[int], tab: list[T]) -> list[T]:
     """从表中查出所有索引对应的值"""
     return [tab[i] for i in indexes]
 
 
-def dict_first_key(d: dict, value) -> Option[Any]:
+def dict_first_key(d: dict[K, V], value: V) -> Option[K]:
     """字典中查找值对应的第一个键"""
     for k, v in d.items():
         if v == value:
@@ -17,23 +21,23 @@ def dict_first_key(d: dict, value) -> Option[Any]:
     return Null
 
 
-def low_pos(arr: list, value):
+def low_pos(arr: list[T], value: T) -> int:
     """查找最小的插入位置"""
     for i, v in enumerate(arr):
-        if value <= v:
+        if value <= v:  # type: ignore[operator]
             return i
     return len(arr)
 
 
-def up_pos(arr: list, value):
+def up_pos(arr: list[T], value: T) -> int:
     """查找最大的插入位置"""
     for i, v in enumerate(arr):
-        if value < v:
+        if value < v:  # type: ignore[operator]
             return i
     return len(arr)
 
 
 @to_option
-def list_index(arr: list, value) -> int:
+def list_index(arr: list[T], value: T) -> int:
     """List中查找值的索引, 失败则Null"""
-    return arr.index(value)
+    return arr.index(value)  # type: ignore[no-any-return]

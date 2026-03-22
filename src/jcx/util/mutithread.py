@@ -4,11 +4,11 @@ from time import sleep
 # 参考: https://docs.python.org/zh-cn/3/library/threading.html?highlight=threading
 
 
-num = 1
-lock = Lock()
+num: int = 1
+lock: Lock = Lock()
 
 
-def change_num():
+def change_num() -> None:
     global num
     for i in range(100_000):
         # lock.acquire()
@@ -19,7 +19,7 @@ def change_num():
         # print(i)
 
 
-def num_test():
+def num_test() -> None:
     pool = [Thread(target=change_num) for i in range(50)]
     for t in pool:
         t.start()
@@ -29,18 +29,18 @@ def num_test():
     print("结论: 一般情况下不需要锁")
 
 
-queue = []
+queue: list[int] = []
 
 N = 100_000
 
 
-def queue_push():
+def queue_push() -> None:
     global queue
     for i in range(N):
         queue.append(i)
 
 
-def queue_pop():
+def queue_pop() -> None:
     n = 0
     global queue
     for i in range(N):
@@ -53,7 +53,7 @@ def queue_pop():
     print("last n:", n)
 
 
-def queue_test():
+def queue_test() -> None:
     threads = [Thread(target=queue_push), Thread(target=queue_pop)]
 
     for t in threads:

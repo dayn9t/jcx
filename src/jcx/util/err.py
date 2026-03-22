@@ -27,7 +27,7 @@ def show_err(e: Any) -> None:
     logger.error(msg)
 
 
-def catch_show_err(fun: Callable, verbose: bool = False) -> None:
+def catch_show_err(fun: Callable[[], Any], verbose: bool = False) -> None:
     """捕获并显示异常"""
     # 捕获SystemExit/KeyboardInterrupt/GeneratorExit外异常
     # 想捕获这三个异常, 需BaseException

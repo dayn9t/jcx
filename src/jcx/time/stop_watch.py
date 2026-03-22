@@ -86,7 +86,12 @@ class StopWatch:
         self.start()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: object,
+    ) -> None:
         """上下文管理器支持 - 退出时停止计时"""
         self.stop()
 
