@@ -49,6 +49,7 @@ def replace_in_file(
 
     Returns:
         Result[bool, str]: Ok(True) on success, Err with error message on failure
+
     """
     dst_file = dst_file or src_file
 

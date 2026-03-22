@@ -5,7 +5,7 @@ def parse_package_file(filename: str) -> set[str]:
     """解析包列表文件，返回已安装的包名集合"""
     installed_packages: set[str] = set()
     try:
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if line:
@@ -13,7 +13,7 @@ def parse_package_file(filename: str) -> set[str]:
                     if len(parts) >= 2:
                         package_name: str = parts[0]
                         status: str = parts[1]
-                        if status == 'install':
+                        if status == "install":
                             installed_packages.add(package_name)
     except FileNotFoundError:
         print(f"文件 {filename} 不存在")
@@ -21,16 +21,17 @@ def parse_package_file(filename: str) -> set[str]:
 
 class PackagesDiff(BaseModel):
     """包差异模型"""
+
     only_in_a: set[str]
     only_in_b: set[str]
 
     def get_only_in_a_str(self) -> str:
         """获取仅在a中存在的包，格式化为字符串"""
-        return ' '.join(sorted(self.only_in_a))
+        return " ".join(sorted(self.only_in_a))
 
     def get_only_in_b_str(self) -> str:
         """获取仅在b中存在的包，格式化为字符串"""
-        return ' '.join(sorted(self.only_in_b))
+        return " ".join(sorted(self.only_in_b))
 
 def compare_packages(file_a: str, file_b: str) -> PackagesDiff:
     """比较两个包列表文件"""
@@ -47,8 +48,8 @@ def compare_packages(file_a: str, file_b: str) -> PackagesDiff:
 
 
 if __name__ == "__main__":
-    a_file = 'a.txt'
-    b_file = 'b.txt'
+    a_file = "a.txt"
+    b_file = "b.txt"
 
     diff = compare_packages(a_file, b_file)
 

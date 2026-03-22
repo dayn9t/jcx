@@ -9,7 +9,7 @@
 from unittest.mock import Mock, patch
 
 import pytest
-from requests.exceptions import ConnectionError, HTTPError, Timeout
+from requests.exceptions import ConnectionError
 
 from jcx.api.dao_client import DaoListClient
 from jcx.db.record import Record

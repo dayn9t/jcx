@@ -137,7 +137,8 @@ class TestFileTimeIterator:
     def test_basic_iteration(self):
         """Test that iterator yields sequential paths."""
         from arrow import Arrow
-        from jcx.sys.fs import FileTimeIterator, time_to_file
+
+        from jcx.sys.fs import FileTimeIterator
 
         start = Arrow(2026, 3, 21, 14, 30, 0)
         base = Path("/tmp/test")
@@ -164,6 +165,7 @@ class TestFileTimeIterator:
     def test_timestamp_advances_one_second(self):
         """Test that each call advances timestamp by 1 second."""
         from arrow import Arrow
+
         from jcx.sys.fs import FileTimeIterator, time_to_file
 
         start = Arrow(2026, 3, 21, 14, 30, 0)
@@ -183,6 +185,7 @@ class TestFileTimeIterator:
     def test_peek_does_not_advance(self):
         """Test that peek() returns current without advancing."""
         from arrow import Arrow
+
         from jcx.sys.fs import FileTimeIterator
 
         start = Arrow(2026, 3, 21, 14, 30, 0)
@@ -202,6 +205,7 @@ class TestFileTimeIterator:
     def test_reset_changes_start_time(self):
         """Test that reset() changes the current time."""
         from arrow import Arrow
+
         from jcx.sys.fs import FileTimeIterator, time_to_file
 
         start1 = Arrow(2026, 3, 21, 14, 30, 0)
@@ -223,6 +227,7 @@ class TestFileTimeIterator:
     def test_multiple_iterators_independent(self):
         """Test that multiple iterators are independent."""
         from arrow import Arrow
+
         from jcx.sys.fs import FileTimeIterator
 
         start = Arrow(2026, 3, 21, 14, 30, 0)
@@ -242,6 +247,7 @@ class TestFileTimeIterator:
     def test_custom_extension(self):
         """Test iterator with different extensions."""
         from arrow import Arrow
+
         from jcx.sys.fs import FileTimeIterator
 
         start = Arrow(2026, 3, 21, 14, 30, 0)

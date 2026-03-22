@@ -26,6 +26,7 @@ def parse_redis_url(url: str) -> Result[tuple[str, int, int], str]:
     Returns:
         Ok((host, port, db_num)) on success
         Err(error_message) on invalid URL
+
     """
     try:
         uri = urlparse(url)
@@ -62,6 +63,7 @@ class RedisDb:
 
         Raises:
             ValueError: If URL is invalid
+
         """
         result = parse_redis_url(url)
         if result.is_err():

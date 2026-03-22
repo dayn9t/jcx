@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pytest
 from arrow import Arrow
 
 from jcx.text.txt_json import from_json

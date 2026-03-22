@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import time
-from typing import List, Optional
 
 
 class StopWatch:
@@ -13,9 +11,10 @@ class StopWatch:
 
         Args:
             name: 统计器名称，可选
+
         """
         self.name = name
-        self.times: List[float] = []
+        self.times: list[float] = []
         self._start: float = 0
 
     def start(self) -> None:
@@ -27,40 +26,45 @@ class StopWatch:
 
         Returns:
             本次运行耗时(秒)
+
         """
         elapsed = time.perf_counter() - self._start
         self.times.append(elapsed)
         return elapsed
 
-    def last(self) -> Optional[float]:
+    def last(self) -> float | None:
         """获取最后一次运行时间
 
         Returns:
             最后一次运行的时间(秒)，如果没有记录则返回None
+
         """
         return self.times[-1] if self.times else None
 
-    def avg(self) -> Optional[float]:
+    def avg(self) -> float | None:
         """获取平均运行时间
 
         Returns:
             平均运行时间(秒)，如果没有记录则返回None
+
         """
         return sum(self.times) / len(self.times) if self.times else None
 
-    def max(self) -> Optional[float]:
+    def max(self) -> float | None:
         """获取最大运行时间
 
         Returns:
             最大运行时间(秒)，如果没有记录则返回None
+
         """
         return max(self.times) if self.times else None
 
-    def min(self) -> Optional[float]:
+    def min(self) -> float | None:
         """获取最小运行时间
 
         Returns:
             最小运行时间(秒)，如果没有记录则返回None
+
         """
         return min(self.times) if self.times else None
 
@@ -73,6 +77,7 @@ class StopWatch:
 
         Returns:
             已统计的运行次数
+
         """
         return len(self.times)
 

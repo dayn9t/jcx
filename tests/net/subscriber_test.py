@@ -1,5 +1,4 @@
 import pytest
-
 from paho.mqtt.client import MQTTMessage
 
 from jcx.net.mqtt.subscriber import *

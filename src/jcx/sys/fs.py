@@ -329,6 +329,7 @@ class FileTimeIterator:
         iterator = FileTimeIterator(Path("/photos"), start_time, ".jpg")
         path1 = next(iterator)  # /photos/2026-03-21_14-30-00.000.jpg
         path2 = next(iterator)  # /photos/2026-03-21_14-30-01.000.jpg
+
     """
 
     def __init__(self, base_path: Path, start_time: Arrow, ext: str = ".jpg"):
@@ -338,6 +339,7 @@ class FileTimeIterator:
             base_path: Directory path for generated file paths
             start_time: Starting timestamp (Arrow object)
             ext: File extension including the dot (default: ".jpg")
+
         """
         self._base_path = base_path
         self._current = start_time
@@ -352,6 +354,7 @@ class FileTimeIterator:
 
         Returns:
             Path object with timestamp-based filename
+
         """
         result = self._base_path / time_to_file(self._current, self._ext, date_dir=False)
         self._current = self._current.shift(seconds=1)
@@ -362,6 +365,7 @@ class FileTimeIterator:
 
         Returns:
             Path object for current timestamp
+
         """
         return self._base_path / time_to_file(self._current, self._ext, date_dir=False)
 
@@ -370,6 +374,7 @@ class FileTimeIterator:
 
         Args:
             start_time: New starting timestamp
+
         """
         self._current = start_time
 

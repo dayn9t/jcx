@@ -3,7 +3,8 @@ from datetime import datetime
 from pathlib import Path
 
 from jcx.text.txt_json import *
-from jcx.text.txt_json5 import load_txt as load_txt5, from_json5, load_json5
+from jcx.text.txt_json5 import from_json5
+from jcx.text.txt_json5 import load_txt as load_txt5
 from tests.data_types import *
 
 

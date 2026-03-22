@@ -54,6 +54,7 @@ class CalendarTrigger(BaseModel):
 
         Returns:
             是否满足触发条件
+
         """
         # 时段检查
         if self.periods:
