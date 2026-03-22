@@ -1,3 +1,9 @@
+"""Error handling utilities.
+
+This module provides helper functions for working with optional values
+and displaying errors in a consistent format.
+"""
+
 import traceback
 from collections.abc import Callable
 from typing import Any, TypeVar
@@ -9,13 +15,38 @@ T = TypeVar("T")
 
 
 def mand(value: T | None) -> T:
-    """强制可选类型非空"""
+    """Force an optional value to be non-null.
+
+    Asserts that the value is not None and returns it.
+    Use this when you are certain a value exists but the type system
+    cannot guarantee it.
+
+    Args:
+        value: Optional value that must not be None.
+
+    Returns:
+        The value if not None.
+
+    Raises:
+        AssertionError: If value is None.
+
+    """
     assert value is not None
     return value
 
 
 def show_err(e: Any) -> None:
-    """显示错误/异常"""
+    """Display an error or exception in a formatted way.
+
+    Handles different error types and logs them with appropriate formatting.
+
+    Args:
+        e: Error or exception to display. Can be:
+            - Err: rustshed Result error variant
+            - AssertionError: Python assertion failure
+            - Other: Any other error type
+
+    """
     if isinstance(e, Err):
         msg = f"{e}"
     # elif isinstance(e, UnwrapError):
@@ -28,7 +59,16 @@ def show_err(e: Any) -> None:
 
 
 def catch_show_err(fun: Callable[[], Any], verbose: bool = False) -> None:
-    """捕获并显示异常"""
+    """Execute a function and catch/display any exceptions.
+
+    Catches all exceptions except SystemExit, KeyboardInterrupt, and
+    GeneratorExit. Logs the error and optionally prints the traceback.
+
+    Args:
+        fun: Function to execute.
+        verbose: If True, print full traceback on error.
+
+    """
     # 捕获SystemExit/KeyboardInterrupt/GeneratorExit外异常
     # 想捕获这三个异常, 需BaseException
     try:
@@ -41,6 +81,7 @@ def catch_show_err(fun: Callable[[], Any], verbose: bool = False) -> None:
 
 
 def show_err_demo() -> None:
+    """Demo function showing error display behavior."""
     e = Err("a error")
     print(type(e))
     show_err(e)

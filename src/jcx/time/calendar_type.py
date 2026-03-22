@@ -22,6 +22,7 @@ class ClockPeriod(BaseModel):
     Attributes:
         begin: Start time of the period (inclusive).
         end: End time of the period (exclusive).
+
     """
 
     model_config: ConfigDict = ConfigDict(frozen=True)
@@ -43,6 +44,7 @@ class ClockPeriod(BaseModel):
 
         Returns:
             True if begin <= clock_time < end.
+
         """
         return self.begin <= clock_time < self.end
 
@@ -61,6 +63,7 @@ class CalendarTrigger(BaseModel):
         periods: List of time periods during which triggers are allowed.
         weekdays: Optional list of allowed weekdays (0=Monday, 6=Sunday).
                   None means no weekday restriction.
+
     """
 
     model_config: ConfigDict = ConfigDict(frozen=True)
@@ -75,6 +78,7 @@ class CalendarTrigger(BaseModel):
 
         Returns:
             The begin time of the first period, or ClockTime() if no periods.
+
         """
         return self.periods[0].begin if self.periods else ClockTime()
 
@@ -88,6 +92,7 @@ class CalendarTrigger(BaseModel):
 
         Returns:
             True if the time is within a period and on an allowed weekday.
+
         """
         # 时段检查
         if self.periods:
@@ -108,6 +113,7 @@ class CalendarTrigger(BaseModel):
 
         Returns:
             Ok(True) if valid, Err with message if no periods defined.
+
         """
         if len(self.periods) > 0:
             return Ok(True)

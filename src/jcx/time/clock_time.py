@@ -25,6 +25,7 @@ class ClockTime:
         hour: Hour component (0-23).
         minute: Minute component (0-59).
         second: Second component (0-59).
+
     """
 
     hour: int = 0
@@ -45,6 +46,7 @@ class ClockTime:
 
         Returns:
             A new ClockTime instance.
+
         """
         return ClockTime(hour=hour, minute=minute, second=second)
 
@@ -57,6 +59,7 @@ class ClockTime:
 
         Returns:
             ClockTime instance calculated from total seconds.
+
         """
         minute, second = divmod(secs, 60)
         hour, minute = divmod(minute, 60)
@@ -71,6 +74,7 @@ class ClockTime:
 
         Returns:
             ClockTime with the hour, minute, second from the datetime.
+
         """
         return ClockTime(hour=t.hour, minute=t.minute, second=t.second)
 
@@ -83,6 +87,7 @@ class ClockTime:
 
         Returns:
             Some(ClockTime) if parsing succeeds, Null otherwise.
+
         """
         arr = parse("{:d}:{:d}:{:d}", s)
         if arr:
@@ -98,6 +103,7 @@ class ClockTime:
 
         Returns:
             Arrow datetime with today's date and this time.
+
         """
         t = Arrow.now()
         # now.date()
@@ -123,6 +129,7 @@ def to_clock_time(time: ClockTime | str | Arrow) -> Option[ClockTime]:
 
     Returns:
         Some(ClockTime) if conversion succeeds, Null otherwise.
+
     """
     if isinstance(time, ClockTime):
         return Some(time)
