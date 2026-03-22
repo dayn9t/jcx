@@ -2,7 +2,7 @@
 phase: 3
 slug: quality-infrastructure
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-03-22
 ---
@@ -79,4 +79,4 @@ created: 2026-03-22
 - [x] Feedback latency < 30s
 - [ ] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved 2026-03-22
