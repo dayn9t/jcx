@@ -55,18 +55,22 @@ class RedisDb:
         return RedisDb(server_url)
 
     def __init__(self, url: str):
-        uri = urlparse(url)
-        assert uri.scheme == "redis"
-        port = uri.port or 6379
+        """Initialize Redis client from URL.
 
-        p = re.compile(r"/(\d+)")
-        m = p.match(uri.path)
-        assert m
-        db_num = int(m.groups()[0])
-        # print(db_num)
+        Args:
+            url: Redis connection URL (format: redis://host:port/db_num)
+
+        Raises:
+            ValueError: If URL is invalid
+        """
+        result = parse_redis_url(url)
+        if result.is_err():
+            raise ValueError(result.unwrap_err())
+
+        host, port, db_num = result.unwrap()
         self._name = str(db_num)
         self._db = redis.Redis(
-            host=uri.hostname,
+            host=host,
             port=port,
             db=db_num,
             decode_responses=True,
