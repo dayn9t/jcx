@@ -1,3 +1,9 @@
+"""File system utilities for path manipulation and file operations.
+
+This module provides helper functions for working with files and directories,
+including finding files, creating directories, and timestamp-based file naming.
+"""
+
 import re
 import shutil
 import sys
@@ -31,7 +37,16 @@ class Order(Enum):
 
 
 def first_file_in(folders: StrPaths, file_name: str) -> Option[Path]:
-    """从一组目录中查找指定文件, 只获取第一个."""
+    """Search for a specific file in a list of directories, returning the first match.
+
+    Args:
+        folders: List of directory paths to search.
+        file_name: Name of the file to find.
+
+    Returns:
+        Some(Path) if the file is found in any directory, Null otherwise.
+
+    """
     for p in folders:
         f = Path(p) / file_name
         if f.is_file():
@@ -40,34 +55,92 @@ def first_file_in(folders: StrPaths, file_name: str) -> Option[Path]:
 
 
 def files_in(folder: StrPath, ext: str, reverse: bool = False) -> list[Path]:
-    """获取文件夹内指定扩展名的文件, 有序."""
+    """Get sorted list of files with specified extension in a folder.
+
+    Args:
+        folder: Directory path to search.
+        ext: File extension to filter (e.g., ".txt").
+        reverse: If True, sort in descending order.
+
+    Returns:
+        Sorted list of Path objects matching the extension.
+
+    """
     p = Path(folder)
     return sorted(p.glob("*" + ext), reverse=reverse)
 
 
 def get_project_dir(bin_file: StrPath) -> Path:
-    """获取项目目录 - 通过可执行文件路径."""
+    """Get the project root directory from an executable file path.
+
+    Assumes the executable is located at /project/src/bin/exe_file.py.
+
+    Args:
+        bin_file: Path to the executable file.
+
+    Returns:
+        Resolved path to the project root directory.
+
+    """
     # /project/src/bin/exe_file.py
     return Path(bin_file).parent.parent.parent.resolve()
 
 
 def get_asset_dir(bin_file: StrPath) -> Path:
-    """获取项目资产目录 - 通过可执行文件路径."""
+    """Get the project asset directory from an executable file path.
+
+    Args:
+        bin_file: Path to the executable file.
+
+    Returns:
+        Path to the project's asset directory.
+
+    """
     return get_project_dir(bin_file) / "asset"
 
 
 def file_names_in(folder: StrPath, ext: str, reverse: bool = False) -> list[str]:
-    """获取文件夹内指定扩展名的文件名称, 有序."""
+    """Get sorted list of file names with specified extension in a folder.
+
+    Args:
+        folder: Directory path to search.
+        ext: File extension to filter.
+        reverse: If True, sort in descending order.
+
+    Returns:
+        Sorted list of file names (including extension).
+
+    """
     return [f.name for f in files_in(folder, ext, reverse)]
 
 
 def file_stems_in(folder: StrPath, ext: str, reverse: bool = False) -> list[str]:
-    """获取文件夹内指定扩展名的文件名主干（不包括扩展名）, 有序."""
+    """Get sorted list of file stems (names without extension) in a folder.
+
+    Args:
+        folder: Directory path to search.
+        ext: File extension to filter.
+        reverse: If True, sort in descending order.
+
+    Returns:
+        Sorted list of file stems (names without extension).
+
+    """
     return [f.stem for f in files_in(folder, ext, reverse)]
 
 
 def find(src: StrPath, ext: str, order: Order = Order.ASC) -> list[Path]:
-    """查找文件或文件夹内指定扩展名文件."""
+    """Find files with specified extension in a file or directory.
+
+    Args:
+        src: File path or directory to search.
+        ext: File extension to filter.
+        order: Sort order (ASC or DESC).
+
+    Returns:
+        Sorted list of matching file paths. Empty list if source doesn't exist.
+
+    """
     src = Path(src)
     if src.is_dir():
         files = sorted(src.rglob("*" + ext), reverse=(order == Order.DESC))
@@ -83,7 +156,17 @@ def find_first(
     pattern: str,
     recursive: bool = True,
 ) -> Result[Path, str]:
-    """在文件夹内查找满足条件的第一个文件."""
+    """Find the first file matching a glob pattern in a directory.
+
+    Args:
+        folder: Directory path to search.
+        pattern: Glob pattern to match (e.g., "*.txt", "**/config.json").
+        recursive: If True, search recursively; otherwise, search only top level.
+
+    Returns:
+        Ok(Path) if a matching file is found, Err with error message otherwise.
+
+    """
     folder = Path(folder)
     if not folder.is_dir():
         return Err("指定路径不是目录: " + str(folder))
@@ -97,7 +180,16 @@ def find_first(
 
 
 def find_in_parts(folder: StrPath, sub_path: str) -> Option[Path]:
-    """在路径的各个部分里查找指定路径."""
+    """Search for a path in parent directories by walking up the directory tree.
+
+    Args:
+        folder: Starting directory path.
+        sub_path: Relative path to search for.
+
+    Returns:
+        Some(Path) if found in any parent directory, Null if not found.
+
+    """
     folder = Path(folder).absolute()
     while True:
         path = folder / sub_path
@@ -110,12 +202,31 @@ def find_in_parts(folder: StrPath, sub_path: str) -> Option[Path]:
 
 
 def file_exist_in(folder: StrPath, pattern: str, recursive: bool = False) -> bool:
-    """判定目录中是否存在指定扩展名的文件."""
+    """Check if any file matching the pattern exists in the directory.
+
+    Args:
+        folder: Directory path to search.
+        pattern: Glob pattern to match.
+        recursive: If True, search recursively.
+
+    Returns:
+        True if at least one matching file exists, False otherwise.
+
+    """
     return find_first(folder, pattern, recursive).is_ok()
 
 
 def dirs_in(folder: StrPath, order: Order = Order.ASC) -> list[Path]:
-    """获取文件夹."""
+    """Get list of subdirectories in a folder.
+
+    Args:
+        folder: Directory path to search.
+        order: Sort order (ASC or DESC).
+
+    Returns:
+        Sorted list of subdirectory paths. Empty list if folder doesn't exist.
+
+    """
     folder = Path(folder)
     dirs: Paths = []
     if not folder.is_dir():
@@ -129,7 +240,20 @@ def dirs_in(folder: StrPath, order: Order = Order.ASC) -> list[Path]:
 
 
 def find_descendants(folder: StrPath, pattern: str, generation: int) -> list[Path]:
-    """查找匹配模式的指定代子孙文件/目录."""
+    """Find files/directories matching a pattern at a specific generation depth.
+
+    Args:
+        folder: Root directory to start search.
+        pattern: Glob pattern to match.
+        generation: Depth level (1 = immediate children, 2 = grandchildren, etc.).
+
+    Returns:
+        Sorted list of matching paths at the specified generation.
+
+    Raises:
+        AssertionError: If generation is less than 1.
+
+    """
     assert generation > 0
     folder = Path(folder)
 
@@ -145,13 +269,30 @@ def find_descendants(folder: StrPath, pattern: str, generation: int) -> list[Pat
 
 
 def rm_files_in(folder: StrPath, ext: str) -> None:
-    """删除文件夹内指定扩展名文件."""
+    """Delete all files with specified extension in a folder.
+
+    Args:
+        folder: Directory path to clean.
+        ext: File extension to delete (e.g., ".tmp").
+
+    """
     for f in Path(folder).glob("*" + ext):
         Path(f).unlink()
 
 
 def remake_dir(path: StrPath) -> Path:
-    """删除并重建目录."""
+    """Delete and recreate a directory.
+
+    If the directory exists, it is removed and recreated.
+    If it doesn't exist, it is created along with any parent directories.
+
+    Args:
+        path: Directory path to recreate.
+
+    Returns:
+        The recreated Path object.
+
+    """
     p = Path(path)
     if p.exists():
         shutil.rmtree(path)
@@ -160,12 +301,31 @@ def remake_dir(path: StrPath) -> Path:
 
 
 def remake_subdir(parent: StrPath, name: str) -> Path:
-    """删除并重建子目录."""
+    """Delete and recreate a subdirectory.
+
+    Args:
+        parent: Parent directory path.
+        name: Name of the subdirectory.
+
+    Returns:
+        The recreated subdirectory Path object.
+
+    """
     return make_subdir(parent, name, True)
 
 
 def make_subdir(parent: StrPath, name: str, remake: bool = False) -> Path:
-    """建立子目录."""
+    """Create a subdirectory, optionally recreating if it exists.
+
+    Args:
+        parent: Parent directory path.
+        name: Name of the subdirectory.
+        remake: If True, delete existing subdirectory before creating.
+
+    Returns:
+        The created subdirectory Path object.
+
+    """
     path = Path(parent, name)
     if path.exists() and remake:
         shutil.rmtree(path)
@@ -174,14 +334,31 @@ def make_subdir(parent: StrPath, name: str, remake: bool = False) -> Path:
 
 
 def make_parents(p: StrPath) -> Path:
-    """创建上级目录."""
+    """Create parent directories for a file path.
+
+    Args:
+        p: File path whose parent directories should be created.
+
+    Returns:
+        The parent directory Path object.
+
+    """
     p = Path(p).parent
     p.mkdir(parents=True, exist_ok=True)
     return p
 
 
 def or_ext(file: StrPath, ext: str) -> Path:
-    """如果不存在, 则补充扩展名."""
+    """Add extension to file path if it doesn't have one.
+
+    Args:
+        file: File path.
+        ext: Extension to add (including the dot, e.g., ".txt").
+
+    Returns:
+        Path with extension added if it was missing.
+
+    """
     file = Path(file)
     if not file.suffix and ext:
         file = file.with_suffix(ext)
@@ -189,26 +366,66 @@ def or_ext(file: StrPath, ext: str) -> Path:
 
 
 def last_parts(file: StrPath, n: int) -> Path:
-    """获取路径最后的n部分."""
+    """Get the last n parts of a file path.
+
+    Args:
+        file: File path.
+        n: Number of path parts to keep from the end.
+
+    Returns:
+        Path containing only the last n parts.
+
+    """
     p = Path(file)
     return Path(*p.parts[-n:])
 
 
 def with_parent(file: StrPath, parent: str) -> Path:
-    """替换上级目录名."""
+    """Replace the parent directory name in a file path.
+
+    Args:
+        file: Original file path.
+        parent: New parent directory name.
+
+    Returns:
+        Path with the parent directory name replaced.
+
+    """
     file = Path(file)
     return file.parent.parent / parent / file.name
 
 
 def find_pattern(folder: StrPath, ext: str, pattern: str) -> Generator[Path, Any, None]:
-    """查找匹配指定模式的文件."""
+    """Find files matching a regex pattern within files of specified extension.
+
+    Args:
+        folder: Directory to search recursively.
+        ext: File extension to filter.
+        pattern: Regex pattern to match against file paths.
+
+    Yields:
+        Path objects for files whose paths match the pattern.
+
+    """
     for f in Path(folder).rglob("*" + ext):
         if re.search(pattern, str(f)):
             yield f
 
 
 def time_to_file(time: Arrow, ext: str, date_dir: bool = True) -> str:
-    """时间转为文件名."""
+    """Convert an Arrow time to a filename string.
+
+    Args:
+        time: Arrow datetime object.
+        ext: File extension to append.
+        date_dir: If True, use "/" separator (for date subdirs).
+                  If False, use "_" separator (for flat filenames).
+
+    Returns:
+        Filename string in format "YYYY-MM-DD_HH-MM-SS.mmm<ext>" or
+        "YYYY-MM-DD/HH-MM-SS.mmm<ext>".
+
+    """
     s = "/" if date_dir else "_"
     fmt = "%Y-%m-%d" + s + "%H-%M-%S.%f"
     name = time.strftime(fmt)[:-3] + ext
@@ -222,7 +439,19 @@ def device_time_file(
     ext: str,
     date_dir: bool = True,
 ) -> Path:
-    """根据设备ID,所在目录创建时间为名称的文件."""
+    """Create a timestamp-based file path for a device.
+
+    Args:
+        folder: Base directory for the device.
+        dev_id: Device identifier (used as subdirectory name).
+        time: Arrow datetime for the filename.
+        ext: File extension.
+        date_dir: If True, create date subdirectories.
+
+    Returns:
+        Full path to the timestamped file, with parent directories created.
+
+    """
     file = time_to_file(time, ext, date_dir)
     p = Path(folder, str(dev_id), file)
     make_parents(p)
@@ -230,7 +459,18 @@ def device_time_file(
 
 
 def not_file_to_time(path: StrPath) -> Arrow:
-    """文件名转时间 2023-04-10_10-09-39.830."""
+    """Parse time from a timestamped filename (inverse of time_to_file).
+
+    Expects filename format: 2023-04-10_10-09-39.830
+    The parent directory name is used as the date part.
+
+    Args:
+        path: File path with timestamped name.
+
+    Returns:
+        Arrow datetime parsed from the path.
+
+    """
     p = Path(path)
     s = "{}T{}+{}".format(p.parent.name, p.stem.replace("-", ":"), "08:00")
     return arrow.get(s)
@@ -241,7 +481,15 @@ def link_files(
     dst_dir: Path,
     check_fun: Callable[[Path], bool] | None = None,
 ) -> None:
-    """链接文件列表到目标目录."""
+    """Create symbolic links for a list of files in a destination directory.
+
+    Args:
+        src_files: List of source file paths to link.
+        dst_dir: Destination directory for the links.
+        check_fun: Optional validation function called on each created link.
+                   If it returns False, an error is logged.
+
+    """
     for f in src_files:
         dst = dst_dir / f.name
         dst.parent.mkdir(exist_ok=True, parents=True)
@@ -251,18 +499,42 @@ def link_files(
 
 
 def real_path(path: StrPath) -> Path:
-    """获取真实文件."""
+    """Get the real path of a file, resolving symbolic links.
+
+    Args:
+        path: File path, potentially a symlink.
+
+    Returns:
+        The target path if it's a symlink, otherwise the original path.
+
+    """
     p = Path(path)
     return Path.readlink(p) if p.is_symlink() else p
 
 
 def real_exe_path() -> Path:
-    """获取真实可执行文件路径."""
+    """Get the real path of the currently running executable.
+
+    Resolves symbolic links to find the actual executable file.
+
+    Returns:
+        Real path of sys.argv[0].
+
+    """
     return real_path(sys.argv[0])
 
 
 def copy_file(src: Path, dst: Path) -> Result[Path, IOError]:
-    """复制文件."""
+    """Copy a file to a destination, creating parent directories if needed.
+
+    Args:
+        src: Source file path.
+        dst: Destination file path.
+
+    Returns:
+        Ok(dst) on success, Err with IOError on failure.
+
+    """
     dst.parent.mkdir(parents=True, exist_ok=True)
     try:
         shutil.copyfile(src, dst)
@@ -272,7 +544,16 @@ def copy_file(src: Path, dst: Path) -> Result[Path, IOError]:
 
 
 def move_file(src: Path, dst: Path) -> Result[Path, IOError]:
-    """移动文件."""
+    """Move a file to a destination, creating parent directories if needed.
+
+    Args:
+        src: Source file path.
+        dst: Destination file path.
+
+    Returns:
+        Ok(dst) on success, Err with IOError on failure.
+
+    """
     dst.parent.mkdir(parents=True, exist_ok=True)
     try:
         shutil.move(src, dst)
@@ -282,7 +563,18 @@ def move_file(src: Path, dst: Path) -> Result[Path, IOError]:
 
 
 def insert_dir(folder: StrPath, dir_name: str) -> None:
-    """在目录中插入一级目录, 原目录内的文件移动如新目录."""
+    """Insert a new directory level inside an existing directory.
+
+    Moves all contents of the folder into a new subdirectory with the given name.
+
+    Args:
+        folder: Directory to modify.
+        dir_name: Name of the new subdirectory to create inside.
+
+    Raises:
+        AssertionError: If folder is not a directory.
+
+    """
     folder = Path(folder)
     assert folder.is_dir()
     tmp = folder.parent / (folder.name + "_tmp")
@@ -296,24 +588,56 @@ def insert_dir(folder: StrPath, dir_name: str) -> None:
 
 
 def file_ctime(file: StrPath) -> Arrow:
-    """获取文件的建立时间."""
+    """Get the creation time of a file.
+
+    Args:
+        file: Path to the file.
+
+    Returns:
+        Arrow datetime of the file's creation time.
+
+    """
     t = Path(file).stat().st_ctime  # 创建时间
     return Arrow.fromtimestamp(t)
 
 
 def file_mtime(file: StrPath) -> Arrow:
-    """获取文件的修改时间."""
+    """Get the modification time of a file.
+
+    Args:
+        file: Path to the file.
+
+    Returns:
+        Arrow datetime of the file's modification time.
+
+    """
     t = Path(file).stat().st_mtime  # 创建时间
     return Arrow.fromtimestamp(t)
 
 
 def ctime_to_name(src: Path) -> str:
-    """以文件创建时间生成文件名."""
+    """Generate a filename based on the file's creation time.
+
+    Args:
+        src: Path to the source file.
+
+    Returns:
+        Timestamped filename string with the original extension.
+
+    """
     return time_to_file(file_ctime(src), src.suffix)
 
 
 def mtime_to_name(src: Path) -> str:
-    """以文件修改时间生成文件名."""
+    """Generate a filename based on the file's modification time.
+
+    Args:
+        src: Path to the source file.
+
+    Returns:
+        Timestamped filename string with the original extension.
+
+    """
     return time_to_file(file_mtime(src), src.suffix)
 
 
@@ -356,7 +680,9 @@ class FileTimeIterator:
             Path object with timestamp-based filename
 
         """
-        result = self._base_path / time_to_file(self._current, self._ext, date_dir=False)
+        result = self._base_path / time_to_file(
+            self._current, self._ext, date_dir=False
+        )
         self._current = self._current.shift(seconds=1)
         return result
 

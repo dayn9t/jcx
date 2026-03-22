@@ -1,3 +1,9 @@
+"""JSON serialization and deserialization utilities using Pydantic.
+
+This module provides functions for loading and saving JSON files with
+proper error handling using the Result type.
+"""
+
 from typing import Any, AnyStr, TypeVar
 
 import pydantic_core
@@ -12,7 +18,16 @@ BMT = TypeVar("BMT", bound=BaseModel)
 
 
 def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
-    """从文件加载文本."""
+    """Load text content from a file.
+
+    Args:
+        file: Path to the file to load.
+        ext: Extension to add if file has no extension.
+
+    Returns:
+        Ok(str) with file content on success, Err with exception on failure.
+
+    """
     file = or_ext(file, ext)
     try:
         with open(file, encoding="utf-8") as f:
@@ -27,14 +42,35 @@ def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
 
 
 def to_json(ob: Any, pretty: bool = True) -> str:
-    """对象序列化为JSON."""
+    """Serialize an object to a JSON string.
+
+    Uses pydantic_core for serialization, supporting Pydantic models
+    and standard Python types.
+
+    Args:
+        ob: Object to serialize.
+        pretty: If True, format with 4-space indentation.
+
+    Returns:
+        JSON string representation of the object.
+
+    """
     indent = 4 if pretty else None
     byte_str = pydantic_core.to_json(ob, indent=indent)
     return byte_str.decode("utf-8")
 
 
 def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
-    """从JSON文本构建对象."""
+    """Parse JSON text into a Pydantic model instance.
+
+    Args:
+        json: JSON string or bytes to parse.
+        ob_type: Pydantic model class to parse into.
+
+    Returns:
+        Ok with parsed model instance on success, Err with exception on failure.
+
+    """
     assert isinstance(json, str | bytes), "Invalid input type @ try_from_json"
     try:
         ob = ob_type.model_validate_json(json)
@@ -49,7 +85,17 @@ def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
 
 
 def save_json(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exception]:
-    """对象序保存为JSON文件."""
+    """Save an object to a JSON file.
+
+    Args:
+        obj: Object to serialize and save.
+        file: Path to the output file (.json extension added if missing).
+        pretty: If True, format with 4-space indentation.
+
+    Returns:
+        Ok(True) on success, Err with exception on failure.
+
+    """
     file = or_ext(file, ".json")
     s = to_json(obj, pretty)
     return save_txt(s, file)
@@ -57,7 +103,16 @@ def save_json(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exce
 
 @result_shortcut
 def load_json(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
-    """从Json文件加载对象."""
+    """Load and parse a JSON file into a Pydantic model instance.
+
+    Args:
+        file: Path to the JSON file (.json extension added if missing).
+        obj_type: Pydantic model class to parse into.
+
+    Returns:
+        Ok with parsed model instance on success, Err with exception on failure.
+
+    """
     file = or_ext(file, ".json")
     s = load_txt(file).Q
     # print('load_json:', file)
@@ -70,5 +125,15 @@ def load_json_or(
     obj_type: type[BMT],
     default_value: BMT,
 ) -> Result[BMT, Exception]:
-    """从Json文件加载对象, 文件路径未提供则返回默认值."""
+    """Load a JSON file or return a default value if no file is provided.
+
+    Args:
+        file: Path to the JSON file, or None to use default.
+        obj_type: Pydantic model class to parse into.
+        default_value: Value to return if file is None.
+
+    Returns:
+        Ok with parsed model or default value, Err with exception on parse failure.
+
+    """
     return load_json(file, obj_type) if file else Ok(default_value)

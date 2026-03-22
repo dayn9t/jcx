@@ -1,8 +1,25 @@
+"""Operating system package management utilities.
+
+This module provides utilities for comparing installed packages between
+systems by parsing dpkg-style package list files.
+"""
+
 from pydantic import BaseModel
 
 
 def parse_package_file(filename: str) -> set[str]:
-    """解析包列表文件，返回已安装的包名集合"""
+    """Parse a dpkg-style package list file and return installed package names.
+
+    The file format is expected to have lines with package name and status,
+    separated by whitespace. Only packages with "install" status are included.
+
+    Args:
+        filename: Path to the package list file.
+
+    Returns:
+        Set of installed package names. Empty set if file doesn't exist.
+
+    """
     installed_packages: set[str] = set()
     try:
         with open(filename, encoding="utf-8") as f:
@@ -19,32 +36,56 @@ def parse_package_file(filename: str) -> set[str]:
         print(f"文件 {filename} 不存在")
     return installed_packages
 
+
 class PackagesDiff(BaseModel):
-    """包差异模型"""
+    """Model representing the difference between two package lists.
+
+    Attributes:
+        only_in_a: Packages installed in system A but not in system B.
+        only_in_b: Packages installed in system B but not in system A.
+
+    """
 
     only_in_a: set[str]
     only_in_b: set[str]
 
     def get_only_in_a_str(self) -> str:
-        """获取仅在a中存在的包，格式化为字符串"""
+        """Get packages only in A as a space-separated string.
+
+        Returns:
+            Space-separated string of sorted package names unique to A.
+
+        """
         return " ".join(sorted(self.only_in_a))
 
     def get_only_in_b_str(self) -> str:
-        """获取仅在b中存在的包，格式化为字符串"""
+        """Get packages only in B as a space-separated string.
+
+        Returns:
+            Space-separated string of sorted package names unique to B.
+
+        """
         return " ".join(sorted(self.only_in_b))
 
+
 def compare_packages(file_a: str, file_b: str) -> PackagesDiff:
-    """比较两个包列表文件"""
+    """Compare two package list files and return the differences.
+
+    Args:
+        file_a: Path to the first package list file.
+        file_b: Path to the second package list file.
+
+    Returns:
+        PackagesDiff containing packages unique to each file.
+
+    """
     packages_a: set[str] = parse_package_file(file_a)
     packages_b: set[str] = parse_package_file(file_b)
 
     # a中安装但b中未安装的包
     return PackagesDiff(
-        only_in_a=packages_a - packages_b,
-        only_in_b=packages_b - packages_a
+        only_in_a=packages_a - packages_b, only_in_b=packages_b - packages_a
     )
-
-
 
 
 if __name__ == "__main__":

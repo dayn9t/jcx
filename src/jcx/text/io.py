@@ -1,10 +1,24 @@
+"""Basic text file I/O utilities.
+
+This module provides simple functions for reading and writing text files
+with proper error handling using the Result type.
+"""
+
 from rustshed import Err, Ok, Result
 
 from jcx.sys.fs import StrPath, or_ext
 
 
 def load_txt(file: StrPath) -> Result[str, str]:
-    """加载文本"""
+    """Load text content from a file.
+
+    Args:
+        file: Path to the file to load.
+
+    Returns:
+        Ok(str) with file content on success, Err with error message on failure.
+
+    """
     with open(file) as f:
         s = f.read()
         return Ok(s)
@@ -12,7 +26,19 @@ def load_txt(file: StrPath) -> Result[str, str]:
 
 
 def save_txt(txt: str, file: StrPath, ext: str = ".txt") -> Result[bool, Exception]:
-    """保存文本到文件"""
+    """Save text content to a file.
+
+    Creates parent directories if they don't exist.
+
+    Args:
+        txt: Text content to save.
+        file: Path to the output file (extension added if missing).
+        ext: Extension to add if file has no extension.
+
+    Returns:
+        Ok(True) on success, Err with exception on failure.
+
+    """
     file = or_ext(file, ext)
     try:
         file.parent.mkdir(parents=True, exist_ok=True)
@@ -31,7 +57,18 @@ def save_lines(
     ext: str = "",
     postfix: str = "",
 ) -> None:
-    """多行文本保存到文件, 文件自动加扩展名, 自动建立目录, 行尾自动加回车"""
+    r"""Save a list of strings as lines to a file.
+
+    Creates parent directories if they don't exist. Each line is written
+    with the specified postfix appended (typically a newline).
+
+    Args:
+        lines: List of strings to write as lines.
+        file: Path to the output file (extension added if specified).
+        ext: Extension to add if file has no extension.
+        postfix: String to append after each line (e.g., "\n").
+
+    """
     file = or_ext(file, ext)
     file.parent.mkdir(parents=True, exist_ok=True)
     print("save:", file)
@@ -45,10 +82,19 @@ def replace_in_file(
     output: str,
     dst_file: StrPath | None = None,
 ) -> Result[bool, str]:
-    """文本文件替换
+    """Replace text in a file.
+
+    Reads the source file, replaces all occurrences of input_ with output,
+    and writes to the destination file.
+
+    Args:
+        src_file: Path to the source file to read.
+        input_: Text to search for.
+        output: Text to replace with.
+        dst_file: Path to the output file (defaults to src_file for in-place edit).
 
     Returns:
-        Result[bool, str]: Ok(True) on success, Err with error message on failure
+        Ok(True) on success, Err with error message on failure.
 
     """
     dst_file = dst_file or src_file

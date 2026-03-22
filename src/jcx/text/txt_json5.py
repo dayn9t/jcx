@@ -1,6 +1,14 @@
+"""JSON5 serialization and deserialization utilities using Pydantic.
+
+This module provides functions for loading and saving JSON5 files with
+proper error handling using the Result type. JSON5 is an extension of JSON
+that supports comments, trailing commas, and other features.
+"""
+
 from typing import Any, AnyStr, TypeVar
 
 import json5
+import pydantic
 from pydantic import BaseModel
 from rustshed import Err, Ok, Result, result_shortcut
 
@@ -12,7 +20,16 @@ BMT = TypeVar("BMT", bound=BaseModel)
 
 
 def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
-    """从文件加载文本."""
+    """Load text content from a file.
+
+    Args:
+        file: Path to the file to load.
+        ext: Extension to add if file has no extension.
+
+    Returns:
+        Ok(str) with file content on success, Err with exception on failure.
+
+    """
     file = or_ext(file, ext)
     try:
         with open(file, encoding="utf-8") as f:
@@ -27,7 +44,16 @@ def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
 
 
 def to_json5(ob: Any, pretty: bool = True) -> str:
-    """对象序列化为JSON5."""
+    """Serialize an object to a JSON5 string.
+
+    Args:
+        ob: Object to serialize (Pydantic model or standard Python type).
+        pretty: If True, format with 4-space indentation.
+
+    Returns:
+        JSON5 string representation of the object.
+
+    """
     if hasattr(ob, "model_dump"):
         # 如果是Pydantic模型，先转为字典
         ob_dict = ob.model_dump()
@@ -37,7 +63,16 @@ def to_json5(ob: Any, pretty: bool = True) -> str:
 
 
 def from_json5(json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
-    """从JSON5文本构建对象."""
+    """Parse JSON5 text into a Pydantic model instance.
+
+    Args:
+        json5_str: JSON5 string or bytes to parse.
+        ob_type: Pydantic model class to parse into.
+
+    Returns:
+        Ok with parsed model instance on success, Err with exception on failure.
+
+    """
     assert isinstance(json5_str, str | bytes), "Invalid input type @ try_from_json5"
     try:
         # 先用json5解析成字典
@@ -57,7 +92,17 @@ def from_json5(json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
 
 
 def save_json5(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exception]:
-    """对象序保存为JSON5文件."""
+    """Save an object to a JSON5 file.
+
+    Args:
+        obj: Object to serialize and save.
+        file: Path to the output file (.json5 extension added if missing).
+        pretty: If True, format with 4-space indentation.
+
+    Returns:
+        Ok(True) on success, Err with exception on failure.
+
+    """
     file = or_ext(file, ".json5")
     s = to_json5(obj, pretty)
     return save_txt(s, file)
@@ -65,7 +110,16 @@ def save_json5(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exc
 
 @result_shortcut
 def load_json5(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
-    """从Json5文件加载对象."""
+    """Load and parse a JSON5 file into a Pydantic model instance.
+
+    Args:
+        file: Path to the JSON5 file (.json5 extension added if missing).
+        obj_type: Pydantic model class to parse into.
+
+    Returns:
+        Ok with parsed model instance on success, Err with exception on failure.
+
+    """
     file = or_ext(file, ".json5")
     s = load_txt(file).Q
     return from_json5(s, obj_type)
@@ -77,5 +131,15 @@ def load_json5_or(
     obj_type: type[BMT],
     default_value: BMT,
 ) -> Result[BMT, Exception]:
-    """从Json5文件加载对象, 文件路径未提供则返回默认值."""
+    """Load a JSON5 file or return a default value if no file is provided.
+
+    Args:
+        file: Path to the JSON5 file, or None to use default.
+        obj_type: Pydantic model class to parse into.
+        default_value: Value to return if file is None.
+
+    Returns:
+        Ok with parsed model or default value, Err with exception on parse failure.
+
+    """
     return load_json5(file, obj_type) if file else Ok(default_value)
