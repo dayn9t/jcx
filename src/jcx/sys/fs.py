@@ -317,19 +317,61 @@ def mtime_to_name(src: Path) -> str:
     return time_to_file(file_mtime(src), src.suffix)
 
 
-'''
-_file_now: Option[Arrow] = Null  # TODO: 用Iter对象重写
+class FileTimeIterator:
+    """Iterator that generates sequential timestamp-based file paths.
 
-def now_to_name(src: Path) -> str:
-    """以当前文件时间生成文件名"""
-    global _file_now
-    match _file_now:
-        case Null:
-            _file_now = file_mtime(src)
-        case Some(v):
-            v = _file_now.shift(seconds=1)
-    return time_to_file(_file_now.unwrap(), src.suffix)
-'''
+    Each call to __next__ returns a Path with a timestamp that is
+    1 second later than the previous one. Useful for generating
+    unique file names for sequential files.
+
+    Example:
+        start_time = Arrow.now()
+        iterator = FileTimeIterator(Path("/photos"), start_time, ".jpg")
+        path1 = next(iterator)  # /photos/2026-03-21_14-30-00.000.jpg
+        path2 = next(iterator)  # /photos/2026-03-21_14-30-01.000.jpg
+    """
+
+    def __init__(self, base_path: Path, start_time: Arrow, ext: str = ".jpg"):
+        """Initialize the iterator.
+
+        Args:
+            base_path: Directory path for generated file paths
+            start_time: Starting timestamp (Arrow object)
+            ext: File extension including the dot (default: ".jpg")
+        """
+        self._base_path = base_path
+        self._current = start_time
+        self._ext = ext
+
+    def __iter__(self) -> "FileTimeIterator":
+        """Return self as iterator."""
+        return self
+
+    def __next__(self) -> Path:
+        """Generate next file path with sequential timestamp.
+
+        Returns:
+            Path object with timestamp-based filename
+        """
+        result = self._base_path / time_to_file(self._current, self._ext, date_dir=False)
+        self._current = self._current.shift(seconds=1)
+        return result
+
+    def peek(self) -> Path:
+        """Get current path without advancing the iterator.
+
+        Returns:
+            Path object for current timestamp
+        """
+        return self._base_path / time_to_file(self._current, self._ext, date_dir=False)
+
+    def reset(self, start_time: Arrow) -> None:
+        """Reset iterator to a new start time.
+
+        Args:
+            start_time: New starting timestamp
+        """
+        self._current = start_time
 
 
 def stem_append(p: Path, s: str) -> Path:

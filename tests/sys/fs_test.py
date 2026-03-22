@@ -172,12 +172,12 @@ class TestFileTimeIterator:
 
         # Get first path and extract timestamp
         path1 = next(iterator)
-        expected_name1 = time_to_file(start, ".txt")
+        expected_name1 = time_to_file(start, ".txt", date_dir=False)
         assert path1.name == expected_name1
 
         # Get second path - should be 1 second later
         path2 = next(iterator)
-        expected_name2 = time_to_file(start.shift(seconds=1), ".txt")
+        expected_name2 = time_to_file(start.shift(seconds=1), ".txt", date_dir=False)
         assert path2.name == expected_name2
 
     def test_peek_does_not_advance(self):
@@ -217,7 +217,7 @@ class TestFileTimeIterator:
         path2 = next(iterator)
 
         # Should use new start time
-        expected_name2 = time_to_file(start2, ".jpg")
+        expected_name2 = time_to_file(start2, ".jpg", date_dir=False)
         assert path2.name == expected_name2
 
     def test_multiple_iterators_independent(self):
