@@ -14,7 +14,7 @@ Requirements for refactoring completion. Each maps to roadmap phases.
 - [ ] **FIX-03**: Fix MQTT subscriber test hang (currently blocks CI/CD)
 - [x] **FIX-04**: Fix Pydantic migration test failures
 - [x] **FIX-05**: Complete calendar weekday checking in `CalendarTrigger.check()`
-- [ ] **FIX-06**: Implement file time utility using Iterator pattern
+- [x] **FIX-06**: Implement file time utility using Iterator pattern
 
 ### Security
 
@@ -84,7 +84,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FIX-03 | Phase 1: Foundation Repair | Pending |
 | FIX-04 | Phase 1: Foundation Repair | Complete |
 | FIX-05 | Phase 2: Security & Robustness | Complete |
-| FIX-06 | Phase 2: Security & Robustness | Pending |
+| FIX-06 | Phase 2: Security & Robustness | Complete |
 | SEC-01 | Phase 2: Security & Robustness | Pending |
 | SEC-02 | Phase 2: Security & Robustness | Pending |
 | SEC-03 | Phase 2: Security & Robustness | Pending |
