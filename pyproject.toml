@@ -27,8 +27,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "coverage[toml]>=7.13.5",
     "json5>=0.13.0",
     "pytest",
+    "pytest-cov>=7.1.0",
 ]
 
 [project.scripts]
@@ -39,9 +41,28 @@ mv_re = "jcx.bin.mv_re:main"
 rename_re = "jcx.bin.rename_re:main"
 
 [tool.pytest.ini_options]
-addopts = "-m 'not integration'"
+addopts = "-m 'not integration' --cov=jcx --cov-report=term-missing --cov-report=html"
 markers = [
     "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
+
+[tool.coverage.run]
+source = ["jcx"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_covered = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "@abstractmethod",
 ]
 
 [build-system]
