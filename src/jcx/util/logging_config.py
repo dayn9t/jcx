@@ -14,17 +14,20 @@ Usage:
     configure_logging(json_format=True, level="INFO")
 """
 
-import json
 import sys
+from typing import TYPE_CHECKING, TextIO
 
 from loguru import logger
+
+if TYPE_CHECKING:
+    from loguru import Logger
 
 
 def configure_logging(
     json_format: bool = False,
     level: str = "INFO",
     *,
-    sink: object | None = None,
+    sink: TextIO | None = None,
 ) -> None:
     """Configure loguru for structured logging.
 
@@ -42,30 +45,11 @@ def configure_logging(
     # Remove default handler
     logger.remove()
 
-    output = sink if sink is not None else sys.stderr
+    output: TextIO = sink if sink is not None else sys.stderr
 
     if json_format:
-
-        def json_sink(message: object) -> None:
-            """Sink that formats log records as JSON."""
-            record = message.record
-            log_entry = {
-                "timestamp": record["time"].isoformat(),
-                "level": record["level"].name,
-                "message": record["message"],
-                "module": record["module"],
-                "function": record["function"],
-                "line": record["line"],
-            }
-            # Add extra context if present
-            if record["extra"]:
-                log_entry["extra"] = record["extra"]
-            # Add exception info if present
-            if record["exception"]:
-                log_entry["exception"] = str(record["exception"])
-            print(json.dumps(log_entry), file=output)
-
-        logger.add(json_sink, level=level)
+        # Use loguru's built-in serialize option for JSON format
+        logger.add(output, level=level, serialize=True)
     else:
         # Human-readable format for development
         logger.add(
@@ -75,12 +59,7 @@ def configure_logging(
         )
 
 
-from loguru import Logger
-
-from loguru import logger
-
-
-def get_logger() -> Logger:
+def get_logger() -> "Logger":
     """Get the configured logger instance.
 
     Returns:

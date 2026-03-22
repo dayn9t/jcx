@@ -6,16 +6,15 @@ from pydantic import BaseModel
 KT = TypeVar("KT")
 VT = TypeVar("VT")
 
+# Type alias for list of LictItem - must be generic at class level, not module level
+# Using plain list type since type aliases with unbound type vars aren't valid at module scope
+
 
 class LictItem(BaseModel, Generic[KT, VT]):
     """Lict条目"""
 
     key: KT  # 键
     value: VT  # 值
-
-
-type LictItems = list[LictItem[KT, VT]]
-"""Lict条目数组"""
 
 
 class LictIter(Iterator[KT]):
