@@ -27,6 +27,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "json5>=0.13.0",
     "pytest",
 ]
 

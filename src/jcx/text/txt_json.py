@@ -17,8 +17,12 @@ def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
     try:
         with open(file, encoding="utf-8") as f:
             txt = f.read()
-    except Exception as e:
-        return Err(e)
+    except FileNotFoundError:
+        return Err(FileNotFoundError(f"文件不存在: {file}"))
+    except PermissionError:
+        return Err(PermissionError(f"权限不足: {file}"))
+    except OSError as e:
+        return Err(OSError(f"读取文件失败 {file}: {e}"))
     return Ok(txt)
 
 
@@ -34,8 +38,10 @@ def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
     assert isinstance(json, str | bytes), "Invalid input type @ try_from_json"
     try:
         ob = ob_type.model_validate_json(json)
-    except Exception as e:
+    except pydantic_core.ValidationError as e:
         return Err(e)
+    except (pydantic_core.PydanticUndefinedType, ValueError) as e:
+        return Err(ValueError(f"JSON验证失败: {e}"))
     return Ok(ob)
 
 

@@ -18,8 +18,10 @@ def save_txt(txt: str, file: StrPath, ext: str = ".txt") -> Result[bool, Excepti
         file.parent.mkdir(parents=True, exist_ok=True)
         with open(file, "w") as f:
             f.write(txt)
-    except Exception as e:
-        return Err(e)
+    except PermissionError:
+        return Err(PermissionError(f"权限不足: {file}"))
+    except OSError as e:
+        return Err(OSError(f"写入文件失败 {file}: {e}"))
     return Ok(True)
 
 

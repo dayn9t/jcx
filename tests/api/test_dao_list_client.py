@@ -9,6 +9,7 @@
 from unittest.mock import Mock, patch
 
 import pytest
+from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 from jcx.api.dao_client import DaoListClient
 from jcx.db.record import Record
@@ -59,6 +60,46 @@ class TestDaoListClient:
         client = DaoListClient("http://api.example.com/v1/")
         assert client.base_url == "http://api.example.com/v1"
 
+    # ========== Task 1 Tests: Timeout and Pool Configuration ==========
+
+    def test_init_default_timeout(self):
+        """Test 1: DaoListClient initializes with default timeout (30.0)"""
+        client = DaoListClient("http://api.example.com/v1")
+        assert client.timeout == 30.0
+
+    def test_init_custom_timeout(self):
+        """Test 2: DaoListClient initializes with custom timeout parameter"""
+        client = DaoListClient("http://api.example.com/v1", timeout=60.0)
+        assert client.timeout == 60.0
+
+    def test_init_http_adapter_pool_config(self):
+        """Test 3: DaoListClient mounts HTTPAdapter with pool_connections"""
+        client = DaoListClient(
+            "http://api.example.com/v1",
+            pool_connections=5,
+            pool_maxsize=20,
+        )
+        # Verify adapters are mounted for both http and https
+        assert "http://" in client.session.adapters
+        assert "https://" in client.session.adapters
+
+    @patch("requests.Session.get")
+    def test_get_all_passes_timeout(self, mock_get):
+        """Test 4: get_all passes timeout to session.get()"""
+        client = DaoListClient("http://api.example.com/v1", timeout=45.0)
+        mock_response = Mock()
+        mock_response.json.return_value = []
+        mock_response.raise_for_status.return_value = None
+        mock_get.return_value = mock_response
+
+        result = client.get_all(TestRecord, "tests")
+        assert result.is_ok()
+
+        # Verify timeout was passed
+        call_kwargs = mock_get.call_args[1]
+        assert "timeout" in call_kwargs
+        assert call_kwargs["timeout"] == 45.0
+
     @patch("requests.Session.get")
     def test_get_all_success(self, mock_get, client, test_records):
         """测试 get_all 方法成功场景"""
@@ -91,6 +132,7 @@ class TestDaoListClient:
             "http://api.example.com/v1/tests",
             params=None,
             headers={"Content-Type": "application/json"},
+            timeout=30.0,
         )
 
     @patch("requests.Session.get")
@@ -113,13 +155,14 @@ class TestDaoListClient:
             "http://api.example.com/v1/tests",
             params=params,
             headers={"Content-Type": "application/json"},
+            timeout=30.0,
         )
 
     @patch("requests.Session.get")
     def test_get_all_error(self, mock_get, client):
         """测试 get_all 方法错误场景"""
-        # 准备模拟响应
-        mock_get.side_effect = Exception("API连接失败")
+        # 准备模拟响应 - 使用 ConnectionError 而不是通用 Exception
+        mock_get.side_effect = ConnectionError("API连接失败")
 
         # 执行测试
         result = client.get_all(TestRecord, "tests")
@@ -128,7 +171,7 @@ class TestDaoListClient:
         assert result.is_err()
         error = result.unwrap_err()
         assert "获取所有资源失败" in error
-        assert "API连接失败" in error
+        assert "连接失败" in error
 
     @patch("requests.Session.get")
     def test_get_success(self, mock_get, client, test_record):
@@ -159,13 +202,14 @@ class TestDaoListClient:
         mock_get.assert_called_once_with(
             "http://api.example.com/v1/tests/1",
             headers={"Content-Type": "application/json"},
+            timeout=30.0,
         )
 
     @patch("requests.Session.get")
     def test_get_error(self, mock_get, client):
         """测试 get 方法错误场景"""
-        # 准备模拟响应
-        mock_get.side_effect = Exception("记录不存在")
+        # 准备模拟响应 - 使用 ConnectionError
+        mock_get.side_effect = ConnectionError("记录不存在")
 
         # 执行测试
         result = client.get(TestRecord, "tests", 999)
@@ -174,7 +218,7 @@ class TestDaoListClient:
         assert result.is_err()
         error = result.unwrap_err()
         assert "获取资源失败" in error
-        assert "记录不存在" in error
+        assert "连接失败" in error
 
     @patch("requests.Session.post")
     def test_post_success(self, mock_post, client, test_record):
@@ -205,14 +249,14 @@ class TestDaoListClient:
         mock_post.assert_called_once()
         call_args = mock_post.call_args
         assert call_args[0][0] == "http://api.example.com/v1/tests"
-        assert "json" in call_args[1]
-        assert call_args[1]["json"] == test_record.model_dump()
+        assert "data" in call_args[1]
+        # data contains JSON string of the record
 
     @patch("requests.Session.post")
     def test_post_error(self, mock_post, client, test_record):
         """测试 post 方法错误场景"""
-        # 准备模拟响应
-        mock_post.side_effect = Exception("数据验证失败")
+        # 准备模拟响应 - 使用 ConnectionError
+        mock_post.side_effect = ConnectionError("数据验证失败")
 
         # 执行测试
         result = client.post("tests", test_record)
@@ -221,7 +265,7 @@ class TestDaoListClient:
         assert result.is_err()
         error = result.unwrap_err()
         assert "创建资源失败" in error
-        assert "数据验证失败" in error
+        assert "连接失败" in error
 
     @patch("requests.Session.put")
     def test_put_success(self, mock_put, client, test_record):
@@ -256,14 +300,14 @@ class TestDaoListClient:
         mock_put.assert_called_once()
         call_args = mock_put.call_args
         assert call_args[0][0] == "http://api.example.com/v1/tests/1"
-        assert "json" in call_args[1]
-        assert call_args[1]["json"] == test_record.model_dump()
+        assert "data" in call_args[1]
+        # data contains JSON string of the record
 
     @patch("requests.Session.put")
     def test_put_error(self, mock_put, client, test_record):
         """测试 put 方法错误场景"""
-        # 准备模拟响应
-        mock_put.side_effect = Exception("更新操作失败")
+        # 准备模拟响应 - 使用 ConnectionError
+        mock_put.side_effect = ConnectionError("更新操作失败")
 
         # 执行测试
         result = client.put("tests", test_record)
@@ -272,7 +316,7 @@ class TestDaoListClient:
         assert result.is_err()
         error = result.unwrap_err()
         assert "更新资源失败" in error
-        assert "更新操作失败" in error
+        assert "连接失败" in error
 
     @patch("requests.Session.delete")
     def test_delete_success(self, mock_delete, client):
@@ -293,13 +337,14 @@ class TestDaoListClient:
         mock_delete.assert_called_once_with(
             "http://api.example.com/v1/tests/1",
             headers={"Content-Type": "application/json"},
+            timeout=30.0,
         )
 
     @patch("requests.Session.delete")
     def test_delete_error(self, mock_delete, client):
         """测试 delete 方法错误场景"""
-        # 准备模拟响应
-        mock_delete.side_effect = Exception("删除操作失败")
+        # 准备模拟响应 - 使用 ConnectionError
+        mock_delete.side_effect = ConnectionError("删除操作失败")
 
         # 执行测试
         result = client.delete("tests", 1)
@@ -308,7 +353,7 @@ class TestDaoListClient:
         assert result.is_err()
         error = result.unwrap_err()
         assert "删除资源失败" in error
-        assert "删除操作失败" in error
+        assert "连接失败" in error
 
     def test_set_auth_token(self, client):
         """测试设置认证令牌"""

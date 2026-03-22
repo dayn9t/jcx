@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from jcx.text.txt_json import *
+from jcx.text.txt_json5 import load_txt as load_txt5, from_json5, load_json5
 from tests.data_types import *
 
 
@@ -52,3 +53,55 @@ def test_from_io() -> None:
     assert s1 == STUDENT1
 
     s2 = load_json(f2, Student)
+
+
+def test_load_txt_file_not_found() -> None:
+    """Test FileNotFoundError returns Err with file path."""
+    result = load_txt("/nonexistent/path/file.txt")
+    assert result.is_err()
+    err = result.unwrap_err()
+    assert isinstance(err, FileNotFoundError)
+    assert "nonexistent" in str(err)
+
+
+def test_load_txt5_file_not_found() -> None:
+    """Test FileNotFoundError in txt_json5.load_txt returns Err with file path."""
+    result = load_txt5("/nonexistent/path/file.json5")
+    assert result.is_err()
+    err = result.unwrap_err()
+    assert isinstance(err, FileNotFoundError)
+    assert "nonexistent" in str(err)
+
+
+def test_from_json_invalid_json() -> None:
+    """Test JSON decode error returns Err with parse message."""
+    bad_json = "{invalid json"
+    result = from_json(bad_json, Student)
+    assert result.is_err()
+
+
+def test_from_json5_invalid_json5() -> None:
+    """Test JSON5 decode error returns Err with parse message."""
+    bad_json5 = "{invalid json5"
+    result = from_json5(bad_json5, Student)
+    assert result.is_err()
+    err = result.unwrap_err()
+    assert isinstance(err, ValueError)
+    assert "JSON5" in str(err) or "Invalid" in str(err)
+
+
+def test_from_json5_validation_error() -> None:
+    """Test Pydantic validation error returns Err."""
+    # Valid JSON5 but wrong types for Student model
+    bad_data = '{"id": "not_a_number", "name": "Test", "age": "also_not_number"}'
+    result = from_json5(bad_data, Student)
+    assert result.is_err()
+
+
+def test_from_json5_bytes_input() -> None:
+    """Test bytes input works correctly."""
+    json5_bytes = b'{"id": 1, "name": "Jack", "age": 11}'
+    result = from_json5(json5_bytes, Student)
+    assert result.is_ok()
+    student = result.unwrap()
+    assert student.name == "Jack"

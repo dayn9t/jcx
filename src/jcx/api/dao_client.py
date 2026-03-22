@@ -1,6 +1,14 @@
 from typing import Any, TypeVar
 
 import requests
+from requests.adapters import HTTPAdapter
+from requests.exceptions import (
+    ConnectionError,
+    HTTPError,
+    JSONDecodeError,
+    RequestException,
+    Timeout,
+)
 from rustshed import Err, Ok, Result
 
 from jcx.db.record import RecordSid
@@ -21,15 +29,38 @@ class DaoListClient:
     遵循REST风格API设计，自动处理序列化和反序列化。
     """
 
-    def __init__(self, base_url: str):
+    DEFAULT_TIMEOUT = 30.0
+    DEFAULT_POOL_CONNECTIONS = 10
+    DEFAULT_POOL_MAXSIZE = 10
+
+    def __init__(
+        self,
+        base_url: str,
+        *,
+        timeout: float = DEFAULT_TIMEOUT,
+        pool_connections: int = DEFAULT_POOL_CONNECTIONS,
+        pool_maxsize: int = DEFAULT_POOL_MAXSIZE,
+    ):
         """初始化项目列表客户端
 
         Args:
             base_url: API服务器基础URL，例如 'http://api.example.com/v1'
+            timeout: 请求超时时间（秒），默认30秒
+            pool_connections: 连接池大小，默认10
+            pool_maxsize: 最大连接数，默认10
 
         """
         self.base_url = base_url.rstrip("/")
+        self.timeout = timeout
         self.session = requests.Session()
+
+        # Configure connection pooling
+        adapter = HTTPAdapter(
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
+        )
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
         self.headers = {"Content-Type": "application/json"}
 
     def get_all(
@@ -58,14 +89,24 @@ class DaoListClient:
         """
         try:
             url = f"{self.base_url}/{table_name}"
-            response = self.session.get(url, params=params, headers=self.headers)
+            response = self.session.get(
+                url, params=params, headers=self.headers, timeout=self.timeout
+            )
             response.raise_for_status()
 
             data_list = response.json()
             records = [record_type(**item) for item in data_list]
             return Ok(records)
-        except Exception as e:
-            return Err(f"获取所有资源失败: {e!s}")
+        except Timeout:
+            return Err(f"获取所有资源失败: 请求超时 ({self.timeout}s)")
+        except ConnectionError as e:
+            return Err(f"获取所有资源失败: 连接失败 - {e}")
+        except HTTPError as e:
+            return Err(f"获取所有资源失败: HTTP错误 {e.response.status_code}")
+        except JSONDecodeError:
+            return Err("获取所有资源失败: 响应JSON格式无效")
+        except RequestException as e:
+            return Err(f"获取所有资源失败: 请求失败 - {e}")
 
     def get(self, record_type: type[R], table_name: str, record_id: str) -> ResultE[R]:
         """获取单个资源项目
@@ -89,14 +130,24 @@ class DaoListClient:
         try:
             url = f"{self.base_url}/{table_name}/{record_id}"
 
-            response = self.session.get(url, headers=self.headers)
+            response = self.session.get(
+                url, headers=self.headers, timeout=self.timeout
+            )
             response.raise_for_status()
 
             data = response.json()
             record = record_type(**data)
             return Ok(record)
-        except Exception as e:
-            return Err(f"获取资源失败: {e!s}")
+        except Timeout:
+            return Err(f"获取资源失败: 请求超时 ({self.timeout}s)")
+        except ConnectionError as e:
+            return Err(f"获取资源失败: 连接失败 - {e}")
+        except HTTPError as e:
+            return Err(f"获取资源失败: HTTP错误 {e.response.status_code}")
+        except JSONDecodeError:
+            return Err("获取资源失败: 响应JSON格式无效")
+        except RequestException as e:
+            return Err(f"获取资源失败: 请求失败 - {e}")
 
     def post(self, table_name: str, record: R) -> ResultE[R]:
         """创建新资源项目
@@ -118,13 +169,23 @@ class DaoListClient:
         try:
             url = f"{self.base_url}/{table_name}"
             data = to_json(record)
-            response = self.session.post(url, data=data, headers=self.headers)
+            response = self.session.post(
+                url, data=data, headers=self.headers, timeout=self.timeout
+            )
             response.raise_for_status()
 
             response_data = response.json()
             return Ok(record.__class__(**response_data))
-        except Exception as e:
-            return Err(f"创建资源失败: {e!s}")
+        except Timeout:
+            return Err(f"创建资源失败: 请求超时 ({self.timeout}s)")
+        except ConnectionError as e:
+            return Err(f"创建资源失败: 连接失败 - {e}")
+        except HTTPError as e:
+            return Err(f"创建资源失败: HTTP错误 {e.response.status_code}")
+        except JSONDecodeError:
+            return Err("创建资源失败: 响应JSON格式无效")
+        except RequestException as e:
+            return Err(f"创建资源失败: 请求失败 - {e}")
 
     def put(self, table_name: str, record: R) -> ResultE[R]:
         """更新资源项目
@@ -149,13 +210,23 @@ class DaoListClient:
 
             url = f"{self.base_url}/{table_name}/{record.id}"
             data = to_json(record)
-            response = self.session.put(url, data=data, headers=self.headers)
+            response = self.session.put(
+                url, data=data, headers=self.headers, timeout=self.timeout
+            )
             response.raise_for_status()
 
             response_data = response.json()
             return Ok(record.__class__(**response_data))
-        except Exception as e:
-            return Err(f"更新资源失败: {e!s}")
+        except Timeout:
+            return Err(f"更新资源失败: 请求超时 ({self.timeout}s)")
+        except ConnectionError as e:
+            return Err(f"更新资源失败: 连接失败 - {e}")
+        except HTTPError as e:
+            return Err(f"更新资源失败: HTTP错误 {e.response.status_code}")
+        except JSONDecodeError:
+            return Err("更新资源失败: 响应JSON格式无效")
+        except RequestException as e:
+            return Err(f"更新资源失败: 请求失败 - {e}")
 
     def delete(self, table_name: str, record_id: str) -> ResultE[bool]:
         """删除资源项目
@@ -175,12 +246,20 @@ class DaoListClient:
         """
         try:
             url = f"{self.base_url}/{table_name}/{record_id}"
-            response = self.session.delete(url, headers=self.headers)
+            response = self.session.delete(
+                url, headers=self.headers, timeout=self.timeout
+            )
             response.raise_for_status()
 
             return Ok(True)
-        except Exception as e:
-            return Err(f"删除资源失败: {e!s}")
+        except Timeout:
+            return Err(f"删除资源失败: 请求超时 ({self.timeout}s)")
+        except ConnectionError as e:
+            return Err(f"删除资源失败: 连接失败 - {e}")
+        except HTTPError as e:
+            return Err(f"删除资源失败: HTTP错误 {e.response.status_code}")
+        except RequestException as e:
+            return Err(f"删除资源失败: 请求失败 - {e}")
 
     def set_auth_token(self, token: str) -> None:
         """设置认证令牌

@@ -17,8 +17,12 @@ def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
     try:
         with open(file, encoding="utf-8") as f:
             txt = f.read()
-    except Exception as e:
-        return Err(e)
+    except FileNotFoundError:
+        return Err(FileNotFoundError(f"文件不存在: {file}"))
+    except PermissionError:
+        return Err(PermissionError(f"权限不足: {file}"))
+    except OSError as e:
+        return Err(OSError(f"读取文件失败 {file}: {e}"))
     return Ok(txt)
 
 
@@ -42,8 +46,13 @@ def from_json5(json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
         obj_dict = json5.loads(json5_str)
         # 然后用Pydantic模型验证
         ob = ob_type.model_validate(obj_dict)
-    except Exception as e:
+    except ValueError as e:
+        # json5 抛出 ValueError 而不是 JSONDecodeError
+        return Err(ValueError(f"JSON5解析失败: {e}"))
+    except pydantic.ValidationError as e:
         return Err(e)
+    except UnicodeDecodeError as e:
+        return Err(ValueError(f"UTF-8解码失败: {e}"))
     return Ok(ob)
 
 
