@@ -27,7 +27,7 @@ from jcx.text.txt_json import load_json, save_json
 Rust-inspired error handling with Result and Option types (powered by rustshed):
 
 ```python
-from jcx.rs import Result, Ok, Err, Option, Some, Nothing
+from jcx.rs import Result, Ok, Err, Option, Some, Null
 
 def divide(a: int, b: int) -> Result[float, str]:
     if b == 0:
