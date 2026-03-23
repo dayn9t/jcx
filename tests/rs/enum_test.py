@@ -5,7 +5,7 @@ from enum import Enum
 import pytest
 from pydantic import ValidationError
 
-from jcx.m.enum import EnumItem, FrozenModel, PydanticEnum
+from jcx.rs.enum import EnumItem, FrozenModel, PydanticEnum
 
 
 class TestFrozenModel:

@@ -30,6 +30,8 @@ from rustshed import (
     to_result,
 )
 
+from jcx.rs.enum import EnumItem, FrozenModel, PydanticEnum
+
 __all__ = [
     "Err",
     "IOResult",
@@ -46,4 +48,8 @@ __all__ = [
     "to_io_result",
     "to_option",
     "to_result",
+    # Enum types
+    "FrozenModel",
+    "EnumItem",
+    "PydanticEnum",
 ]
