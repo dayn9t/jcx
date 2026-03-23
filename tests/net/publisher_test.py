@@ -2,7 +2,7 @@ from jcx.net.mqtt.publisher import *
 
 
 def test_publish() -> None:
-    cfg = MqttCfg("tcp://localhost:1883", "howell/ias")
+    cfg = MqttCfg(server_url="tcp://localhost:1883", root_topic="howell/ias")
 
     publisher = Publisher(cfg)
 
