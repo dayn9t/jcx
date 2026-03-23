@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 Phase: 4 of 4 (Type Safety & Documentation)
 Plan: 2 of 4
 Status: Executing
-Last activity: 2026-03-22 - Completed 04-02 Public API Type Verification
+Last activity: 2026-03-23 - Completed quick task 1: 定义 Pydantic V2 不可变枚举基类 (FrozenModel)
 
 Progress: [███████░░░] 68%
 
@@ -116,6 +116,12 @@ None yet.
 [Issues that affect future work]
 
 - `tests/db/test_misc.py::test_counter` - Pre-existing bug: JdbCounter uses int type which is not a BaseModel subclass
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | 定义 Pydantic V2 不可变枚举基类 (FrozenModel) | 2026-03-23 | 5ab352a | [1-pydantic-v2-frozenmodel](./quick/1-pydantic-v2-frozenmodel/) |
 
 ## Session Continuity
 
