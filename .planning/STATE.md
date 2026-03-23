@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed quick task 1-pydantic-v2-frozenmodel
-last_updated: "2026-03-23T01:47:22.628Z"
-last_activity: 2026-03-22 - Completed 04-02 Public API Type Verification
+stopped_at: Completed quick task 2-fix-failed-tests
+last_updated: "2026-03-23T07:51:04.785Z"
+last_activity: "2026-03-23 - Completed quick task 1: 定义 Pydantic V2 不可变枚举基类 (FrozenModel)"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -58,6 +58,7 @@ Progress: [███████░░░] 68%
 | Phase 04 P03 | 1min | 1 tasks | 1 files |
 | Phase 04-type-safety-documentation P04-04 | 2 min | 3 tasks | 11 files |
 | Phase 04-type-safety-documentation P05 | 351s | 3 tasks | 5 files |
+| Phase 2-fix-failed-tests P01 | 310s | 3 tasks | 4 files |
 
 ## Phase 2 Summary
 
@@ -104,6 +105,7 @@ Recent decisions affecting current work:
 - [Phase 04]: Use loguru's built-in serialize option for JSON format
 - [Phase 04]: Use TYPE_CHECKING to import Logger type annotation
 - [Phase 04]: Re-export rustshed types from jcx/rs for stable import path
+- [Phase 2-fix-failed-tests]: Use TypeAdapter from pydantic for parsing generic list types instead of from_json
 
 ### Pending Todos
 
@@ -125,8 +127,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T01:47:22.627Z
-Stopped at: Completed quick task 1-pydantic-v2-frozenmodel
+Last session: 2026-03-23T07:51:04.784Z
+Stopped at: Completed quick task 2-fix-failed-tests
 Resume file: None
 
 ---
