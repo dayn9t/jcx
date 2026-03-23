@@ -34,12 +34,12 @@ class TestConfigureLogging:
         output = sink.getvalue().strip()
         # Should be valid JSON
         parsed = json.loads(output)
-        assert parsed["message"] == "Test message"
-        assert parsed["level"] == "INFO"
-        assert "timestamp" in parsed
-        assert "module" in parsed
-        assert "function" in parsed
-        assert "line" in parsed
+        assert parsed["record"]["message"] == "Test message"
+        assert parsed["record"]["level"]["name"] == "INFO"
+        assert "time" in parsed["record"]
+        assert "module" in parsed["record"]
+        assert "function" in parsed["record"]
+        assert "line" in parsed["record"]
 
     def test_json_format_includes_extra(self) -> None:
         """JSON format includes extra context."""
@@ -51,8 +51,8 @@ class TestConfigureLogging:
 
         output = sink.getvalue().strip()
         parsed = json.loads(output)
-        assert "extra" in parsed
-        assert parsed["extra"]["user_id"] == "123"
+        assert "extra" in parsed["record"]
+        assert parsed["record"]["extra"]["user_id"] == "123"
 
     def test_log_level_filtering(self) -> None:
         """Log level filters out lower-priority messages."""
@@ -100,4 +100,4 @@ class TestLoggingIntegration:
         # Second sink should only have second message (JSON)
         output2 = sink2.getvalue().strip()
         parsed = json.loads(output2)
-        assert parsed["message"] == "Second message"
+        assert parsed["record"]["message"] == "Second message"
