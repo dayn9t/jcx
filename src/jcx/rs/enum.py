@@ -4,9 +4,9 @@ This module provides reusable patterns for immutable enum-like data structures
 using Pydantic V2's frozen models and Python's enum module.
 
 Example:
-    >>> from jcx.m.enum import EnumItem, PydanticEnum
+    >>> from jcx.rs.enum import EnumItem, RichEnum
     >>>
-    >>> class Status(PydanticEnum):
+    >>> class Status(RichEnum):
     ...     ACTIVE = EnumItem(value=1, name="active", description="Active status")
     ...     INACTIVE = EnumItem(value=2, name="inactive", description="Inactive status")
     >>>
@@ -32,8 +32,7 @@ class FrozenModel(BaseModel):
     validation.
 
     Example:
-        >>> from pydantic import BaseModel
-        >>> from jcx.m.enum import FrozenModel
+        >>> from jcx.rs.enum import FrozenModel
         >>>
         >>> class Point(FrozenModel):
         ...     x: int
@@ -48,7 +47,7 @@ class FrozenModel(BaseModel):
 class EnumItem(FrozenModel):
     """Immutable enum item with value, name, and description.
 
-    This is the data class used as member values in PydanticEnum.
+    This is the data class used as member values in RichEnum.
     Each enum member stores its integer value, string name, and optional
     description.
 
@@ -72,8 +71,8 @@ class EnumItem(FrozenModel):
     description: str = ""
 
 
-class PydanticEnum(Enum):
-    """Enum base class using EnumItem as member values.
+class RichEnum(Enum):
+    """Enum base class with rich metadata (value, name, description).
 
     Inherit from this class to create enums with rich metadata.
     Each member should be assigned an EnumItem containing value,
@@ -85,7 +84,7 @@ class PydanticEnum(Enum):
         - description: The human-readable description
 
     Example:
-        >>> class Priority(PydanticEnum):
+        >>> class Priority(RichEnum):
         ...     LOW = EnumItem(value=1, name="low", description="Low priority")
         ...     HIGH = EnumItem(value=2, name="high", description="High priority")
         >>> Priority.LOW.value_int

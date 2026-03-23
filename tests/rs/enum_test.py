@@ -1,11 +1,9 @@
-"""Tests for FrozenModel, EnumItem, and PydanticEnum."""
-
-from enum import Enum
+"""Tests for FrozenModel, EnumItem, and RichEnum."""
 
 import pytest
 from pydantic import ValidationError
 
-from jcx.rs.enum import EnumItem, FrozenModel, PydanticEnum
+from jcx.rs.enum import EnumItem, FrozenModel, RichEnum
 
 
 class TestFrozenModel:
@@ -46,7 +44,7 @@ class TestEnumItem:
             EnumItem(value=1, name="test", extra_field="not_allowed")  # type: ignore[call-arg]
 
 
-class ColorEnum(PydanticEnum):
+class ColorEnum(RichEnum):
     """Test enum using EnumItem values."""
 
     RED = EnumItem(value=1, name="red", description="Red color")
@@ -54,29 +52,29 @@ class ColorEnum(PydanticEnum):
     BLUE = EnumItem(value=3, name="blue", description="Blue color")
 
 
-class TestPydanticEnum:
-    """Tests for PydanticEnum properties and iteration."""
+class TestRichEnum:
+    """Tests for RichEnum properties and iteration."""
 
     def test_value_int_returns_correct_value(self) -> None:
-        """PydanticEnum.value_int should return the integer value."""
+        """RichEnum.value_int should return the integer value."""
         assert ColorEnum.RED.value_int == 1
         assert ColorEnum.GREEN.value_int == 2
         assert ColorEnum.BLUE.value_int == 3
 
     def test_name_str_returns_correct_name(self) -> None:
-        """PydanticEnum.name_str should return the string name."""
+        """RichEnum.name_str should return the string name."""
         assert ColorEnum.RED.name_str == "red"
         assert ColorEnum.GREEN.name_str == "green"
         assert ColorEnum.BLUE.name_str == "blue"
 
     def test_description_returns_correct_description(self) -> None:
-        """PydanticEnum.description should return the description."""
+        """RichEnum.description should return the description."""
         assert ColorEnum.RED.description == "Red color"
         assert ColorEnum.GREEN.description == "Green color"
         assert ColorEnum.BLUE.description == "Blue color"
 
     def test_iteration_yields_all_members(self) -> None:
-        """PydanticEnum iteration should yield all members."""
+        """RichEnum iteration should yield all members."""
         members = list(ColorEnum)
 
         assert len(members) == 3
