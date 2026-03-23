@@ -12,9 +12,9 @@ def test_now_utc_dt_returns_datetime():
 
 
 def test_now_utc_dt_timezone_is_utc():
-    """测试now_utc_dt返回的datetime对象时区是UTC"""
+    """测试now_sh_dt返回的datetime对象时区是Asia/Shanghai"""
     result = now_sh_dt()
-    assert result.tzinfo == ZoneInfo("UTC")
+    assert result.tzinfo == ZoneInfo("Asia/Shanghai")
 
 
 def test_now_utc_dt_correct_time():
