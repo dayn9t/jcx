@@ -1,19 +1,11 @@
 from pathlib import Path
 
-from pydantic import BaseModel
-
 from jcx.db.counter import Counter
-from jcx.db.jdb.variant import JdbVariant
-
-
-class Item(BaseModel):
-    """数据库记录"""
-
-    id: int
+from jcx.db.jdb.json_variant import JsonVariant
 
 
 class JdbCounter(Counter):
-    """Jdb计数器"""
+    """Jdb 计数器——基于 JSON 文件持久化的自增整数"""
 
-    def __init__(self, db: Path, name: str):
-        super().__init__(JdbVariant(int, db, name))
+    def __init__(self, db: Path, name: str) -> None:
+        super().__init__(JsonVariant(int, db, name))

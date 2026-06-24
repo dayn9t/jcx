@@ -10,6 +10,7 @@ Example:
         if b == 0:
             return Err("Division by zero")
         return Ok(a / b)
+
 """
 
 from rustshed import (

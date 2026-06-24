@@ -10,11 +10,11 @@ class JdbVariant(IVariant):
     """数据库变量"""
 
     @classmethod
-    def open(cls, value_type: type[BMT], folder, name: str) -> Self:
+    def open(cls, value_type: type[BMT], folder: StrPath, name: str) -> Self:
         """打开数据变量"""
         return JdbVariant(value_type, folder, name)
 
-    def __init__(self, value_type: type[BMT], folder: StrPath, name: str):
+    def __init__(self, value_type: type[BMT], folder: StrPath, name: str) -> None:
         self._type = value_type
         self._path = Path(folder, name + ".json")
 

@@ -17,9 +17,9 @@ from jcx.text.txt_json import to_json
 R = TypeVar("R", bound=RecordSid)
 T = TypeVar("T")
 
-# 定义类型别名，简化 Result[X, Exception] 的重复使用
-ResultE = Result[T, Exception]
-"""返回结果或异常的 Result 类型"""
+# 错误载荷为错误描述字符串（Err 调用均为 Err("...")）
+ResultE = Result[T, str]
+"""返回结果或错误信息字符串的 Result 类型"""
 
 
 class DaoListClient:
@@ -40,7 +40,7 @@ class DaoListClient:
         timeout: float = DEFAULT_TIMEOUT,
         pool_connections: int = DEFAULT_POOL_CONNECTIONS,
         pool_maxsize: int = DEFAULT_POOL_MAXSIZE,
-    ):
+    ) -> None:
         """初始化项目列表客户端
 
         Args:

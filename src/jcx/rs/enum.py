@@ -39,6 +39,7 @@ class FrozenModel(BaseModel):
         ...     y: int
         >>> p = Point(x=1, y=2)
         >>> p.x = 5  # Raises ValidationError
+
     """
 
     model_config = ConfigDict(frozen=True, extra="forbid")
@@ -64,6 +65,7 @@ class EnumItem(FrozenModel):
         'first'
         >>> item.description
         'First item'
+
     """
 
     value: int
@@ -93,6 +95,7 @@ class RichEnum(Enum):
         'high'
         >>> list(Priority)  # Iteration works normally
         [<Priority.LOW: EnumItem(value=1, name='low', description='Low priority')>, ...]
+
     """
 
     @property

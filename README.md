@@ -1,5 +1,8 @@
 # JCX
 
+![CI](https://github.com/dayn9t/jcx/actions/workflows/ci.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A Python utility library providing Result/Option types, file operations, time utilities, JSON handling, and more.
 
 ## Installation

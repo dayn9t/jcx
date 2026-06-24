@@ -6,7 +6,7 @@ and displaying errors in a consistent format.
 
 import traceback
 from collections.abc import Callable
-from typing import Any, TypeVar
+from typing import TypeVar
 
 from loguru import logger
 from rustshed import Err
@@ -31,11 +31,11 @@ def mand(value: T | None) -> T:
         AssertionError: If value is None.
 
     """
-    assert value is not None
+    assert value is not None  # noqa: S101 - mand 约定，docstring 声明 AssertionError
     return value
 
 
-def show_err(e: Any) -> None:
+def show_err(e: object) -> None:
     """Display an error or exception in a formatted way.
 
     Handles different error types and logs them with appropriate formatting.
@@ -49,8 +49,6 @@ def show_err(e: Any) -> None:
     """
     if isinstance(e, Err):
         msg = f"{e}"
-    # elif isinstance(e, UnwrapError):
-    #    msg = 'UnwrapError(%s):' % str(e.result.value)
     elif isinstance(e, AssertionError):
         msg = f"AssertionError({e.args})"
     else:
@@ -75,17 +73,5 @@ def catch_show_err(fun: Callable[[], Any], verbose: bool = False) -> None:
         fun()
     except Exception as e:
         show_err(e)
-        # print('traceback.print_exc():', traceback.print_exc())
         if verbose:
-            print(traceback.format_exc())
-
-
-def show_err_demo() -> None:
-    """Demo function showing error display behavior."""
-    e = Err("a error")
-    print(type(e))
-    show_err(e)
-
-
-if __name__ == "__main__":
-    show_err_demo()
+            logger.error(traceback.format_exc())

@@ -12,7 +12,7 @@ class Counter(Iterator[int]):
         self.__var.set(v)
         return v
 
-    def __init__(self, var: IVariant[int]):
+    def __init__(self, var: IVariant[int]) -> None:
         self.__var = var
 
     def name(self) -> str:
@@ -21,7 +21,7 @@ class Counter(Iterator[int]):
 
     def get(self) -> int:
         """获取当前数值"""
-        return self.__var.get() or 0
+        return self.__var.get().unwrap_or(0)
 
     def reset(self) -> None:
         """重置ID初值"""

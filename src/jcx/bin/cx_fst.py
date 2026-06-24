@@ -60,4 +60,3 @@ def insert_channel(folder: StrPath) -> None:
 
 if __name__ == "__main__":
     main()
-    # insert_channel('/var/ias/snapshot/shtm/n1')

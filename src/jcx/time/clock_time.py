@@ -7,6 +7,7 @@ This module provides the ClockTime class for representing time of day
 from typing import Self
 
 from arrow import Arrow
+
 # parse library (v1.20.2) has no type stubs available
 from parse import parse  # type: ignore[import]
 from pydantic.dataclasses import dataclass
@@ -106,7 +107,6 @@ class ClockTime:
 
         """
         t = Arrow.now()
-        # now.date()
         return t.replace(
             hour=self.hour,
             minute=self.minute,

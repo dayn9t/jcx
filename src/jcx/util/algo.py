@@ -4,7 +4,7 @@ This module provides helper functions for searching dictionaries, finding
 elements in lists, and determining insertion positions.
 """
 
-from typing import Any, TypeVar
+from typing import TypeVar
 
 from rustshed import Null, Option, Some, to_option
 

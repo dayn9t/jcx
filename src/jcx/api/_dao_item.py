@@ -1,10 +1,10 @@
-from abc import ABC
 from pathlib import Path
 from typing import TypeVar
 
 from cattr import structure, unstructure
+
 # flask-restx has no type stubs available
-from flask_restx import Resource  # type: ignore[import]
+from flask_restx import Api, Namespace, Resource  # type: ignore[import]
 
 from jcx.db.jdb.variant import JdbVariant
 from jcx.db.record import PRecord
@@ -12,17 +12,17 @@ from jcx.db.record import PRecord
 R = TypeVar("R", bound=PRecord)
 
 
-class ItemDao(ABC):
+class ItemDao:
     """条目数据访问对象"""
 
-    def __init__(self, record_type: type[R], folder: Path, name: str):
+    def __init__(self, record_type: type[R], folder: Path, name: str) -> None:
         self._var = JdbVariant(record_type, folder, name)
 
     def value_type(self) -> type[R]:
         """获取条目类型"""
         return self._var.value_type()
 
-    def variant(self):
+    def variant(self) -> JdbVariant:
         """获取数据变量"""
         return self._var
 
@@ -31,7 +31,7 @@ class ItemDao(ABC):
         r: R = self._var.get()
         return r
 
-    def update(self, r) -> R | None:
+    def update(self, r: R) -> R | None:
         """更新记录"""
         r0: R = self._var.get()
         r = self.before_update(r, r0)
@@ -49,7 +49,7 @@ class ItemDao(ABC):
         """更新记录之后的检查, 不可修改r值"""
 
 
-def make_item(api, data: dict, item_type: type[R]) -> tuple[bool, R]:
+def make_item(api: Api, data: dict, item_type: type[R]) -> tuple[bool, R]:
     """从数据构建条目"""
     try:
         item = structure(data, item_type)
@@ -58,7 +58,7 @@ def make_item(api, data: dict, item_type: type[R]) -> tuple[bool, R]:
     return True, item
 
 
-def add_item_resource(ns, url, dao: ItemDao, model):
+def add_item_resource(ns: Namespace, url: str, dao: ItemDao, model: dict) -> None:
     """添加独立资源"""
     # TODO: model 通过 record_type 动态生成
 
@@ -68,14 +68,14 @@ def add_item_resource(ns, url, dao: ItemDao, model):
 
         @ns.doc("get_item")
         @ns.marshal_with(model)
-        def get(self):
+        def get(self):  # noqa: ANN202 - flask-restx Resource 方法，返回由 marshal 处理
             """获取条目"""
             r = dao.get()
             return unstructure(r)
 
         @ns.expect(model)
         @ns.marshal_with(model)
-        def put(self):
+        def put(self):  # noqa: ANN202 - flask-restx Resource 方法，返回由 marshal 处理
             """修改条目"""
             ok, r = make_item(self.api, self.api.payload, dao.value_type())
             if not ok:

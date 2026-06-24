@@ -42,8 +42,7 @@ def main():
                     os.path.join(parent, file_name),
                     os.path.join(parent, new_name),
                 )
-                # shutil.move(os.path.join(parent, file_name), os.path.join(parent, new_name))
-                print("rename '%s' to '%s'" % (file_name, new_name))
+                print(f"rename '{file_name}' to '{new_name}'")
 
 
 if __name__ == "__main__":

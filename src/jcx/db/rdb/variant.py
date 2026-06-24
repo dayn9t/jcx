@@ -1,77 +1,49 @@
-from typing import TypeVar
+from typing import Self
 
-from jcx.db.rdb.db import DbCfg, RedisDb
+from rustshed import Null, Option, Some
 
-T = TypeVar("T")
+from jcx.db.rdb.db import RedisDb
 
 
-class RedisVariant:
+class RedisVariant[T]:
     """数据库变量"""
 
-    @staticmethod
-    def open(value_type, db: RedisDb, name: str, default=None):
-        """打开数据变量"""
-        return RedisVariant(value_type, db, name, default)
-
-    def __init__(self, value_type: type[T], db: RedisDb, name: str, default=None):
+    def __init__(
+        self, value_type: type[T], db: RedisDb, name: str, default: T | None = None
+    ) -> None:
         self._type = value_type
         self._db = db
         self._name = str(name)
         self._default = default
 
-    def name(self):
-        """ "获取变量名"""
+    @classmethod
+    def open(
+        cls, value_type: type[T], db: RedisDb, name: str, default: T | None = None
+    ) -> Self:
+        """打开数据变量"""
+        return cls(value_type, db, name, default)
+
+    def name(self) -> str:
+        """获取变量名"""
         return self._name
 
-    def value_type(self):
-        """ "获取变量类型"""
+    def value_type(self) -> type[T]:
+        """获取变量类型"""
         return self._type
 
-    def exists(self):
-        """ "判断是否存在"""
+    def exists(self) -> bool:
+        """判断是否存在"""
         return self._db.exists(self._name)
 
-    def get(self):
-        """获取变量"""
-        return self._db.get(self._name, self._type, self._default)
+    def get(self) -> Option[T]:
+        """获取变量；缺失时返回 Null"""
+        value = self._db.get(self._name, self._type, self._default)
+        return Null if value is None else Some(value)
 
-    def set(self, value):
+    def set(self, value: T) -> None:
         """设置变量"""
         self._db.set(self._name, value)
 
-    def remove(self):
+    def remove(self) -> None:
         """删除变量"""
         self._db.remove(self._name)
-
-
-def a_test():
-    db_cfg = DbCfg("redis://127.0.0.1/10")
-
-    db = RedisDb(db_cfg.hot_db)
-
-    name = RedisVariant(str, db, "name")
-    name.set("jack")
-    v = name.get()
-    print(v, type(v))
-
-    age = RedisVariant(int, db, "age")
-    age.set(18)
-    v = age.get()
-    print(v, type(v))
-
-    cfg = RedisVariant(DbCfg, db, "cfg")
-    cfg.set(db_cfg)
-    v = cfg.get()
-    print(v, type(v))
-
-    print(cfg.exists())
-    cfg.remove()
-    print(cfg.exists())
-
-    cfg = RedisVariant(DbCfg, db, "cfg1", 0)
-    v = cfg.get()
-    print(v, type(v))
-
-
-if __name__ == "__main__":
-    a_test()

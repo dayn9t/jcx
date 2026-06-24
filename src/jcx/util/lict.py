@@ -20,7 +20,7 @@ class LictItem(BaseModel, Generic[KT, VT]):
 class LictIter(Iterator[KT]):
     """Lict迭代器"""
 
-    def __init__(self, items: list[LictItem[KT, VT]]):
+    def __init__(self, items: list[LictItem[KT, VT]]) -> None:
         self._items = items
         self._idx = -1
 
@@ -34,7 +34,7 @@ class LictIter(Iterator[KT]):
 class Lict(Mapping[KT, VT]):
     """列表字典, 受某种限制(如: flask_restx), 必须用list实现map功能"""
 
-    def __init__(self, items: list[LictItem[KT, VT]]):
+    def __init__(self, items: list[LictItem[KT, VT]]) -> None:
         self._items = items
 
     def inner(self) -> list[LictItem[KT, VT]]:

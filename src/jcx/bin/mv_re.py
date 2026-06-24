@@ -40,7 +40,7 @@ def main():
 
     if dst_path is not None:
         Path(dst_path).parent.mkdir(exist_ok=True, parents=True)
-        print("move '%s' to '%s'" % (src_path, dst_path))
+        print(f"move '{src_path}' to '{dst_path}'")
         shutil.move(src_path, dst_path)
 
 

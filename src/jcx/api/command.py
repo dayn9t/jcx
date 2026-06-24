@@ -2,7 +2,7 @@ from pathlib import Path
 from subprocess import getstatusoutput
 
 # flask-restx has no type stubs available
-from flask_restx import Api, fields  # type: ignore[import]
+from flask_restx import Api, Namespace, fields  # type: ignore[import]
 from pydantic import BaseModel
 from rustshed import Null, Option
 
@@ -22,19 +22,20 @@ class CommandInfo(BaseModel):
 class CommandDao(ItemDao):
     """数据源组数据访问对象"""
 
-    def __init__(self, folder: Path, name: str, command: str):
+    def __init__(self, folder: Path, name: str, command: str) -> None:
         super().__init__(CommandInfo, folder, name)
         self._command = command
 
-    def before_update(self, r: CommandInfo, _r0: CommandInfo):
+    def before_update(self, r: CommandInfo, _r0: CommandInfo) -> CommandInfo:
         """更新之前"""
         r.time = now_iso_str()
         status, output = getstatusoutput(self._command)
-        r.output = "%s, %s" % (status, output)
+        r.output = f"{status}, {output}"
         return r
 
 
-def command_model(api: Api, description):
+def command_model(api: Api, description: str) -> dict:
+    """构建命令模型"""
     return api.model(
         "Command",
         {
@@ -50,13 +51,13 @@ class CommandParam(BaseModel):
     time: str = ""
     """时间"""
     output: str = ""
-    """输出?"""
+    """输出"""
 
 
 def add_command_resource(
-    api,
-    ns,
-    url,
+    api: Api,
+    ns: Namespace,
+    url: str,
     db_root: Path,
     cmd: str,
     desc: str,

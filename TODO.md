@@ -1,22 +1,17 @@
 # TODO
 
-## api
+## 待办
 
-- 文档注释还不能动态定义, 
-    - @ns.doc中可能没法达成效果
-    - 可能要实现装饰器
-- 模型成员的注释也不能从类导入, FastAPI应该能解决
-    - 获取成员方法：```from attr import fields as attr_fields```
+### 代码质量（持续迭代）
+- 补充关键公开 API 的 docstring（D100/D103；自解释函数按 j-coding-style「仅记录非显而易见」可省）
+- PEP 695 泛型/类型别名现代化（UP040/UP046：旧式 `TypeVar` → `class X[T]` / `type T = ...`）
+- `ui/progress_meter` 等低覆盖模块补类型注解与 docstring
 
-## TODO
+### 功能
+- `api` 模块：flask-restx 文档动态生成（`@ns.doc` 装饰器，参考 attr fields）
+- `RedisCounter` 集成测试（需 redis 服务，当前无测试覆盖）
 
 ## 参考
 
-- https://python-poetry.org/docs/
-- [4个工具帮你轻松将python项目发布到生产环境](https://blog.csdn.net/weixin_38739735/article/details/133257783)
-  - black — 用于格式化代码
-  - pydoctyle — 确保代码文档符合Google的标准
-  - pycln — 用于删除未使用的导入
-  - trailing-whitespace — 用于删除额外的空格
-  - unitest — 用于运行单元测试和检测破坏性更改
-  - tox — 用于测试不同版本的Python
+- 工具链：uv / ruff / pyright / pytest
+- 现代化改造进度：`.planning/modernization-plan.md`

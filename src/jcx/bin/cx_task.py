@@ -9,13 +9,13 @@ from rich.table import Table
 
 from jcx.api.task.task_client import TaskClient
 from jcx.api.task.task_types import TaskInfo, TaskStatus
-from jcx.time.dt_util import now_sh_dt
+from jcx.time.dt_util import Datetime, now_sh_dt
 
 app = typer.Typer(help="任务管理命令行工具")
 console = Console()
 
 
-def format_datetime(dt) -> str:
+def format_datetime(dt: Datetime | None) -> str:
     """将日期时间格式化为简洁格式"""
     if dt is None:
         return ""

@@ -7,7 +7,7 @@ import sys
 from shutil import copyfile
 
 
-def folder_files(folder, ext):
+def folder_files(folder: str, ext: str) -> list[str]:
     if os.path.isdir(folder):
         s = os.path.join(folder, "**/*." + ext)
         files = glob.glob(s, recursive=True)
@@ -18,12 +18,12 @@ def folder_files(folder, ext):
     return files
 
 
-def copy_file(src, dst):
+def copy_file(src: str, dst: str) -> None:
     try:
         copyfile(src, dst)
         print(" ", dst)
     except OSError as e:
-        print("无法复制文件：%s 错误信息：%s" % (src, e))
+        print(f"无法复制文件：{src} 错误信息：{e}")
 
 
 def main() -> None:

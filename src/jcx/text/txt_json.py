@@ -4,7 +4,7 @@ This module provides functions for loading and saving JSON files with
 proper error handling using the Result type.
 """
 
-from typing import Any, AnyStr, TypeVar
+from typing import AnyStr, TypeVar
 
 import pydantic_core
 from pydantic import BaseModel
@@ -41,7 +41,7 @@ def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
     return Ok(txt)
 
 
-def to_json(ob: Any, pretty: bool = True) -> str:
+def to_json(ob: object, pretty: bool = True) -> str:
     """Serialize an object to a JSON string.
 
     Uses pydantic_core for serialization, supporting Pydantic models
@@ -71,7 +71,7 @@ def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
         Ok with parsed model instance on success, Err with exception on failure.
 
     """
-    assert isinstance(json, str | bytes), "Invalid input type @ try_from_json"
+    assert isinstance(json, str | bytes), "Invalid input type @ try_from_json"  # noqa: S101 - 内部类型 narrowing
     try:
         ob = ob_type.model_validate_json(json)
     except pydantic_core.ValidationError as e:
@@ -84,7 +84,9 @@ def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
     return Ok(ob)
 
 
-def save_json(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exception]:
+def save_json(
+    obj: object, file: StrPath, pretty: bool = True
+) -> Result[bool, Exception]:
     """Save an object to a JSON file.
 
     Args:
@@ -115,7 +117,6 @@ def load_json(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
     """
     file = or_ext(file, ".json")
     s = load_txt(file).Q
-    # print('load_json:', file)
     return from_json(s, obj_type)
 
 

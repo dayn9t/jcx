@@ -4,6 +4,7 @@ This module provides utilities for comparing installed packages between
 systems by parsing dpkg-style package list files.
 """
 
+from loguru import logger
 from pydantic import BaseModel
 
 
@@ -33,7 +34,7 @@ def parse_package_file(filename: str) -> set[str]:
                         if status == "install":
                             installed_packages.add(package_name)
     except FileNotFoundError:
-        print(f"文件 {filename} 不存在")
+        logger.warning(f"文件 {filename} 不存在")
     return installed_packages
 
 
@@ -86,15 +87,3 @@ def compare_packages(file_a: str, file_b: str) -> PackagesDiff:
     return PackagesDiff(
         only_in_a=packages_a - packages_b, only_in_b=packages_b - packages_a
     )
-
-
-if __name__ == "__main__":
-    a_file = "a.txt"
-    b_file = "b.txt"
-
-    diff = compare_packages(a_file, b_file)
-
-    print("a中安装的包,b中没有安装:", diff.get_only_in_a_str())
-    print("b中安装的包,a中没有安装:", diff.get_only_in_b_str())
-
-    # 203 上运行导致：systemd-timesyncd 被卸载

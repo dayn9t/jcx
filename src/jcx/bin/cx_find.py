@@ -7,7 +7,6 @@ from jcx.sys.fs import files_in
 def has_mate(file: Path, names: list) -> bool:
     """检查文件是否有伙伴文件"""
     for name in names:
-        # print('math:', name, file.stem)
         if name.startswith(file.stem):
             return True
     return False

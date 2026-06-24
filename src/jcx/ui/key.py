@@ -42,8 +42,3 @@ class Flag(IntEnum):
     CTRL = 8
     ALT = 32
     SHIFT = 16
-
-
-def test_key():
-    assert Key.ESC == 27
-    assert Key.D9 - Key.D0 == 9

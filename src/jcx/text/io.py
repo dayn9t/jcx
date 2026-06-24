@@ -22,7 +22,6 @@ def load_txt(file: StrPath) -> Result[str, str]:
     with open(file) as f:
         s = f.read()
         return Ok(s)
-    # return Err('load_txt fail.')
 
 
 def save_txt(txt: str, file: StrPath, ext: str = ".txt") -> Result[bool, Exception]:
@@ -71,7 +70,6 @@ def save_lines(
     """
     file = or_ext(file, ext)
     file.parent.mkdir(parents=True, exist_ok=True)
-    print("save:", file)
     with open(file, "w") as f:
         f.writelines(line + postfix for line in lines)
 

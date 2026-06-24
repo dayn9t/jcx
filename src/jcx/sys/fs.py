@@ -6,6 +6,7 @@ including finding files, creating directories, and timestamp-based file naming.
 
 import re
 import shutil
+import subprocess
 import sys
 from collections.abc import Callable, Generator
 from enum import Enum
@@ -13,7 +14,6 @@ from pathlib import Path
 from typing import Any
 
 import arrow
-import sh
 from arrow import Arrow
 from loguru import logger
 from parse import parse
@@ -254,7 +254,7 @@ def find_descendants(folder: StrPath, pattern: str, generation: int) -> list[Pat
         AssertionError: If generation is less than 1.
 
     """
-    assert generation > 0
+    assert generation > 0  # noqa: S101 - 前置条件，docstring 约定 AssertionError
     folder = Path(folder)
 
     if generation == 1:
@@ -576,14 +576,14 @@ def insert_dir(folder: StrPath, dir_name: str) -> None:
 
     """
     folder = Path(folder)
-    assert folder.is_dir()
+    assert folder.is_dir()  # noqa: S101 - 前置条件，docstring 约定 AssertionError
     tmp = folder.parent / (folder.name + "_tmp")
     dst = folder / dir_name
     shutil.move(folder, tmp)
 
-    assert not folder.exists()
+    assert not folder.exists()  # noqa: S101 - 操作不变量
     folder.mkdir()
-    assert folder.exists()
+    assert folder.exists()  # noqa: S101 - 操作不变量
     shutil.move(tmp, dst)
 
 
@@ -656,7 +656,7 @@ class FileTimeIterator:
 
     """
 
-    def __init__(self, base_path: Path, start_time: Arrow, ext: str = ".jpg"):
+    def __init__(self, base_path: Path, start_time: Arrow, ext: str = ".jpg") -> None:
         """Initialize the iterator.
 
         Args:
@@ -736,7 +736,9 @@ def remove_parent_prefix(p: StrPath) -> Result[Path, str]:
 
 
 def du(path: StrPath) -> int:
-    """获取文件或目录的大小."""
-    s = sh.du("-s", path)
-    size, _ = parse("{}\t{}", s)
+    """获取文件或目录的大小（单位 KB，来自系统 du -s）."""
+    result = subprocess.run(  # noqa: S603 - 调用可信系统命令 du
+        ("du", "-s", str(path)), capture_output=True, text=True, check=True
+    )
+    size, _ = parse("{}\t{}", result.stdout)
     return int(size)

@@ -5,7 +5,7 @@ proper error handling using the Result type. JSON5 is an extension of JSON
 that supports comments, trailing commas, and other features.
 """
 
-from typing import Any, AnyStr, TypeVar
+from typing import AnyStr, TypeVar
 
 import json5
 import pydantic
@@ -14,36 +14,13 @@ from rustshed import Err, Ok, Result, result_shortcut
 
 from jcx.sys.fs import StrPath, or_ext
 from jcx.text.io import save_txt
+from jcx.text.txt_json import load_txt
 
 BMT = TypeVar("BMT", bound=BaseModel)
 """BaseModel派生类型"""
 
 
-def load_txt(file: StrPath, ext: str = ".txt") -> Result[str, Exception]:
-    """Load text content from a file.
-
-    Args:
-        file: Path to the file to load.
-        ext: Extension to add if file has no extension.
-
-    Returns:
-        Ok(str) with file content on success, Err with exception on failure.
-
-    """
-    file = or_ext(file, ext)
-    try:
-        with open(file, encoding="utf-8") as f:
-            txt = f.read()
-    except FileNotFoundError:
-        return Err(FileNotFoundError(f"文件不存在: {file}"))
-    except PermissionError:
-        return Err(PermissionError(f"权限不足: {file}"))
-    except OSError as e:
-        return Err(OSError(f"读取文件失败 {file}: {e}"))
-    return Ok(txt)
-
-
-def to_json5(ob: Any, pretty: bool = True) -> str:
+def to_json5(ob: object, pretty: bool = True) -> str:
     """Serialize an object to a JSON5 string.
 
     Args:
@@ -73,7 +50,7 @@ def from_json5(json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
         Ok with parsed model instance on success, Err with exception on failure.
 
     """
-    assert isinstance(json5_str, str | bytes), "Invalid input type @ try_from_json5"
+    assert isinstance(json5_str, str | bytes), "Invalid input type @ try_from_json5"  # noqa: S101 - 内部类型 narrowing
     try:
         # 先用json5解析成字典
         if isinstance(json5_str, bytes):
@@ -91,7 +68,9 @@ def from_json5(json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
     return Ok(ob)
 
 
-def save_json5(obj: Any, file: StrPath, pretty: bool = True) -> Result[bool, Exception]:
+def save_json5(
+    obj: object, file: StrPath, pretty: bool = True
+) -> Result[bool, Exception]:
     """Save an object to a JSON5 file.
 
     Args:

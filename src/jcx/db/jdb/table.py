@@ -23,7 +23,7 @@ class Table:
         tab.load(folder)
         return tab
 
-    def __init__(self, record_type: type[R]):
+    def __init__(self, record_type: type[R]) -> None:
         self._type = record_type
         self._folder: Option[Path] = Null
         self._records: dict[int, R] = {}

@@ -6,7 +6,7 @@ import time
 class StopWatch:
     """统计程序运行时间的类，支持记录单次运行时间、平均时间、最大/最小时间"""
 
-    def __init__(self, name: str = ""):
+    def __init__(self, name: str = "") -> None:
         """初始化运行时间统计类
 
         Args:

@@ -15,7 +15,11 @@ def test_lict_map() -> None:
     assert m.pop(1) == "a"
     assert m.pop(1) is None
 
-    items = [LictItem(key=0, value="a"), LictItem(key=1, value="b"), LictItem(key=2, value="c")]
+    items = [
+        LictItem(key=0, value="a"),
+        LictItem(key=1, value="b"),
+        LictItem(key=2, value="c"),
+    ]
     m = Lict[int, str](items)
 
     for i, k in enumerate(m.keys()):

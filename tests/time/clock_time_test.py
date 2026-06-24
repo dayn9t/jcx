@@ -1,5 +1,3 @@
-from interval import Interval  # type: ignore
-
 from jcx.time.clock_time import *
 
 
@@ -31,8 +29,8 @@ def test_all() -> None:
     assert ClockTime(1, 1, 1) >= ClockTime(0, 0, 9)
     assert ClockTime(1, 1, 1) <= ClockTime(1, 1, 1)
 
-    c_1_3 = Interval(c1, c3)
-    assert c1 in c_1_3
-    assert c2 in c_1_3
-    assert c3 in c_1_3
-    assert c4 not in c_1_3
+    # 闭区间 [c1, c3] 包含性（原用 interval 库，改直接比较以减少依赖）
+    assert c1 <= c1 <= c3
+    assert c1 <= c2 <= c3
+    assert c1 <= c3 <= c3
+    assert not (c1 <= c4 <= c3)

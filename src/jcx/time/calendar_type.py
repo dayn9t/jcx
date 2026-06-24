@@ -34,7 +34,7 @@ class ClockPeriod(BaseModel):
 
     def __str__(self) -> str:
         """Return string representation "[begin,end)"."""
-        return "[%s,%s)" % (self.begin, self.end)
+        return f"[{self.begin},{self.end})"
 
     def __contains__(self, clock_time: ClockTime) -> bool:
         """Check if a ClockTime falls within this period.

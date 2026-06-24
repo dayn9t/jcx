@@ -10,7 +10,7 @@ class Timer:
         self.__last_updated = last_updated  # 上一次更新时间
 
     def __str__(self) -> str:
-        return "Timer(%s)" % str(self.__last_updated)
+        return f"Timer({str(self.__last_updated)})"
 
     def next(self, interval: timedelta) -> Arrow:
         """预计下次更新时间"""

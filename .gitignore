@@ -19,3 +19,16 @@ wheels/
 .env.local
 .env.*.local
 *.so
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
+
+# Tool caches
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Temp files
+*.tmp

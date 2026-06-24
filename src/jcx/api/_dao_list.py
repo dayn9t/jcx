@@ -1,9 +1,9 @@
-from abc import ABC
 from typing import TypeVar
 
 from cattr import structure, unstructure
+
 # flask-restx has no type stubs available
-from flask_restx import Resource  # type: ignore[import]
+from flask_restx import Api, Namespace, Resource  # type: ignore[import]
 
 from jcx.db.jdb.table import Table
 from jcx.db.record import PRecord
@@ -12,10 +12,10 @@ from jcx.sys.fs import StrPath
 R = TypeVar("R", bound=PRecord)
 
 
-class ItemListDao(ABC):
+class ItemListDao:
     """条目集合数据访问对象"""
 
-    def __init__(self, record_type: type[R], folder: StrPath):
+    def __init__(self, record_type: type[R], folder: StrPath) -> None:
         self._tab = Table.open(record_type, folder)
 
     def record_type(self) -> type[R]:
@@ -57,7 +57,7 @@ class ItemListDao(ABC):
         self.after_update(record)
         return record
 
-    def remove(self, record_id: int):
+    def remove(self, record_id: int) -> None:
         """删除记录"""
         rid = self.before_remove(record_id)
         if not rid:
@@ -75,20 +75,21 @@ class ItemListDao(ABC):
 
     def before_remove(self, rid: int) -> int | None:
         """删除记录之前的检查"""
-        assert self
         return rid
 
-    def after_add(self, record: R):
+    def after_add(self, record: R) -> None:
         """添加新记录之后的检查"""
 
-    def after_update(self, record: R):
+    def after_update(self, record: R) -> None:
         """更新记录之后的检查"""
 
-    def after_remove(self, rid: int):
+    def after_remove(self, rid: int) -> None:
         """删除记录之后的检查"""
 
 
-def make_record(api, data: dict, record_type: type[R], id: int = 0) -> tuple[bool, R]:
+def make_record(
+    api: Api, data: dict, record_type: type[R], id: int = 0
+) -> tuple[bool, R]:
     """从数据构建记录"""
     if "id" not in data:
         data["id"] = id
@@ -99,7 +100,7 @@ def make_record(api, data: dict, record_type: type[R], id: int = 0) -> tuple[boo
     return True, r
 
 
-def add_list_resource(ns, url, dao: ItemListDao, model):
+def add_list_resource(ns: Namespace, url: str, dao: ItemListDao, model: dict) -> None:
     """添加集合资源"""
     # TODO: model 通过 record_type 动态生成
 
@@ -109,7 +110,7 @@ def add_list_resource(ns, url, dao: ItemListDao, model):
 
         @ns.doc("list_items")
         @ns.marshal_list_with(model)
-        def get(self):
+        def get(self):  # noqa: ANN202 - flask-restx Resource 方法，返回由 marshal 处理
             """列出所有条目"""
             rs = dao.records()
             return list(map(unstructure, rs))
@@ -117,7 +118,7 @@ def add_list_resource(ns, url, dao: ItemListDao, model):
         @ns.doc("create_item")
         @ns.expect(model)
         @ns.marshal_with(model, code=201)
-        def post(self):
+        def post(self):  # noqa: ANN202 - flask-restx Resource 方法
             """创建一个新条目"""
             ok, r = make_record(self.api, self.api.payload, dao.record_type())
             if not ok:
@@ -135,21 +136,21 @@ def add_list_resource(ns, url, dao: ItemListDao, model):
 
         @ns.doc("get_item")
         @ns.marshal_with(model)
-        def get(self, id):
+        def get(self, id):  # noqa: ANN001, ANN202 - flask-restx 路由参数 + Resource 方法
             """获取指定条目"""
             r = unstructure(dao.get(id))
             return r or self.api.abort(404, "条目 %d 不存在" % id)
 
         @ns.doc("delete_item")
         @ns.response(204, "条目已经删除")
-        def delete(self, id):
+        def delete(self, id):  # noqa: ANN001, ANN202 - flask-restx 路由参数 + Resource 方法
             """删除指定ID的条目"""
             dao.remove(id)
             return "", 204
 
         @ns.expect(model)
         @ns.marshal_with(model)
-        def put(self, id):
+        def put(self, id):  # noqa: ANN001, ANN202 - flask-restx 路由参数 + Resource 方法
             """修改指定ID的条目"""
             ok, r = make_record(self.api, self.api.payload, dao.record_type(), id)
             if not ok:

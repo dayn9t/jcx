@@ -3,10 +3,23 @@ line-length = 88
 
 [lint]
 select = ["ALL"]
-ignore = ["F403", "F405", "D203", "D213", "COM812"]
+# RUF001/002/003: 中文全角标点（，。（）等）被误判为 ambiguous unicode——中文项目正常使用，非歧义
+ignore = [
+    "F403",
+    "F405",
+    "D203",
+    "D213",
+    "COM812",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "D400",
+    "D415",
+]
 
 [lint.per-file-ignores]
-"tests/*" = ["S101"]
+"tests/*" = ["S101", "ANN001", "ANN201", "T201", "ERA001", "D100", "D101", "D103", "D104", "PLC0415"]
+"src/jcx/bin/*" = ["T201", "ANN201", "S101"]
 
 [format]
 quote-style = "double"

@@ -11,7 +11,7 @@ class TaskClient:
         base_url: str,
         task_table_name: str = "task",
         status_table_name: str = "status",
-    ):
+    ) -> None:
         """初始化任务数据库管理器
 
         Args:
