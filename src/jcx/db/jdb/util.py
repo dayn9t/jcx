@@ -9,7 +9,7 @@ from jcx.text.txt_json import load_json
 R = TypeVar("R", bound=Record)
 
 
-def load_list(
+def load_list[R: Record](
     record_type: type[R],
     folder: StrPath,
     filter_: RecordFilter | None = None,
@@ -24,7 +24,7 @@ def load_list(
     for f in folder.glob("*.json"):
         result = load_json(f, record_type)
         if result.is_err():
-            warnings.warn(f"Failed to load {f}: {result.unwrap_err()}")
+            warnings.warn(f"Failed to load {f}: {result.unwrap_err()}", stacklevel=2)
             continue
         r = result.unwrap()
         if filter_ and not filter_(r):
@@ -33,7 +33,7 @@ def load_list(
     return records
 
 
-def load_dict(
+def load_dict[R: Record](
     record_type: type[R],
     folder: StrPath,
     filter_: RecordFilter | None = None,

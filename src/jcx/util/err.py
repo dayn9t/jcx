@@ -8,13 +8,14 @@ import traceback
 from collections.abc import Callable
 from typing import TypeVar
 
+# NON-LOCKED-LIB: loguru, pending selection decision (stdlib logging vs loguru)
 from loguru import logger
 from rustshed import Err
 
 T = TypeVar("T")
 
 
-def mand(value: T | None) -> T:
+def mand[T](value: T | None) -> T:
     """Force an optional value to be non-null.
 
     Asserts that the value is not None and returns it.
@@ -56,7 +57,7 @@ def show_err(e: object) -> None:
     logger.error(msg)
 
 
-def catch_show_err(fun: Callable[[], Any], verbose: bool = False) -> None:
+def catch_show_err(fun: Callable[[], None], verbose: bool = False) -> None:
     """Execute a function and catch/display any exceptions.
 
     Catches all exceptions except SystemExit, KeyboardInterrupt, and

@@ -4,6 +4,7 @@ This module provides utilities for comparing installed packages between
 systems by parsing dpkg-style package list files.
 """
 
+# NON-LOCKED-LIB: loguru, pending selection decision (stdlib logging vs loguru)
 from loguru import logger
 from pydantic import BaseModel
 

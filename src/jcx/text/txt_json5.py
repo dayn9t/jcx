@@ -5,7 +5,7 @@ proper error handling using the Result type. JSON5 is an extension of JSON
 that supports comments, trailing commas, and other features.
 """
 
-from typing import AnyStr, TypeVar
+from typing import Protocol, TypeVar, runtime_checkable
 
 import json5
 import pydantic
@@ -20,6 +20,15 @@ BMT = TypeVar("BMT", bound=BaseModel)
 """BaseModel派生类型"""
 
 
+@runtime_checkable
+class _ModelDump(Protocol):
+    """具备 model_dump 方法的对象（pydantic BaseModel 协议）"""
+
+    def model_dump(self) -> dict[str, object]:
+        """Return a dictionary representation of the model."""
+        ...
+
+
 def to_json5(ob: object, pretty: bool = True) -> str:
     """Serialize an object to a JSON5 string.
 
@@ -31,15 +40,15 @@ def to_json5(ob: object, pretty: bool = True) -> str:
         JSON5 string representation of the object.
 
     """
-    if hasattr(ob, "model_dump"):
+    if isinstance(ob, _ModelDump):
         # 如果是Pydantic模型，先转为字典
         ob_dict = ob.model_dump()
-        return json5.dumps(ob_dict, indent=4 if pretty else None)
+        return str(json5.dumps(ob_dict, indent=4 if pretty else None))
     # 尝试直接序列化
-    return json5.dumps(ob, indent=4 if pretty else None)
+    return str(json5.dumps(ob, indent=4 if pretty else None))
 
 
-def from_json5(json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
+def from_json5[AnyStr: (bytes, str), BMT: BaseModel](json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
     """Parse JSON5 text into a Pydantic model instance.
 
     Args:
@@ -53,9 +62,8 @@ def from_json5(json5_str: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
     assert isinstance(json5_str, str | bytes), "Invalid input type @ try_from_json5"  # noqa: S101 - 内部类型 narrowing
     try:
         # 先用json5解析成字典
-        if isinstance(json5_str, bytes):
-            json5_str = json5_str.decode("utf-8")
-        obj_dict = json5.loads(json5_str)
+        text: str = json5_str.decode("utf-8") if isinstance(json5_str, bytes) else json5_str
+        obj_dict = json5.loads(text)
         # 然后用Pydantic模型验证
         ob = ob_type.model_validate(obj_dict)
     except ValueError as e:
@@ -88,7 +96,7 @@ def save_json5(
 
 
 @result_shortcut
-def load_json5(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
+def load_json5[BMT: BaseModel](file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
     """Load and parse a JSON5 file into a Pydantic model instance.
 
     Args:
@@ -105,7 +113,7 @@ def load_json5(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
 
 
 @result_shortcut
-def load_json5_or(
+def load_json5_or[BMT: BaseModel](
     file: StrPath | None,
     obj_type: type[BMT],
     default_value: BMT,

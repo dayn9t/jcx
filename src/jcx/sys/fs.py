@@ -11,8 +11,8 @@ import sys
 from collections.abc import Callable, Generator
 from enum import Enum
 from pathlib import Path
-from typing import Any
 
+# NON-LOCKED-LIB: arrow + loguru, pending selection decision (stdlib datetime/logging vs arrow/loguru)
 import arrow
 from arrow import Arrow
 from loguru import logger
@@ -395,7 +395,7 @@ def with_parent(file: StrPath, parent: str) -> Path:
     return file.parent.parent / parent / file.name
 
 
-def find_pattern(folder: StrPath, ext: str, pattern: str) -> Generator[Path, Any, None]:
+def find_pattern(folder: StrPath, ext: str, pattern: str) -> Generator[Path, None, None]:
     """Find files matching a regex pattern within files of specified extension.
 
     Args:

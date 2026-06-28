@@ -13,11 +13,11 @@ R = TypeVar("R", bound=Record)
 """记录类型"""
 
 
-class Table:
+class Table[R: Record]:
     """数据库表"""
 
     @staticmethod
-    def open(record_type: type[R], folder: StrPath) -> "Table":
+    def open(record_type: type[R], folder: StrPath) -> "Table[R]":
         """打开数据库表"""
         tab = Table(record_type)
         tab.load(folder)

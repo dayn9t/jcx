@@ -17,6 +17,7 @@ Usage:
 import sys
 from typing import TYPE_CHECKING, TextIO
 
+# NON-LOCKED-LIB: loguru, pending selection decision (stdlib logging vs loguru)
 from loguru import logger
 
 if TYPE_CHECKING:

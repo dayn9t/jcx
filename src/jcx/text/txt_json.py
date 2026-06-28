@@ -4,7 +4,7 @@ This module provides functions for loading and saving JSON files with
 proper error handling using the Result type.
 """
 
-from typing import AnyStr, TypeVar
+from typing import TypeVar
 
 import pydantic_core
 from pydantic import BaseModel
@@ -60,7 +60,7 @@ def to_json(ob: object, pretty: bool = True) -> str:
     return byte_str.decode("utf-8")
 
 
-def from_json(json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
+def from_json[AnyStr: (bytes, str), BMT: BaseModel](json: AnyStr, ob_type: type[BMT]) -> Result[BMT, Exception]:
     """Parse JSON text into a Pydantic model instance.
 
     Args:
@@ -104,7 +104,7 @@ def save_json(
 
 
 @result_shortcut
-def load_json(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
+def load_json[BMT: BaseModel](file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
     """Load and parse a JSON file into a Pydantic model instance.
 
     Args:
@@ -121,7 +121,7 @@ def load_json(file: StrPath, obj_type: type[BMT]) -> Result[BMT, Exception]:
 
 
 @result_shortcut
-def load_json_or(
+def load_json_or[BMT: BaseModel](
     file: StrPath | None,
     obj_type: type[BMT],
     default_value: BMT,

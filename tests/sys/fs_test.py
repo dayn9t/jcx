@@ -41,7 +41,7 @@ def fs_test() -> None:
     assert folder.exists()
 
     for i in range(10):
-        Path(folder, "%d.json" % i).touch()
+        Path(folder, f"{i}.json").touch()
 
     for f in folder.glob("*.json"):
         print(f)
@@ -214,7 +214,7 @@ class TestFileTimeIterator:
         iterator = FileTimeIterator(base, start1, ".jpg")
 
         # Get first path
-        path1 = next(iterator)
+        next(iterator)
 
         # Reset to new time
         iterator.reset(start2)

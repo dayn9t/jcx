@@ -13,7 +13,7 @@ V = TypeVar("V")
 T = TypeVar("T")
 
 
-def lookup(indexes: list[int], tab: list[T]) -> list[T]:
+def lookup[T](indexes: list[int], tab: list[T]) -> list[T]:
     """Look up values by indexes in a table.
 
     Args:
@@ -27,7 +27,7 @@ def lookup(indexes: list[int], tab: list[T]) -> list[T]:
     return [tab[i] for i in indexes]
 
 
-def dict_first_key(d: dict[K, V], value: V) -> Option[K]:
+def dict_first_key[K, V](d: dict[K, V], value: V) -> Option[K]:
     """Find the first key that maps to the given value in a dictionary.
 
     Args:
@@ -45,7 +45,7 @@ def dict_first_key(d: dict[K, V], value: V) -> Option[K]:
     return Null
 
 
-def low_pos(arr: list[T], value: T) -> int:
+def low_pos[T](arr: list[T], value: T) -> int:
     """Find the smallest insertion position for a value in a sorted list.
 
     Args:
@@ -64,7 +64,7 @@ def low_pos(arr: list[T], value: T) -> int:
     return len(arr)
 
 
-def up_pos(arr: list[T], value: T) -> int:
+def up_pos[T](arr: list[T], value: T) -> int:
     """Find the largest insertion position for a value in a sorted list.
 
     Args:
@@ -84,7 +84,7 @@ def up_pos(arr: list[T], value: T) -> int:
 
 
 @to_option
-def list_index(arr: list[T], value: T) -> int:
+def list_index[T](arr: list[T], value: T) -> int:
     """Find the index of a value in a list, returning Null if not found.
 
     Args:
@@ -95,5 +95,5 @@ def list_index(arr: list[T], value: T) -> int:
         Some(int) if found, Null if not found.
 
     """
-    # list.index returns Any for generic T; to_option wrapper handles TypeError if value not found
-    return arr.index(value)  # type: ignore[no-any-return]
+    # list.index 返回 int；to_option 包装器在未找到时（list.index 抛 ValueError）转为 Null
+    return arr.index(value)

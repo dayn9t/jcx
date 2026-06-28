@@ -12,12 +12,12 @@ def re_cap_fmt(src_str: str, pattern: str, dst_fmt: str) -> str | None:
     if m is None:
         return None
     for i, g in enumerate(m.groups()):
-        dst_fmt = dst_fmt.replace("(%d)" % (i + 1), g)
+        dst_fmt = dst_fmt.replace(f"({i + 1})", g)
     dst_fmt = dst_fmt.replace("(0)", m.group(0))
     return dst_fmt
 
 
-def main():
+def main() -> None:
     if len(sys.argv) != 4:
         print(
             r"""

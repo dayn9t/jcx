@@ -5,10 +5,11 @@ import subprocess
 from pathlib import Path
 from typing import cast
 
+# NON-LOCKED-LIB: loguru, pending selection decision (stdlib logging vs loguru)
 from loguru import logger
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser("图像转换工具")
     parser.add_argument("file", type=Path, help="待转换文件")
     parser.add_argument("ext", type=str, help="目标文件扩展名, 如: .jpg")

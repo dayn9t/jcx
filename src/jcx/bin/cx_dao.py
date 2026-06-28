@@ -14,6 +14,15 @@ from rich import print as rprint
 from rich.console import Console
 
 from jcx.api.dao_client import DaoListClient
+from jcx.api.task.task_types import (
+    StatusInfo,
+    TaskInfo,
+    TaskStatus,
+    status_list_table,
+    status_table,
+    task_table,
+    tasks_table,
+)
 
 
 class TaskCreateInput(BaseModel):
@@ -40,16 +49,6 @@ class TaskCreateInput(BaseModel):
         return v
 
 
-from jcx.api.task.task_types import (
-    StatusInfo,
-    TaskInfo,
-    TaskStatus,
-    status_list_table,
-    status_table,
-    task_table,
-    tasks_table,
-)
-
 # 创建 typer 应用和控制台对象
 app = typer.Typer(help="任务管理命令行工具")
 tasks_app = typer.Typer(help="任务相关操作")
@@ -60,12 +59,12 @@ console = Console()
 
 
 @tasks_app.callback()
-def tasks_callback():
+def tasks_callback() -> None:
     """任务管理相关命令"""
 
 
 @statuses_app.callback()
-def statuses_callback():
+def statuses_callback() -> None:
     """任务状态相关命令"""
 
 
@@ -75,7 +74,7 @@ def list_tasks(
     filter_json: str | None = typer.Option(
         None, "--filter", "-f", help="过滤条件 (JSON格式)"
     ),
-):
+) -> None:
     """获取所有任务
 
     GET /tasks
@@ -83,7 +82,7 @@ def list_tasks(
     client = DaoListClient(base_url)
 
     # 解析过滤参数
-    params = None
+    params: dict[str, str] | None = None
     if filter_json:
         try:
             params = json.loads(filter_json)
@@ -106,7 +105,7 @@ def list_tasks(
 def get_task(
     task_id: str = typer.Argument(..., help="任务ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-):
+) -> None:
     """获取指定任务
 
     GET /tasks/{id}
@@ -131,7 +130,7 @@ def create_task(
     task_type: int = typer.Option(..., "--type", "-t", help="任务类型"),
     desc: str | None = typer.Option(None, "--desc", "-d", help="任务描述"),
     data: str = typer.Option(..., "--data", help="任务数据 (JSON格式)"),
-):
+) -> None:
     """创建新任务
 
     POST /tasks
@@ -164,7 +163,7 @@ def delete_task(
     task_id: str = typer.Argument(..., help="任务ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
     force: bool = typer.Option(False, "--force", "-f", help="强制删除，不提示确认"),
-):
+) -> None:
     """删除指定任务
 
     DELETE /tasks/{id}
@@ -194,7 +193,7 @@ def list_statuses(
     filter_json: str | None = typer.Option(
         None, "--filter", "-f", help="过滤条件 (JSON格式)"
     ),
-):
+) -> None:
     """获取所有任务状态
 
     GET /statuses
@@ -202,7 +201,7 @@ def list_statuses(
     client = DaoListClient(base_url)
 
     # 解析过滤参数
-    params = None
+    params: dict[str, str] | None = None
     if filter_json:
         try:
             params = json.loads(filter_json)
@@ -225,7 +224,7 @@ def list_statuses(
 def get_status(
     status_id: str = typer.Argument(..., help="状态ID"),
     base_url: str = typer.Option(..., "--url", "-u", help="API服务器基础URL"),
-):
+) -> None:
     """获取指定任务状态
 
     GET /statuses/{id}
@@ -252,7 +251,7 @@ def update_status(
         None, "--progress", "-p", help="任务进度 (0-100)"
     ),
     enabled: bool | None = typer.Option(None, "--enabled/--disabled", help="是否启用"),
-):
+) -> None:
     """更新指定任务状态
 
     PUT /statuses/{id}
@@ -297,7 +296,7 @@ def update_status(
 
 
 @app.command()
-def demo():
+def demo() -> None:
     """运行演示程序
 
     展示如何使用此工具操作任务和任务状态
@@ -361,7 +360,7 @@ def demo():
     rprint("[bold blue]提示：所有命令都需要 --url 参数指定API服务器地址[/bold blue]")
 
 
-def main():
+def main() -> int:
     """程序入口点"""
     try:
         app()

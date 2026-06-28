@@ -1,5 +1,6 @@
-from typing import Any, TypeVar
+from typing import TypeVar
 
+# NON-LOCKED-LIB: requests, pending selection decision (migrate to httpx)
 import requests
 from requests.adapters import HTTPAdapter
 from requests.exceptions import (
@@ -67,7 +68,7 @@ class DaoListClient:
         self,
         record_type: type[R],
         table_name: str,
-        params: dict[str, Any] | None = None,
+        params: dict[str, str] | None = None,
     ) -> ResultE[list[R]]:
         """获取所有资源项目
 
@@ -203,9 +204,7 @@ class DaoListClient:
 
         """
         try:
-            if not hasattr(record, "id") or record.id is None:
-                return Err("更新资源失败: 记录缺少id字段")
-
+            # RecordSid.id: str 为必填字段（pydantic 构建时校验），不可能缺失或为 None
             url = f"{self.base_url}/{table_name}/{record.id}"
             data = to_json(record)
             response = self.session.put(

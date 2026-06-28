@@ -15,7 +15,7 @@ T = TypeVar("T")
 C = TypeVar("C", bound=Cloned)
 
 
-def rs_option(v: T | None) -> Option[T]:
+def rs_option[T](v: T | None) -> Option[T]:
     """Convert a Python Optional value to rustshed Option.
 
     Args:
@@ -36,7 +36,7 @@ def rs_option(v: T | None) -> Option[T]:
     return Some(v)
 
 
-def rs_option_cloned(v: C | None) -> Option[C]:
+def rs_option_cloned[C: Cloned](v: C | None) -> Option[C]:
     """Convert a Python Optional value to rustshed Option with cloning.
 
     This function is useful when you need an owned copy of the value
@@ -65,7 +65,7 @@ def rs_option_cloned(v: C | None) -> Option[C]:
     return Some(v.clone())
 
 
-def py_optional(v: Option[T]) -> T | None:
+def py_optional[T](v: Option[T]) -> T | None:
     """Convert a rustshed Option to Python Optional.
 
     Args:

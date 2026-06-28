@@ -5,7 +5,7 @@ from pathlib import Path
 from jcx.sys.fs import ctime_to_name, files_in, mtime_to_name
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser("文件改名/复制工具")
     parser.add_argument("src_dir", type=Path, help="文件来源目录")
     parser.add_argument("dst_dir", type=Path, help="文件目标目录")

@@ -1,18 +1,21 @@
 from pathlib import Path
 from typing import Self
 
+from pydantic import BaseModel
+from rustshed import Null, Option, Some
+
 from jcx.db.ivariant import IVariant
 from jcx.sys.fs import StrPath
-from jcx.text.txt_json import BMT, load_json, save_json
+from jcx.text.txt_json import load_json, save_json
 
 
-class JdbVariant(IVariant):
+class JdbVariant[BMT: BaseModel](IVariant[BMT]):
     """数据库变量"""
 
     @classmethod
     def open(cls, value_type: type[BMT], folder: StrPath, name: str) -> Self:
         """打开数据变量"""
-        return JdbVariant(value_type, folder, name)
+        return cls(value_type, folder, name)
 
     def __init__(self, value_type: type[BMT], folder: StrPath, name: str) -> None:
         self._type = value_type
@@ -30,11 +33,14 @@ class JdbVariant(IVariant):
         """ "判断是否存在"""
         return self._path.exists()
 
-    def get(self) -> BMT:
-        """获取变量"""
-        return load_json(self._path, self._type).expect(
-            f"Failed to load variant from {self._path}"
-        )
+    def get(self) -> Option[BMT]:
+        """获取变量；文件缺失或解析失败时返回 Null，严格符合 IVariant 协议"""
+        if not self._path.exists():
+            return Null
+        result = load_json(self._path, self._type)
+        if result.is_err():
+            return Null
+        return Some(result.unwrap())
 
     def set(self, value: BMT) -> None:
         """设置变量"""

@@ -39,7 +39,7 @@ def main() -> None:
     if not opt.include_dir:
         files = [f for f in files if not os.path.isdir(f)]
 
-    counters = defaultdict(int)
+    counters: defaultdict[str, int] = defaultdict(int)
     for f in files:
         f0 = splitext(f)[0]
         counters[f0] += 1

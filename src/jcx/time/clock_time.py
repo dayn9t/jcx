@@ -6,10 +6,11 @@ This module provides the ClockTime class for representing time of day
 
 from typing import Self
 
+# NON-LOCKED-LIB: arrow, pending selection decision (stdlib datetime vs arrow)
 from arrow import Arrow
 
-# parse library (v1.20.2) has no type stubs available
-from parse import parse  # type: ignore[import]
+# parse library (v1.20.2) has no type stubs available; per-module ignore_missing_imports in pyproject
+from parse import parse
 from pydantic.dataclasses import dataclass
 from rustshed import Null, Option, Some
 
@@ -49,7 +50,7 @@ class ClockTime:
             A new ClockTime instance.
 
         """
-        return ClockTime(hour=hour, minute=minute, second=second)
+        return cls(hour=hour, minute=minute, second=second)
 
     @classmethod
     def from_secs(cls, secs: int) -> Self:
@@ -64,7 +65,7 @@ class ClockTime:
         """
         minute, second = divmod(secs, 60)
         hour, minute = divmod(minute, 60)
-        return ClockTime(hour=hour, minute=minute, second=second)
+        return cls(hour=hour, minute=minute, second=second)
 
     @staticmethod
     def from_time(t: Arrow) -> "ClockTime":
@@ -97,7 +98,7 @@ class ClockTime:
 
     def __str__(self) -> str:
         """Return formatted time string "HH:MM:SS"."""
-        return "%02d:%02d:%02d" % (self.hour, self.minute, self.second)
+        return f"{self.hour:02d}:{self.minute:02d}:{self.second:02d}"
 
     def to_time(self) -> Arrow:
         """Convert to Arrow datetime using today's date.

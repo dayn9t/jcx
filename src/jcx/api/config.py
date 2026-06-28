@@ -6,7 +6,7 @@ class Endpoint(BaseModel):
     port: int
 
     def __str__(self) -> str:
-        return "%s:%d" % (self.host, self.port)
+        return f"{self.host}:{self.port}"
 
 
 class ApiCfg(BaseModel):

@@ -1,5 +1,5 @@
 from collections.abc import Iterator, Mapping
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from pydantic import BaseModel
 
@@ -10,7 +10,7 @@ VT = TypeVar("VT")
 # Using plain list type since type aliases with unbound type vars aren't valid at module scope
 
 
-class LictItem(BaseModel, Generic[KT, VT]):
+class LictItem[KT, VT](BaseModel):
     """Lict条目"""
 
     key: KT  # 键

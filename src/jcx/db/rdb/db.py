@@ -3,6 +3,8 @@ from typing import Self, TypeVar, cast
 from urllib.parse import urlparse
 
 import pydantic_core
+
+# NON-LOCKED-LIB: redis, pending selection decision (architecture: data layer should be Rust/sqlx)
 import redis
 from pydantic import BaseModel, TypeAdapter
 from rustshed import Err, Ok, Result

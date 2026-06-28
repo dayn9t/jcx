@@ -148,7 +148,7 @@ class TestDaoListClient:
 
         # 执行测试
         params = {"active": True, "value_gt": 50}
-        result = client.get_all(TestRecord, "tests", params)
+        client.get_all(TestRecord, "tests", params)
 
         # 验证请求
         mock_get.assert_called_once_with(

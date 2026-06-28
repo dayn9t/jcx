@@ -33,7 +33,7 @@ class TaskClient:
         """
         self._client.set_auth_token(token)
 
-    def get_all_tasks(self, params: dict | None = None) -> ResultE[list[TaskInfo]]:
+    def get_all_tasks(self, params: dict[str, str] | None = None) -> ResultE[list[TaskInfo]]:
         """获取全部任务列表，可选过滤参数
 
         Args:
@@ -68,7 +68,7 @@ class TaskClient:
         """
         return self._client.post(self._task_table_name, task)
 
-    def get_all_statuses(self, params: dict | None = None) -> ResultE[list[StatusInfo]]:
+    def get_all_statuses(self, params: dict[str, str] | None = None) -> ResultE[list[StatusInfo]]:
         """获取全部任务状态列表，可选过滤参数
 
         Args:
@@ -116,7 +116,7 @@ class TaskClient:
         status_result = self._client.get_all(
             StatusInfo,
             self._status_table_name,
-            {"status": TaskStatus.PENDING.value, "enabled": "true"},
+            {"status": str(TaskStatus.PENDING.value), "enabled": "true"},
         )
 
         if status_result.is_err():
@@ -208,7 +208,7 @@ class TaskClient:
         return self._client.put(self._status_table_name, status)
 
     def update_progress(
-        self, task_id: str, progress: int, status: TaskStatus = None
+        self, task_id: str, progress: int, status: TaskStatus | None = None
     ) -> ResultE[StatusInfo]:
         """更新指定任务进度
 

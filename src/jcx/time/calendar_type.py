@@ -6,6 +6,7 @@ check if a given time falls within specified periods and weekdays.
 
 from typing import Literal
 
+# NON-LOCKED-LIB: arrow, pending selection decision (stdlib datetime vs arrow)
 from arrow import Arrow
 from pydantic import BaseModel, ConfigDict
 from rustshed import Err, Ok, Result
@@ -25,7 +26,7 @@ class ClockPeriod(BaseModel):
 
     """
 
-    model_config: ConfigDict = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True)
 
     begin: ClockTime = ClockTime()
     """起始时间"""
@@ -66,7 +67,7 @@ class CalendarTrigger(BaseModel):
 
     """
 
-    model_config: ConfigDict = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True)
 
     periods: ClockPeriods
     """触发时段集合"""

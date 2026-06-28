@@ -2,6 +2,7 @@ import argparse
 import subprocess
 from pathlib import Path
 
+# NON-LOCKED-LIB: loguru, pending selection decision (stdlib logging vs loguru)
 from loguru import logger
 
 from jcx.sys.fs import du
@@ -9,7 +10,7 @@ from jcx.sys.fs import du
 cmd_map = {".zip": ["unzip-OGBK"]}
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser("解压缩工具")
     parser.add_argument("file", type=Path, help="待解压文件")
     parser.add_argument("--remove", action="store_true", help="转化成功则删除源文件")

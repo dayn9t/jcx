@@ -17,7 +17,7 @@ dependencies = [
     "parse",
     "redis",
     "requests",
-    "pyjson5",
+    "json5",
     "cattrs",
     "flask-restx",
     "rich",
@@ -26,9 +26,9 @@ dependencies = [
 [dependency-groups]
 dev = [
     "coverage[toml]>=7.13.5",
-    "json5>=0.13.0",
     "pre-commit>=4.5.1",
-    "pyright>=1.1.408",
+    "mypy>=1.13",
+    "ruff>=0.7",
     "pytest",
     "pytest-cov>=7.1.0",
 ]
@@ -65,13 +65,35 @@ exclude_lines = [
     "@abstractmethod",
 ]
 
-[tool.pyright]
-typeCheckingMode = "basic"
-pythonVersion = "3.12"
-include = ["src"]
-exclude = ["**/__pycache__"]
-reportMissingImports = true
-reportMissingTypeStubs = false
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+files = ["src/jcx"]
+
+# 非 9 锁定库无 type stub —— per-module 放行 import（缺 stub 的 import 放行，非类型检查放水）
+[[tool.mypy.overrides]]
+module = [
+    "flask_restx",
+    "parse",
+    "rustshed",
+    "arrow",
+    "redis",
+    "paho.mqtt.*",
+    "loguru",
+    "json5",
+    "cattr",
+    "cattrs",
+    "requests",
+    "requests.*",
+]
+ignore_missing_imports = true
 
 [build-system]
 requires = ["uv_build"]

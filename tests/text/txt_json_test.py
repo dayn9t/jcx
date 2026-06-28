@@ -53,7 +53,7 @@ def test_from_io() -> None:
     s1 = load_json(f1, Student).unwrap()
     assert s1 == STUDENT1
 
-    s2 = load_json(f2, Student)
+    load_json(f2, Student)
 
 
 def test_load_txt_file_not_found() -> None:

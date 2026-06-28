@@ -33,7 +33,7 @@ def main() -> None:
     mates = files_in(opt.ref_dir, opt.ref_ext)
     names = [f.stem for f in mates]
 
-    for i, name in enumerate(names):
+    for _i, name in enumerate(names):
         f = Path(opt.candi_dir, name + "." + opt.candi_ext)
         assert Path(f).is_file(), f"文件不存在: {f}"
         shutil.copy(f, opt.dst_dir)

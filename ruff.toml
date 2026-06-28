@@ -1,25 +1,21 @@
+line-length = 100
 target-version = "py312"
-line-length = 88
+extend-exclude = ["__pycache__"]
 
 [lint]
-select = ["ALL"]
-# RUF001/002/003: 中文全角标点（，。（）等）被误判为 ambiguous unicode——中文项目正常使用，非歧义
-ignore = [
-    "F403",
-    "F405",
-    "D203",
-    "D213",
-    "COM812",
-    "RUF001",
-    "RUF002",
-    "RUF003",
-    "D400",
-    "D415",
-]
+select = ["E", "F", "I", "UP", "W", "B", "C4"]
+ignore = ["E501"]  # line-length 由 formatter 管
 
 [lint.per-file-ignores]
-"tests/*" = ["S101", "ANN001", "ANN201", "T201", "ERA001", "D100", "D101", "D103", "D104", "PLC0415"]
-"src/jcx/bin/*" = ["T201", "ANN201", "S101"]
+"tests/*" = [
+    "E402",   # 测试 conftest import 顺序宽松
+    "F403",   # 测试用 `from x import *` 简化符号访问（项目测试惯例）
+    "F405",   # 与 F403 配套：星号导入的名称可能未定义
+    "F821",   # 跳过的过时测试模块引用已删除的符号（test_task_db.py）
+]
+
+[lint.isort]
+known-first-party = ["jcx"]
 
 [format]
 quote-style = "double"

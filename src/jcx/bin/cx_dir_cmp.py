@@ -18,8 +18,8 @@ def file_map(folder: Path) -> dict[int, FileInfo]:
         if f.is_file():
             info = FileInfo(path=f, md5=calc_md5(f))
             size = f.stat().st_size
-            if size not in m:
-                m[size] = []
+            # FIXME: 原代码 m[size] = [] 后立即被 info 覆盖（死代码），疑似遗漏了"同 size 收集为列表"的意图。
+            # 当前行为：每个 size 只保留最后扫描到的文件。保留原行为，仅删除死赋值。
             m[size] = info
     return m
 

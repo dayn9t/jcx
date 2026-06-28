@@ -1,8 +1,9 @@
 from pathlib import Path
 from subprocess import getstatusoutput
 
-# flask-restx has no type stubs available
-from flask_restx import Api, Namespace, fields  # type: ignore[import]
+# NON-LOCKED-LIB: flask-restx, pending selection decision (architecture: Web layer should be Rust/axum)
+# flask-restx has no type stubs; per-module ignore_missing_imports in pyproject
+from flask_restx import Api, Namespace, fields
 from pydantic import BaseModel
 from rustshed import Null, Option
 
@@ -19,14 +20,16 @@ class CommandInfo(BaseModel):
     """命令输出"""
 
 
-class CommandDao(ItemDao):
+class CommandDao(ItemDao[CommandInfo]):
     """数据源组数据访问对象"""
 
     def __init__(self, folder: Path, name: str, command: str) -> None:
         super().__init__(CommandInfo, folder, name)
         self._command = command
 
-    def before_update(self, r: CommandInfo, _r0: CommandInfo) -> CommandInfo:
+    def before_update(
+        self, r: CommandInfo, _r0: CommandInfo | None
+    ) -> CommandInfo | None:
         """更新之前"""
         r.time = now_iso_str()
         status, output = getstatusoutput(self._command)
@@ -34,15 +37,16 @@ class CommandDao(ItemDao):
         return r
 
 
-def command_model(api: Api, description: str) -> dict:
+def command_model(api: Api, description: str) -> dict[str, object]:
     """构建命令模型"""
-    return api.model(
+    model: dict[str, object] = api.model(
         "Command",
         {
             "time": fields.String(description="命令执行结束时间, PUT时忽略"),
             "output": fields.String(description=description),
         },
     )
+    return model
 
 
 class CommandParam(BaseModel):

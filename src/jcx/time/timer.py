@@ -1,13 +1,14 @@
 from datetime import timedelta
 
+# NON-LOCKED-LIB: arrow, pending selection decision (stdlib datetime vs arrow)
 from arrow import Arrow
 
 
 class Timer:
     """更新时间记录"""
 
-    def __init__(self, last_updated: Arrow = Arrow(1970, 1, 1)) -> None:
-        self.__last_updated = last_updated  # 上一次更新时间
+    def __init__(self, last_updated: Arrow | None = None) -> None:
+        self.__last_updated = last_updated if last_updated is not None else Arrow(1970, 1, 1)
 
     def __str__(self) -> str:
         return f"Timer({str(self.__last_updated)})"

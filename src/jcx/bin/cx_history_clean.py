@@ -6,7 +6,7 @@ from jcx.text.io import save_lines
 from jcx.time.dt import now_file
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser("History文件清理工具")
     parser.add_argument(
         "-f",
@@ -35,7 +35,7 @@ def main():
         num_lines += 1
         r = line.split(";", 1)
         if len(r) != 2:
-            print("WARN @ %d: " % i, line)
+            print(f"WARN @ {i}: ", line)
             continue
         _, cmd = r
         if cmd not in cmd_counts:
@@ -54,7 +54,7 @@ def main():
         print(f"移动文件失败: {history_file} -> {bak_file}: {result.unwrap_err()}")
         return
 
-    print("历史文件, 行数变化：%d -> %d" % (num_lines, len(lines)))
+    print(f"历史文件, 行数变化：{num_lines} -> {len(lines)}")
     save_lines(lines, history_file)
 
 

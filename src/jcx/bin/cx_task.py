@@ -85,7 +85,7 @@ def callback(
     url: str = typer.Option(None, "--url", "-u", help="服务器URL"),
     task_table: str = typer.Option(None, "--task-table", help="任务表名称"),
     status_table: str = typer.Option(None, "--status-table", help="状态表名称"),
-):
+) -> None:
     """全局配置选项"""
     if url:
         Config.url = url
@@ -96,7 +96,7 @@ def callback(
 
 
 @app.command("list")
-def list_tasks():
+def list_tasks() -> None:
     """列出所有任务"""
     client = get_client()
     result = client.get_all_tasks()
@@ -126,7 +126,7 @@ def list_tasks():
 
 
 @app.command("status")
-def list_statuses():
+def list_statuses() -> None:
     """列出所有任务状态"""
     client = get_client()
     result = client.get_all_statuses()
@@ -168,7 +168,7 @@ def add_task(
     task_type: int = typer.Option(..., "--type", "-t", help="任务类型"),
     data: str = typer.Option(..., "--data", "-d", help="任务数据，JSON格式或文件路径"),
     desc: str | None = typer.Option(None, "--desc", help="任务描述"),
-):
+) -> None:
     """添加新任务"""
     # 判断data是否为文件路径
     data_content = data
@@ -206,7 +206,7 @@ def add_task(
 def start_task(
     task_id: str = typer.Argument(..., help="任务ID"),
     worker: str | None = typer.Option(None, "--worker", "-w", help="工作者标识"),
-):
+) -> None:
     """开始执行指定任务"""
     client = get_client()
     result = client.task_start(task_id, worker)
@@ -226,7 +226,7 @@ def update_progress(
         ..., "--progress", "-p", min=0, max=100, help="任务进度(0-100)"
     ),
     status: int | None = typer.Option(None, "--status", "-s", help="任务状态码"),
-):
+) -> None:
     """更新任务进度"""
     client = get_client()
 
@@ -244,14 +244,14 @@ def update_progress(
         console.print(f"[red]更新任务进度失败: {result.unwrap_err()}[/red]")
         sys.exit(1)
 
-    status = result.expect("Failed to update progress after error check")
+    updated_status = result.expect("Failed to update progress after error check")
     console.print(
-        f"[green]成功更新任务进度[/green]: {status.id}，当前进度: {status.progress}%"
+        f"[green]成功更新任务进度[/green]: {updated_status.id}，当前进度: {updated_status.progress}%"
     )
 
 
 @app.command("complete")
-def complete_task(task_id: str = typer.Argument(..., help="任务ID")):
+def complete_task(task_id: str = typer.Argument(..., help="任务ID")) -> None:
     """标记任务为已完成"""
     client = get_client()
     result = client.task_done(task_id)
@@ -265,7 +265,7 @@ def complete_task(task_id: str = typer.Argument(..., help="任务ID")):
 
 
 @app.command("error")
-def mark_error(task_id: str = typer.Argument(..., help="任务ID")):
+def mark_error(task_id: str = typer.Argument(..., help="任务ID")) -> None:
     """标记任务为出错状态"""
     client = get_client()
     result = client.task_error(task_id)
@@ -279,7 +279,7 @@ def mark_error(task_id: str = typer.Argument(..., help="任务ID")):
 
 
 @app.command("info")
-def get_task_info(task_id: str = typer.Argument(..., help="任务ID")):
+def get_task_info(task_id: str = typer.Argument(..., help="任务ID")) -> None:
     """获取指定任务的详细信息和状态"""
     client = get_client()
 
@@ -328,7 +328,7 @@ def get_task_info(task_id: str = typer.Argument(..., help="任务ID")):
 
 
 @app.command("next")
-def find_next_task():
+def find_next_task() -> None:
     """查找下一个可执行的任务"""
     client = get_client()
     result = client.find_task()
@@ -350,7 +350,7 @@ def find_next_task():
 def enable_task(
     task_id: str = typer.Argument(..., help="任务ID"),
     enable: bool = typer.Option(True, help="是否启用任务"),
-):
+) -> None:
     """启用或禁用任务"""
     client = get_client()
 
@@ -378,7 +378,7 @@ def enable_task(
     console.print(f"[green]已{'启用' if enable else '禁用'}任务[/green]: {status.id}")
 
 
-def main():
+def main() -> int:
     """程序入口点"""
     try:
         app()

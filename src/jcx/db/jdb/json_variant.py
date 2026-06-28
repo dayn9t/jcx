@@ -20,7 +20,7 @@ from jcx.text.io import load_txt, save_txt
 T = TypeVar("T")
 
 
-class JsonVariant(IVariant):
+class JsonVariant[T](IVariant[T]):
     """通用 JSON 变量——支持任意 pydantic 可验证类型"""
 
     @classmethod
@@ -42,7 +42,7 @@ class JsonVariant(IVariant):
         return self._type
 
     def exists(self) -> bool:
-        """判断是否存在"""
+        """获取变量类型"""
         return self._path.exists()
 
     def get(self) -> Option[T]:

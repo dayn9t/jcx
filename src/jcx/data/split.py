@@ -24,22 +24,23 @@ def random_split_n(n: int, radios: list[float]) -> list[list[int]]:
     return slices
 
 
-def random_split_array(arr: list, radio_arr: list) -> list:
+def random_split_array(arr: list[object], radio_arr: list[float]) -> list[list[object]]:
     """按比例随机分割数组"""
     slices = random_split_n(len(arr), radio_arr)
     return [lookup(s, arr) for s in slices]
 
 
-def random_split(x: int | list, radio: list) -> list:
+def random_split(x: int | list[object], radio: list[float]) -> list[list[object]]:
     """按比例随机分割整数集合或数组"""
     if isinstance(x, int):
-        return random_split_n(x, radio)
+        # list[list[int]] 非协变于 list[list[object]]，显式提升元素类型
+        return [list(s) for s in random_split_n(x, radio)]
     if isinstance(x, list):
         return random_split_array(x, radio)
     raise TypeError(f"Unsupported type to split: {type(x).__name__}")
 
 
-def group(arr: list, group_member: int) -> list[list]:
+def group(arr: list[object], group_member: int) -> list[list[object]]:
     """分组"""
     total = len(arr)
     return [arr[i : i + group_member] for i in range(0, total, group_member)]

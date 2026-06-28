@@ -8,7 +8,7 @@ class Counter(BaseModel):
     """计数值"""
 
     def __str__(self) -> str:
-        return "Counter(%d)" % self.count
+        return f"Counter({self.count})"
 
     def get(self) -> int:
         """获取计数值"""
@@ -30,7 +30,7 @@ class CountTimer(BaseModel):
     """计数值"""
 
     def __str__(self) -> str:
-        return "CountTimer(%d,%d)" % (self.interval, self.count)
+        return f"CountTimer({self.interval},{self.count})"
 
     def inc(self) -> None:
         """更新计数器"""
