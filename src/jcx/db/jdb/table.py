@@ -3,8 +3,8 @@ from typing import TypeVar
 
 from rustshed import Null, Option, Some
 
-from jcx.db.jdb.util import load_dict
-from jcx.db.record import Record, RecordFilter
+from jcx.db.jdb.util import load_dict, load_sid_dict
+from jcx.db.record import Record, RecordFilter, RecordSid, RecordSidFilter
 from jcx.rs.rs import rs_option_cloned
 from jcx.sys.fs import StrPath, rm_files_in
 from jcx.text.txt_json import save_json
@@ -86,7 +86,7 @@ class Table[R: Record]:
         return Some(record.clone())
 
     def remove(self, rid: int) -> None:
-        """更新记录"""
+        """删除记录"""
         if rid not in self._records:
             return
         f = self.__record_path(rid)
@@ -104,6 +104,104 @@ class Table[R: Record]:
         return max(self.ids(), default=0) + 1
 
     def __record_path(self, rid: int) -> Path:
+        """获取记录对应路径"""
+        folder = self._folder.expect("Table folder not initialized")
+        return folder / f"{rid}.json"
+
+    def __save(self, record: R) -> None:
+        """保存路径"""
+        f = self.__record_path(record.id)
+        save_json(record, f)
+
+
+class TableSid[R: RecordSid]:
+    """字符串主键数据库表（`RecordSid` 记录的文件型 DAO，`{id}.json` 平铺目录）。
+
+    与 [`Table`]（int 主键）并列。生产侧 str 主键由外部分配（如 Rust rx-db 的
+    Uuid 字符串、js4 的 hex ObjectId），无自增语义，故不提供 `next_id`；
+    [`TableSid.post`] 拒绝空 id（调用方必须显式分配）。
+    """
+
+    @staticmethod
+    def open(record_type: type[R], folder: StrPath) -> "TableSid[R]":
+        """打开数据库表"""
+        tab = TableSid(record_type)
+        tab.load(folder)
+        return tab
+
+    def __init__(self, record_type: type[R]) -> None:
+        self._type = record_type
+        self._folder: Option[Path] = Null
+        self._records: dict[str, R] = {}
+
+    def load(self, folder: StrPath) -> int:
+        """加载数据库表"""
+        folder1 = Path(folder)
+        folder1.mkdir(exist_ok=True)
+
+        self._folder = Some(folder1)
+        self._records = load_sid_dict(self._type, folder)
+        return len(self._records)
+
+    def record_type(self) -> type[R]:
+        """获取记录类型"""
+        return self._type
+
+    def __len__(self) -> int:
+        return len(self._records)
+
+    def ids(self) -> list[str]:
+        """获取所有ID"""
+        return list(self._records.keys())
+
+    def records(self) -> list[R]:
+        """获取所有记录, 防止被外部导致磁盘数据不一致"""
+        return sorted(self._records.values(), key=lambda r: r.id)
+
+    def get(self, rid: str) -> Option[R]:
+        """获取指定记录"""
+        r = self._records.get(rid)
+        return rs_option_cloned(r)
+
+    def query(self, fun: RecordSidFilter) -> list[R]:
+        """查询满足条件的记录集"""
+        return [r for r in self._records.values() if fun(r)]
+
+    def query_ids(self, fun: RecordSidFilter) -> list[str]:
+        """查询满足条件的记录ID集"""
+        return [r.id for r in self._records.values() if fun(r)]
+
+    def post(self, record: R) -> Option[R]:
+        """添加新记录（id 必须非空且不存在——str 主键由调用方分配，无自增）"""
+        if not record.id or record.id in self._records:
+            return Null
+
+        return self.put(record)
+
+    def put(self, record: R) -> Option[R]:
+        """更新记录"""
+        if not record.id:
+            return Null
+        record = record.clone()  # 避免影响传入对象
+        self._records[record.id] = record
+        self.__save(record)
+        return Some(record.clone())
+
+    def remove(self, rid: str) -> None:
+        """删除记录"""
+        if rid not in self._records:
+            return
+        f = self.__record_path(rid)
+        f.unlink()
+        self._records.pop(rid)
+
+    def clear(self) -> None:
+        """删除所有记录"""
+        self._records.clear()
+        folder = self._folder.expect("Table folder not initialized")
+        rm_files_in(folder, ".json")
+
+    def __record_path(self, rid: str) -> Path:
         """获取记录对应路径"""
         folder = self._folder.expect("Table folder not initialized")
         return folder / f"{rid}.json"

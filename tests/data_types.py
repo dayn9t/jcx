@@ -1,10 +1,17 @@
 from typing import Final
 
-from jcx.db.record import Record
+from jcx.db.record import Record, RecordSid
 
 
 class Student(Record):
     """用于演示/测试的记录"""
+
+    name: str
+    age: int
+
+
+class StudentSid(RecordSid):
+    """用于演示/测试的字符串主键记录（hex ObjectId 样式）"""
 
     name: str
     age: int
