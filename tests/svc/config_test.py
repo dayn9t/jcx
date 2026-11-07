@@ -64,6 +64,19 @@ def test_corrupt_json5_fails_loud_no_fallback(tmp_path: Path) -> None:
     assert "node" in msg
 
 
+def test_corrupt_json5_same_layer_does_not_fall_to_yaml(tmp_path: Path) -> None:
+    layer = tmp_path / "node"
+    write(layer / "svc.json5", "{host: 'h', port: ")  # unparseable
+    write(layer / "svc.yaml", "host: ok\nport: 8001\n")  # valid sibling suffix
+    result = load_layered_cfg(Cfg, "svc", [layer])
+    # same name + same layer = one logical config: corruption of the first
+    # suffix must not fall through to the sibling suffix (裁决记录 1,
+    # batch4a review Medium — direct pin, only FileNotFoundError falls through)
+    assert result.is_err()
+    assert not isinstance(result.unwrap_err(), FileNotFoundError)
+    assert "svc.json5" in str(result.unwrap_err())
+
+
 def test_corrupt_yaml_fails_loud(tmp_path: Path) -> None:
     node = tmp_path / "node"
     write(node / "svc.yaml", "host: [unclosed\n")
