@@ -32,6 +32,7 @@
 - 生产模块的 `if __name__` demo 块与残留 `print`
 
 ### Added
+- `svc/` 微服务基建模块（2026-11-07 上提纪律首例：自下游 avs-common 上提并剥离重写，零下游命名/路径假设）：`paths`（可执行位→树根反解，深度/标记双策略参数化 + 树内 `*_path` 相对解析、绝对值拒收）、`config`（分层加载：层序可配、首层胜出、缺失回退、损坏即报禁静默，json5+yaml 双格式）、`app`（FastAPI 壳：healthz/readyz + cfg 注入 + lifespan 透传）；fastapi/pyyaml 走 `svc` extra，不让全库用户背负
 - `CLAUDE.md`（项目入口，< 100 行）
 - `.claude/settings.json`（权限白名单）
 - `LICENSE`（MIT）

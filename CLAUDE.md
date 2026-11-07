@@ -15,6 +15,7 @@ Python 3.12，uv 管理，ruff + pyright + pytest。
 | `db/` | JSON 文件数据库（jdb）+ Redis（rdb）；Counter/Variant/Record |
 | `api/` | REST DAO 层：flask-restx 服务端 + requests 客户端 + 任务管理 |
 | `net/` | MQTT pub/sub |
+| `svc/` | 微服务基建：树根反解+树内相对路径（paths）、分层配置加载（config，缺省→覆盖/损坏即报，json5+yaml）、FastAPI 壳（app，healthz/readyz+cfg 注入）；需 `svc` extra（fastapi+pyyaml） |
 | `bin/` | CLI 工具（cx_task / cx_dao / cx_rename 等，typer + argparse） |
 | `data/` | 数据分割工具 |
 
